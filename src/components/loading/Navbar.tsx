@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import genniralLogo from '/logo.png';
+import genniralLogo from '../../assets/logo.png';
 import { LightRays } from '.';
+import { TransitionLink } from '../navigation';
 
 interface NavbarProps {
   transparent?: boolean;
@@ -55,30 +56,30 @@ const Navbar: React.FC<NavbarProps> = ({ transparent = false }) => {
         <div className="relative z-10 px-2 py-3">
           <div className="flex items-center justify-center gap-56">
             <div className="flex-shrink-0">
-              <Link to="/" className="flex items-center group">
+              <TransitionLink to="/" className="flex items-center group">
                 <span className="font-semibold text-2xl tracking-wide bg-gradient-to-r from-[#a8b5fb] to-[#b1caf8] bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(161,196,253,0.5)]">
                   KPRIET
                 </span>
-              </Link>
+              </TransitionLink>
             </div>
             
             <div className="flex items-center bg-gray-800/30 rounded-full px-4 py-1">
-              <Link to="/" className="nav-link mx-2">
+              <TransitionLink to="/" className="nav-link mx-2">
                 Home
-              </Link>
-              <Link to="/gallery" className="nav-link mx-2">
+              </TransitionLink>
+              <TransitionLink to="/gallery" className="nav-link mx-2">
                 Gallery
-              </Link>
-              <Link to="/certificates" className="nav-link mx-2">
-                Upcoming Events
-              </Link>
-              <Link to="/contact" className="nav-link mx-2">
+              </TransitionLink>
+              <TransitionLink to="/association" className="nav-link mx-2">
                 Association
-              </Link>
+              </TransitionLink>
+              <TransitionLink to="/certificates" className="nav-link mx-2">
+                Upcoming Events
+              </TransitionLink>
             </div>
 
             <div className="flex-shrink-0">
-              <Link
+              <TransitionLink
                 to="/resume"
                 className="inline-flex items-center w-[100px] h-[32px] justify-center px-6 py-2.5 rounded-md bg-[#8080ff]/30 hover:bg-[#8080ff]/40 text-white font-medium transition-all duration-300 backdrop-blur-sm border border-[#8080ff]/20 shadow-[0_0_15px_rgba(128,128,255,0.3)] relative overflow-hidden group"
               >
@@ -89,7 +90,7 @@ const Navbar: React.FC<NavbarProps> = ({ transparent = false }) => {
                   </svg>
                   Login
                 </span>
-              </Link>
+              </TransitionLink>
             </div>
 
             <button
@@ -129,69 +130,48 @@ const Navbar: React.FC<NavbarProps> = ({ transparent = false }) => {
           }`}
         >
           <div className="px-4 flex flex-col space-y-4">
-            <Link
+            <TransitionLink
               to="/"
               className="nav-link-mobile"
               onClick={() => setMenuOpen(false)}
             >
               Home
-            </Link>
-            <Link
-              to="/about"
+            </TransitionLink>
+            <TransitionLink
+              to="/gallery"
               className="nav-link-mobile"
               onClick={() => setMenuOpen(false)}
             >
-              About
-            </Link>
-            <Link
-              to="/skills"
+              Gallery
+            </TransitionLink>
+            <TransitionLink
+              to="/association"
               className="nav-link-mobile"
               onClick={() => setMenuOpen(false)}
             >
-              Skills
-            </Link>
-            <Link
-              to="/projects"
-              className="nav-link-mobile"
-              onClick={() => setMenuOpen(false)}
-            >
-              Projects
-            </Link>
-            <Link
-              to="/works"
-              className="nav-link-mobile"
-              onClick={() => setMenuOpen(false)}
-            >
-              Works
-            </Link>
-            <Link
-              to="/research"
-              className="nav-link-mobile"
-              onClick={() => setMenuOpen(false)}
-            >
-              Research
-            </Link>
-            <Link
+              Association
+            </TransitionLink>
+            <TransitionLink
               to="/certificates"
               className="nav-link-mobile"
               onClick={() => setMenuOpen(false)}
             >
               Certificates
-            </Link>
-            <Link
+            </TransitionLink>
+            <TransitionLink
               to="/contact"
               className="nav-link-mobile"
               onClick={() => setMenuOpen(false)}
             >
               Contact
-            </Link>
-            <Link
+            </TransitionLink>
+            <TransitionLink
               to="/resume"
               className="px-6 py-3 rounded-full text-center bg-purple-600 hover:bg-purple-700 text-white font-medium transition-all duration-300"
               onClick={() => setMenuOpen(false)}
             >
               View Resume
-            </Link>
+            </TransitionLink>
           </div>
         </div>
       </div>

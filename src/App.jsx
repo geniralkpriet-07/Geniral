@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
-import { LoadComponent, Navbar } from "./components/loading";
+import { Navbar } from "./components/loading";
 import HomePage from "./pages/Home";
 import Gallery from "./pages/Gallery";
 import "./index.css";
+import AssociationPage from './pages/Association';
 
 const Layout = () => {
   return (
@@ -20,23 +20,12 @@ const Layout = () => {
 };
 
 function App() {
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 3000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (loading) {
-    return <LoadComponent />;
-  }
-
   return (
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/gallery" element={<Gallery />} />
-        <Route path="/features" element={<HomePage />} />
+        <Route path="/association" element={<AssociationPage />} />
         <Route path="/extension" element={<HomePage />} />
         <Route path="/pricing" element={<HomePage />} />
         <Route path="/get-started" element={<HomePage />} />
