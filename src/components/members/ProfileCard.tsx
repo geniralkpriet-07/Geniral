@@ -4,13 +4,11 @@ import './ProfileCard.css';
 interface ProfileCardProps {
   avatarUrl: string;
   className?: string;
-  miniAvatarUrl?: string;
   name?: string;
   title?: string;
-  handle?: string;
-  linkedinUrl?: string; // Added LinkedIn URL prop
+  linkedinUrl?: string;
   showUserInfo?: boolean;
-  onLinkedinClick?: () => void; // Changed from onContactClick
+  onLinkedinClick?: () => void;
   classInfo?: string;
   showGeniral?: boolean;
 }
@@ -21,13 +19,11 @@ const DEFAULT_GRADIENT = 'linear-gradient(145deg, #6d28d9 0%, #8b5cf6 100%)';
 const ProfileCardComponent: React.FC<ProfileCardProps> = ({
   avatarUrl = '<Placeholder for avatar URL>',
   className = '',
-  miniAvatarUrl,
   name = 'Javi A. Torres',
   title = 'Software Engineer',
-  handle = 'javicodes',
-  linkedinUrl = '', // Default empty
+  linkedinUrl = '',
   showUserInfo = true,
-  onLinkedinClick, // Changed from onContactClick
+  onLinkedinClick,
   classInfo = '',
   showGeniral = false
 }) => {
@@ -59,25 +55,8 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
               }}
             />
             {showUserInfo && (
-              <div className="pc-user-info">
-                <div className="pc-user-details">
-                  <div className="pc-mini-avatar">
-                    <img
-                      src={miniAvatarUrl || avatarUrl}
-                      alt={`${name || 'User'} mini avatar`}
-                      loading="lazy"
-                      onError={e => {
-                        const target = e.target as HTMLImageElement;
-                        target.style.opacity = '0.5';
-                        target.src = avatarUrl;
-                      }}
-                    />
-                  </div>
-                  <div className="pc-user-text">
-                    <div className="pc-handle">@{handle}</div>
-                  </div>
-                </div>
-                {/* LinkedIn icon instead of contact button */}
+              <div className="pc-user-info linkedin-only">
+                {/* Only LinkedIn icon */}
                 <div 
                   className="pc-social-icon"
                   onClick={handleLinkedinClick}
