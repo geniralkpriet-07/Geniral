@@ -22,7 +22,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ imageUrl, altText }) => {
 };
 
 interface FeaturedProjectsProps {
-  // You can add props here if needed
 }
 
 const FeaturedProjects: React.FC<FeaturedProjectsProps> = () => {

@@ -20,7 +20,6 @@ const Gallery = () => {
         />
       </div>
       
-      {/* Gallery Header */}
       <section className="gallery-header relative z-10 pt-24 pb-12">
         <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-radial from-[#8080ff]/40 via-[#80ffea]/20 to-transparent blur-3xl opacity-60"></div>
         <div className="relative max-w-7xl mx-auto px-6 text-center">
@@ -33,7 +32,6 @@ const Gallery = () => {
         </div>
       </section>
       
-      {/* Gallery Grid */}
       <section className="gallery-grid-section relative z-10 pb-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="gallery-categories mb-8 flex flex-wrap justify-center gap-4">
@@ -45,7 +43,6 @@ const Gallery = () => {
           </div>
           
           <div className="gallery-grid">
-            {/* Gallery Item 1 */}
             <div className="gallery-item">
               <div className="gallery-image">
                 <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c" alt="Tech Workshop" />
@@ -69,7 +66,6 @@ const Gallery = () => {
               </div>
             </div>
             
-            {/* Gallery Item 2 */}
             <div className="gallery-item">
               <div className="gallery-image">
                 <img src="https://images.unsplash.com/photo-1501504905252-473c47e087f8" alt="Hackathon Winners" />
@@ -93,7 +89,6 @@ const Gallery = () => {
               </div>
             </div>
             
-            {/* Gallery Item 3 */}
             <div className="gallery-item">
               <div className="gallery-image">
                 <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095" alt="Tech Conference" />
@@ -117,7 +112,6 @@ const Gallery = () => {
               </div>
             </div>
             
-            {/* Gallery Item 4 */}
             <div className="gallery-item">
               <div className="gallery-image">
                 <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d" alt="Coding Competition" />
@@ -141,7 +135,6 @@ const Gallery = () => {
               </div>
             </div>
             
-            {/* Gallery Item 5 */}
             <div className="gallery-item">
               <div className="gallery-image">
                 <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998" alt="AI Workshop" />
@@ -165,7 +158,6 @@ const Gallery = () => {
               </div>
             </div>
             
-            {/* Gallery Item 6 */}
             <div className="gallery-item">
               <div className="gallery-image">
                 <img src="https://images.unsplash.com/photo-1527192491265-7e15c55b1ed2" alt="Club Activity" />
@@ -196,7 +188,6 @@ const Gallery = () => {
         </div>
       </section>
       
-      {/* CSS Styles */}
       <style>{`
         .gallery-page {
           background: radial-gradient(circle at center, #111133 0%, #0a0a18 50%, #050510 100%);

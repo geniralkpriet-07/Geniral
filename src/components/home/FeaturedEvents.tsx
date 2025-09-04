@@ -25,7 +25,6 @@ const EventCard: React.FC<EventCardProps> = ({ imageUrl, altText }) => {
 };
 
 interface FeaturedEventsProps {
-  // You can add props here if needed
 }
 
 const FeaturedEvents: React.FC<FeaturedEventsProps> = () => {

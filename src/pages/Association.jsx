@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import ProfileCard from '../components/members/ProfileCard';
 import { LightRays } from '../components/loading';
 
-// The main association members list
 const associationMembers = [
-  // Top leadership
   {
     id: 'pres-1',
     name: 'Rajiv Kumar',
@@ -77,7 +75,6 @@ const associationMembers = [
   }
 ];
 
-// Club heads data
 const clubHeads = [
   {
     id: 'ch-1',
@@ -121,7 +118,6 @@ const clubHeads = [
   }
 ];
 
-// Different clubs with their members
 const clubs = [
   {
     id: 'tech-patrons',
@@ -159,18 +155,16 @@ const clubs = [
 
 const Association = () => {
   const [activeClub, setActiveClub] = useState(null);
+  const [hoveredMember, setHoveredMember] = useState(null);
 
-  // Function to handle contact button click
   const handleContactClick = (member) => {
     alert(`Contacting ${member.name} (${member.role})`);
   };
 
-  // Function to handle view members click
   const handleViewMembers = (clubId) => {
     setActiveClub(clubId === activeClub ? null : clubId);
   };
 
-  // Get role order for proper hierarchy
   const getRoleOrder = (role) => {
     const roleOrder = {
       'President': 1,
@@ -185,12 +179,10 @@ const Association = () => {
     return roleOrder[role] || 99;
   };
 
-  // Sorted members by role
   const sortedMembers = [...associationMembers].sort((a, b) => getRoleOrder(a.role) - getRoleOrder(b.role));
 
   return (
     <div className="min-h-screen text-white bg-[#0a0a18] [background:radial-gradient(circle_at_center,_#111133_0%,_#0a0a18_70%,_#050510_100%)] pt-24 pb-16 overflow-hidden">
-      {/* Background light rays - updated to match Gallery implementation */}
       <div className="light-rays-container absolute inset-0 z-0">
         <LightRays
           raysColor="#8080ff"
@@ -207,7 +199,6 @@ const Association = () => {
         />
       </div>
 
-      {/* Hero Section */}
       <div className="relative overflow-hidden mb-12">
         <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-radial from-[#8080ff]/30 via-[#a78bfa]/20 to-transparent blur-3xl opacity-60"></div>
         
@@ -222,7 +213,6 @@ const Association = () => {
       </div>
 
       <div className="max-w-6xl mx-auto px-6 relative z-10">
-        {/* Leadership Section - President */}
         <div className="mb-16">
           <h2 className="text-3xl font-bold mb-10 text-center">
             <span className="border-b-4 border-purple-500 pb-2 text-gradient">Leadership</span>
@@ -248,7 +238,6 @@ const Association = () => {
             ))}
           </div>
           
-          {/* Vice Presidents & Treasurer */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-14">
             {sortedMembers
               .filter(m => m.role === 'Vice President' || m.role === 'Treasurer')
@@ -270,7 +259,6 @@ const Association = () => {
               ))}
           </div>
           
-          {/* Secretary & Vice Secretary & Joint Treasurer */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {sortedMembers
               .filter(m => m.role === 'Secretary' || m.role === 'Vice Secretary' || m.role === 'Joint Treasurer')
@@ -293,7 +281,6 @@ const Association = () => {
           </div>
         </div>
         
-        {/* Club Heads Section */}
         <div className="mb-16">
           <h2 className="text-3xl font-bold mb-10 text-center">
             <span className="border-b-4 border-purple-500 pb-2 text-gradient">Club Heads</span>
@@ -318,8 +305,7 @@ const Association = () => {
             ))}
           </div>
         </div>
-        
-        {/* Clubs Section */}
+       
         <div>
           <h2 className="text-3xl font-bold mb-10 text-center">
             <span className="border-b-4 border-purple-500 pb-2 text-gradient">Clubs</span>
@@ -366,30 +352,57 @@ const Association = () => {
                     </div>
                   </div>
                   
-                  {/* Club Members Section - Expandable */}
                   {activeClub === club.id && (
                     <div className="bg-[#111133]/50 p-6 border-t border-purple-500/20">
                       <h4 className="font-medium text-white mb-4">Club Members</h4>
                       
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        {/* Generate 6 random members for demo */}
                         {Array.from({ length: 6 }).map((_, index) => {
-                          // Random gender for avatar
                           const gender = Math.random() > 0.5 ? 'men' : 'women';
                           const randomNum = Math.floor(Math.random() * 70) + 10;
+                          const memberId = `member-${club.id}-${index}`;
+                          const memberData = {
+                            id: memberId,
+                            name: `Student ${index + 1}`,
+                            role: 'Member',
+                            avatarUrl: `https://randomuser.me/api/portraits/${gender}/${randomNum}.jpg`,
+                            class: `II CSE-${String.fromCharCode(65 + index % 3)}`,
+                            handle: `student_${index}`,
+                            status: index % 3 === 0 ? 'Online' : (index % 3 === 1 ? 'Away' : 'Offline')
+                          };
                           
                           return (
-                            <div key={index} className="flex items-center bg-[#111133]/30 p-3 rounded-lg border border-purple-500/10 shadow-[0_2px_10px_rgba(139,92,246,0.1)]">
-                              <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
-                                <img 
-                                  src={`https://randomuser.me/api/portraits/${gender}/${randomNum}.jpg`} 
-                                  alt="Member" 
-                                  className="w-full h-full object-cover"
-                                />
+                            <div 
+                              key={memberId} 
+                              className="relative group"
+                              onMouseEnter={() => setHoveredMember(memberId)}
+                              onMouseLeave={() => setHoveredMember(null)}
+                            >
+                              <div className="flex items-center bg-[#111133]/30 p-3 rounded-lg border border-purple-500/10 shadow-[0_2px_10px_rgba(139,92,246,0.1)] transition-all duration-300 group-hover:opacity-0">
+                                <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
+                                  <img 
+                                    src={memberData.avatarUrl} 
+                                    alt="Member" 
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                                <div>
+                                  <p className="font-medium text-white text-sm">{memberData.name}</p>
+                                  <p className="text-xs text-white/60">{memberData.class}</p>
+                                </div>
                               </div>
-                              <div>
-                                <p className="font-medium text-white text-sm">Student {index + 1}</p>
-                                <p className="text-xs text-white/60">II CSE-{String.fromCharCode(65 + index % 3)}</p>
+                              
+                              <div className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-[360px] transition-all duration-300 z-50 ${
+                                hoveredMember === memberId ? 'opacity-100 scale-100' : 'opacity-0 scale-90 pointer-events-none'
+                              }`}>
+                                <ProfileCard
+                                  name={memberData.name}
+                                  title={memberData.role}
+                                  avatarUrl={memberData.avatarUrl}
+                                  linkedinUrl={`https://linkedin.com/in/${memberData.handle}`}
+                                  showUserInfo={true}
+                                  classInfo={memberData.class}
+                                />
                               </div>
                             </div>
                           );
@@ -427,6 +440,18 @@ const Association = () => {
         @media (max-width: 768px) {
           .president-card {
             transform: scale(1);
+          }
+          
+          /* Make hover work as click on mobile */
+          .group:active .group-hover\\:scale-\\[0\\.97\\] {
+            transform: scale(0.97);
+            opacity: 0;
+          }
+          
+          .group:active .opacity-0.scale-90.-z-10 {
+            opacity: 1;
+            transform: scale(1);
+            z-index: 30;
           }
         }
       `}</style>

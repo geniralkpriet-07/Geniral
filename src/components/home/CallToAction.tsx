@@ -1,7 +1,6 @@
 import React from 'react';
 
 interface CallToActionProps {
-  // You can add props here if needed
 }
 
 const CallToAction: React.FC<CallToActionProps> = () => {

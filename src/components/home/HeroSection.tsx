@@ -2,7 +2,6 @@ import React from 'react';
 import { LightRays } from "../loading";
 
 interface HeroSectionProps {
-  // You can add props here if needed
 }
 
 const HeroSection: React.FC<HeroSectionProps> = () => {

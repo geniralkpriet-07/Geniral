@@ -17,7 +17,6 @@ const Statistic: React.FC<StatisticProps> = ({ value, label }) => {
 };
 
 interface DepartmentHighlightsProps {
-  // You can add props here if needed
 }
 
 const DepartmentHighlights: React.FC<DepartmentHighlightsProps> = () => {

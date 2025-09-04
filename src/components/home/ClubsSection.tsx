@@ -23,7 +23,6 @@ const ClubCard: React.FC<ClubCardProps> = ({ title, description }) => {
 };
 
 interface ClubsSectionProps {
-  // You can add props here if needed
 }
 
 const ClubsSection: React.FC<ClubsSectionProps> = () => {

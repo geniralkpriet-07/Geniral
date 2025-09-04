@@ -1,7 +1,6 @@
 import React from 'react';
 
 interface TestimonialsProps {
-  // You can add props here if needed
 }
 
 const Testimonials: React.FC<TestimonialsProps> = () => {
@@ -14,7 +13,6 @@ const Testimonials: React.FC<TestimonialsProps> = () => {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Testimonial 1 */}
           <div className="bg-[rgba(20,20,50,0.5)] rounded-lg p-6 shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-[rgba(128,128,255,0.1)]">
             <div className="italic text-white/90 leading-7 mb-6">
             </div>
@@ -22,7 +20,6 @@ const Testimonials: React.FC<TestimonialsProps> = () => {
             </div>
           </div>
 
-          {/* Testimonial 2 */}
           <div className="bg-[rgba(20,20,50,0.5)] rounded-lg p-6 shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-[rgba(128,128,255,0.1)]">
             <div className="italic text-white/90 leading-7 mb-6">
             </div>

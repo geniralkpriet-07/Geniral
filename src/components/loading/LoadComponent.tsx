@@ -85,7 +85,6 @@ function LoadComponent() {
           </div>
         )}
         
-        {/* tete */}
         <div className="content-container">
           <div className="logo-container">
             <img 

@@ -1,7 +1,6 @@
 import React from 'react';
 
 interface AnnouncementTickerProps {
-  // You can add props here if needed
 }
 
 const AnnouncementTicker: React.FC<AnnouncementTickerProps> = () => {

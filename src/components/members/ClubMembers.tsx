@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import ProfileCard from './ProfileCard';
 import './ClubMembers.css';
 
-// Define member role types
 type MemberRole = 'President' | 'Vice President' | 'Secretary' | 'Vice Secretary' | 'Treasurer' | 'Vice Treasurer' | 'Member';
 
-// Member interface
 interface ClubMember {
   id: string;
   name: string;
@@ -17,7 +15,6 @@ interface ClubMember {
   year?: string;
 }
 
-// Club interface
 interface Club {
   id: string;
   name: string;
@@ -25,7 +22,6 @@ interface Club {
   members: ClubMember[];
 }
 
-// Sample data for clubs and their members
 const clubsData: Club[] = [
   {
     id: 'coding-club',
@@ -395,7 +391,6 @@ const ClubMembers: React.FC<ClubMembersProps> = ({ clubId, onClose }) => {
     setSelectedClub(clubsData.find(club => club.id === newClubId) || null);
   };
 
-  // Group members by role
   const groupedMembers = selectedClub?.members.reduce((acc, member) => {
     if (!acc[member.role]) {
       acc[member.role] = [];
@@ -404,7 +399,6 @@ const ClubMembers: React.FC<ClubMembersProps> = ({ clubId, onClose }) => {
     return acc;
   }, {} as Record<MemberRole, ClubMember[]>) || {};
 
-  // Order roles by importance
   const roleOrder: MemberRole[] = [
     'President', 
     'Vice President', 
@@ -417,7 +411,6 @@ const ClubMembers: React.FC<ClubMembersProps> = ({ clubId, onClose }) => {
 
   const handleContactClick = (member: ClubMember) => {
     console.log(`Contacting ${member.name}`);
-    // Implement contact functionality here
     alert(`Contacting ${member.name} (${member.role})`);
   };
 

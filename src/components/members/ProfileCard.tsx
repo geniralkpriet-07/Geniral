@@ -13,7 +13,6 @@ interface ProfileCardProps {
   showGeniral?: boolean;
 }
 
-// Simple violet gradient without animation effects
 const DEFAULT_GRADIENT = 'linear-gradient(145deg, #6d28d9 0%, #8b5cf6 100%)';
 
 const ProfileCardComponent: React.FC<ProfileCardProps> = ({
@@ -54,9 +53,12 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
                 target.style.display = 'none';
               }}
             />
+            
+          
+
             {showUserInfo && (
               <div className="pc-user-info linkedin-only">
-                {/* Only LinkedIn icon */}
+                
                 <div 
                   className="pc-social-icon"
                   onClick={handleLinkedinClick}
@@ -74,7 +76,6 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
             <div className="pc-details">
               <h3>{name}</h3>
               <p>{title}</p>
-              {classInfo && <div className="pc-class">{classInfo}</div>}
             </div>
           </div>
         </div>

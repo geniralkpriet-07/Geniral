@@ -4,7 +4,6 @@ import { LightRays } from "../components/loading";
 const UpcomingEvents = () => {
   return (
     <div className="min-h-screen text-white bg-[#0a0a18] [background:radial-gradient(circle_at_center,_#111133_0%,_#0a0a18_70%,_#050510_100%)] pt-24 pb-16">
-      {/* Light rays container - updated to match Gallery implementation */}
       <div className="light-rays-container absolute inset-0 z-0">
         <LightRays
           raysColor="#8080ff"
@@ -21,7 +20,6 @@ const UpcomingEvents = () => {
         />
       </div>
 
-      {/* Hero Section with Background */}
       <div className="relative overflow-hidden h-[40vh] mb-12">
         <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-radial from-[#8080ff]/30 via-[#a78bfa]/20 to-transparent blur-3xl opacity-60"></div>
 
@@ -38,11 +36,8 @@ const UpcomingEvents = () => {
         </div>
       </div>
 
-      {/* Content section - placeholder for event details */}
       <div className="max-w-6xl mx-auto px-6 relative z-10">
-        {/* Event details will be displayed here */}
         <div className="grid grid-cols-1 gap-8">
-          {/* Placeholder event items to make the page have content */}
           {[1, 2, 3].map((item) => (
             <div key={item} className="bg-[#151530]/60 backdrop-blur-md rounded-xl p-6 border border-purple-500/20 shadow-lg transform hover:scale-[1.01] transition-all">
               <div className="flex flex-col md:flex-row gap-6 items-center">

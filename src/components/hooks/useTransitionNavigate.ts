@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useRouteTransition } from '../loading/RouteTransition';
 
 /**
- * Custom hook for handling route transitions with a loading effect
  * 
  * @returns An object with a navigateWithTransition function
  */
