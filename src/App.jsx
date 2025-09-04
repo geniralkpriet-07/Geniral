@@ -1,32 +1,48 @@
+import { useState, useEffect } from "react";
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
-import { Navbar } from "./components/loading";
+import { LoadComponent, Navbar } from "./components/loading";
 import HomePage from "./pages/Home";
 import Gallery from "./pages/Gallery";
 import "./index.css";
-import AssociationPage from './pages/Association';
-
-const Layout = () => {
-  return (
-    <div className="site-layout">
-      <div className="fixed inset-0 bg-radial-gradient z-[-1]"></div>
-      
-      <Navbar transparent={true} />
-      
-      <div className="page-content">
-        <Outlet />
-      </div>
+import UpcomingEvents from "./pages/upcomingevents";
+import Association from "./pages/Association";
+const Layout = () => (
+  <div className="site-layout">
+    <div className="fixed inset-0 bg-radial-gradient z-[-1]"></div>
+    <Navbar transparent={true} />
+    <div className="page-content">
+      <Outlet />
     </div>
-  );
-};
+  </div>
+);
 
 function App() {
+  const [loading, setLoading] = useState(() => {
+    return !sessionStorage.getItem("hasLoaded");
+  });
+
+  useEffect(() => {
+    if (loading) {
+      const timer = setTimeout(() => {
+        setLoading(false);
+        sessionStorage.setItem("hasLoaded", "true");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [loading]);
+
+  if (loading) {
+    return <LoadComponent />;
+  }
+
   return (
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/gallery" element={<Gallery />} />
-        <Route path="/association" element={<AssociationPage />} />
-        <Route path="/extension" element={<HomePage />} />
+        <Route path="/features" element={<HomePage />} />
+        <Route path="/association" element={<Association />} />
+        <Route path="/upcoming-events" element={<UpcomingEvents />} />
         <Route path="/pricing" element={<HomePage />} />
         <Route path="/get-started" element={<HomePage />} />
         <Route path="*" element={<Navigate to="/" />} />

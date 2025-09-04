@@ -73,7 +73,7 @@ const Navbar: React.FC<NavbarProps> = ({ transparent = false }) => {
               <TransitionLink to="/association" className="nav-link mx-2">
                 Association
               </TransitionLink>
-              <TransitionLink to="/certificates" className="nav-link mx-2">
+              <TransitionLink to="/upcoming-events" className="nav-link mx-2">
                 Upcoming Events
               </TransitionLink>
             </div>
