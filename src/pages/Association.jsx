@@ -411,7 +411,7 @@ const Association = () => {
             ref={addToRefs} 
             className="text-3xl font-bold mb-10 text-center heading-container"
         >
-            <span className="border-b-4 border-purple-500 pb-2 text-gradient relative">
+            <span className="border-b-4 border-[#8080ff] pb-2 text-gradient relative">
                 {title}
                 <div className="heading-rays"></div>
             </span>
@@ -437,7 +437,7 @@ const Association = () => {
             </div>
 
             <div className="relative overflow-hidden mb-12">
-                <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-radial from-[#8080ff]/30 via-[#a78bfa]/20 to-transparent blur-3xl opacity-60"></div>
+                <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-radial from-[#8080ff]/30 via-[#5050aa]/20 to-transparent blur-3xl opacity-60"></div>
                 
                 <div className="max-w-6xl mx-auto px-6 py-16 relative z-10 text-center">
                     <h1 className="text-5xl font-bold mb-6 drop-shadow-[0_0_30px_rgba(128,128,255,0.3)]">
@@ -592,17 +592,17 @@ const Association = () => {
                         {facultyCoordinators.map((faculty, idx) => (
                             <div 
                                 key={`faculty-${idx}`}
-                                className="bg-[#111133]/30 backdrop-blur-sm rounded-xl overflow-hidden p-6 border border-purple-500/20 shadow-[0_4px_20px_rgba(139,92,246,0.15)] group relative"
+                                className="bg-[#111133]/30 backdrop-blur-sm rounded-xl overflow-hidden p-6 border border-[#8080ff]/20 shadow-[0_4px_20px_rgba(128,128,255,0.15)] group relative"
                                 onMouseEnter={() => handleMemberMouseEnter(`faculty-${idx}`)}
                                 onMouseLeave={() => handleMemberMouseLeave(`faculty-${idx}`)}
                             >
-                                <div className="w-24 h-24 rounded-full overflow-hidden mx-auto mb-4 border-2 border-purple-500">
+                                <div className="w-24 h-24 rounded-full overflow-hidden mx-auto mb-4 border-2 border-[#8080ff]">
                                     <img src={faculty.image} alt={faculty.name} className="w-full h-full object-cover" />
                                 </div>
                                 <h3 className="text-xl font-bold text-center mb-1 text-gradient">{faculty.name}</h3>
                                 <p className="text-center text-white/70 mb-3">{faculty.role}</p>
                                 <div className="flex justify-center">
-                                    <div className="bg-purple-600/20 px-3 py-1 rounded-full text-sm text-white">{faculty.department}</div>
+                                    <div className="bg-[#8080ff]/20 px-3 py-1 rounded-full text-sm text-white">{faculty.department}</div>
                                 </div>
                             </div>
                         ))}
@@ -615,7 +615,7 @@ const Association = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
                         {clubs.map(club => {
                             return (
-                                <div key={club.id} className="bg-[#111133]/30 backdrop-blur-sm rounded-xl overflow-hidden transition transform hover:scale-105 duration-300 border border-purple-500/20 shadow-[0_4px_20px_rgba(139,92,246,0.15)]">
+                                <div key={club.id} className="bg-[#111133]/30 backdrop-blur-sm rounded-xl overflow-hidden transition transform hover:scale-105 duration-300 border border-[#8080ff]/20 shadow-[0_4px_20px_rgba(128,128,255,0.15)]">
                                     <div className="p-6">
                                         <h3 className="text-xl font-bold mb-2 text-gradient">{club.name}</h3>
                                         <p className="text-white/70 mb-4">{club.description}</p>
@@ -627,11 +627,11 @@ const Association = () => {
                                                 {club.faculty.map((faculty, idx) => (
                                                     <div 
                                                         key={`club-faculty-${club.id}-${idx}`}
-                                                        className="flex items-center bg-[#111133]/50 p-3 rounded-lg border border-purple-500/10 group relative"
+                                                        className="flex items-center bg-[#111133]/50 p-3 rounded-lg border border-[#8080ff]/10 group relative"
                                                         onMouseEnter={() => handleMemberMouseEnter(`club-faculty-${club.id}-${idx}`)}
                                                         onMouseLeave={() => handleMemberMouseLeave(`club-faculty-${club.id}-${idx}`)}
                                                     >
-                                                        <div className="w-10 h-10 rounded-full overflow-hidden mr-3 border border-purple-400">
+                                                        <div className="w-10 h-10 rounded-full overflow-hidden mr-3 border border-[#8080ff]">
                                                             <img src={faculty.image} alt={faculty.name} className="w-full h-full object-cover" />
                                                         </div>
                                                         <div>
@@ -647,11 +647,11 @@ const Association = () => {
                                         <div className="mb-6">
                                             <h4 className="text-sm text-white/80 mb-2 uppercase tracking-wider">Student Head</h4>
                                             <div 
-                                                className="flex items-center bg-[#111133]/50 p-3 rounded-lg border border-purple-500/10 group relative"
+                                                className="flex items-center bg-[#111133]/50 p-3 rounded-lg border border-[#8080ff]/10 group relative"
                                                 onMouseEnter={() => handleMemberMouseEnter(`club-head-${club.id}`)}
                                                 onMouseLeave={() => handleMemberMouseLeave(`club-head-${club.id}`)}
                                             >
-                                                <div className="w-10 h-10 rounded-full overflow-hidden mr-3 border border-purple-400">
+                                                <div className="w-10 h-10 rounded-full overflow-hidden mr-3 border border-[#8080ff]">
                                                     <img src={club.headImage} alt={club.head} className="w-full h-full object-cover" />
                                                 </div>
                                                 <div>
@@ -663,14 +663,14 @@ const Association = () => {
                                         
                                         <div className="flex items-center justify-between">
                                             <div className="text-sm text-white/60">
-                                                <span className="font-medium text-purple-400">{club.members}</span> members
+                                                <span className="font-medium text-[#8080ff]">{club.members}</span> members
                                             </div>
                                             <button 
                                                 onClick={() => handleViewMembers(club.id)}
                                                 className={`px-4 py-2 rounded-md font-medium text-sm transition-all ${
                                                     activeClub === club.id 
-                                                        ? 'bg-purple-600 text-white shadow-[0_0_15px_rgba(139,92,246,0.5)]' 
-                                                        : 'bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 hover:shadow-[0_0_10px_rgba(139,92,246,0.3)]'
+                                                        ? 'bg-[#8080ff]/40 text-white shadow-[0_0_15px_rgba(128,128,255,0.5)] border border-[#8080ff]/20' 
+                                                        : 'bg-[#8080ff]/20 text-[#b1caf8] hover:bg-[#8080ff]/30 hover:shadow-[0_0_10px_rgba(128,128,255,0.3)] border border-[#8080ff]/10'
                                                 }`}
                                             >
                                                 {activeClub === club.id ? 'Hide Members' : 'View Members'}
@@ -679,7 +679,7 @@ const Association = () => {
                                     </div>
                                     
                                     {activeClub === club.id && (
-                                        <div className="bg-[#111133]/50 p-6 border-t border-purple-500/20">
+                                        <div className="bg-[#111133]/50 p-6 border-t border-[#8080ff]/20">
                                             <h4 className="font-medium text-white mb-4">Club Members</h4>
                                             
                                             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -704,7 +704,7 @@ const Association = () => {
                                                             onMouseEnter={() => handleMemberMouseEnter(memberId)}
                                                             onMouseLeave={() => handleMemberMouseLeave(memberId)}
                                                         >
-                                                            <div className="flex items-center bg-[#111133]/30 p-3 rounded-lg border border-purple-500/10 shadow-[0_2px_10px_rgba(139,92,246,0.1)] transition-all duration-300 hover:bg-[#111133]/50">
+                                                            <div className="flex items-center bg-[#111133]/30 p-3 rounded-lg border border-[#8080ff]/10 shadow-[0_2px_10px_rgba(128,128,255,0.1)] transition-all duration-300 hover:bg-[#111133]/50">
                                                                 <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
                                                                     <img 
                                                                         src={memberData.avatarUrl} 
@@ -721,7 +721,7 @@ const Association = () => {
                                                             {/* Member Profile Card on Hover */}
                                                             {memberProfilesVisible[memberId] && (
                                                                 <div className="absolute left-1/2 top-0 transform -translate-x-1/2 -translate-y-full w-72 z-20">
-                                                                    <div className="bg-[#111133]/90 backdrop-blur-md p-4 rounded-xl border border-purple-500/50 shadow-[0_10px_50px_-5px_rgba(139,92,246,0.8)]">
+                                                                    <div className="bg-[#111133]/90 backdrop-blur-md p-4 rounded-xl border border-[#8080ff]/50 shadow-[0_10px_50px_-5px_rgba(128,128,255,0.8)]">
                                                                         <ProfileCard
                                                                             name={memberData.name}
                                                                             title="Club Member"
@@ -748,18 +748,18 @@ const Association = () => {
                 <div className="mb-16">
                     <SectionHeading title="Executive Members" />
                     
-                    <div className="bg-[#111133]/30 backdrop-blur-sm rounded-xl p-8 border border-purple-500/20 shadow-[0_4px_20px_rgba(139,92,246,0.15)]">
+                    <div className="bg-[#111133]/30 backdrop-blur-sm rounded-xl p-8 border border-[#8080ff]/20 shadow-[0_4px_20px_rgba(128,128,255,0.15)]">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {executiveMembers.map((member, index) => {
                                 const execMemberId = `exec-${index}`;
                                 return (
                                     <div 
                                         key={execMemberId} 
-                                        className="flex items-center bg-[#111133]/50 p-4 rounded-lg border border-purple-500/10 group relative"
+                                        className="flex items-center bg-[#111133]/50 p-4 rounded-lg border border-[#8080ff]/10 group relative"
                                         onMouseEnter={() => handleMemberMouseEnter(execMemberId)}
                                         onMouseLeave={() => handleMemberMouseLeave(execMemberId)}
                                     >
-                                        <div className="w-12 h-12 rounded-full overflow-hidden mr-3 border border-purple-400">
+                                        <div className="w-12 h-12 rounded-full overflow-hidden mr-3 border border-[#8080ff]">
                                             <img 
                                                 src={member.image}
                                                 alt={member.name}
@@ -769,7 +769,7 @@ const Association = () => {
                                         <div>
                                             <p className="font-medium text-white">{member.name}</p>
                                             <div className="flex items-center mt-1">
-                                                <div className="px-2 py-0.5 bg-purple-600/20 rounded-md text-xs text-white">
+                                                <div className="px-2 py-0.5 bg-[#8080ff]/20 rounded-md text-xs text-white">
                                                     {member.class}
                                                 </div>
                                             </div>
@@ -778,7 +778,7 @@ const Association = () => {
                                         {/* Full Profile on Hover */}
                                         {memberProfilesVisible[execMemberId] && (
                                             <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 z-[1000]">
-                                                <div className="bg-[#111133]/90 backdrop-blur-md p-4 rounded-xl border border-purple-500/50 shadow-[0_10px_50px_-5px_rgba(139,92,246,0.8)]">
+                                                <div className="bg-[#111133]/90 backdrop-blur-md p-4 rounded-xl border border-[#8080ff]/50 shadow-[0_10px_50px_-5px_rgba(128,128,255,0.8)]">
                                                     <ProfileCard
                                                         name={member.name}
                                                         title="Executive Member"
@@ -805,7 +805,7 @@ const Association = () => {
                             key={`faculty-hover-${idx}`} 
                             className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 pointer-events-auto"
                         >
-                            <div className="bg-[#111133]/90 backdrop-blur-md p-4 rounded-xl border border-purple-500/50 shadow-[0_10px_50px_-5px_rgba(139,92,246,0.8)]">
+                            <div className="bg-[#111133]/90 backdrop-blur-md p-4 rounded-xl border border-[#8080ff]/50 shadow-[0_10px_50px_-5px_rgba(128,128,255,0.8)]">
                                 <ProfileCard
                                     name={faculty.name}
                                     title={faculty.role}
@@ -819,7 +819,6 @@ const Association = () => {
                     )
                 ))}
                 
-             
                 {clubs.map(club => 
                     club.faculty.map((faculty, idx) => (
                         memberProfilesVisible[`club-faculty-${club.id}-${idx}`] && (
@@ -827,7 +826,7 @@ const Association = () => {
                                 key={`club-faculty-hover-${club.id}-${idx}`} 
                                 className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 pointer-events-auto"
                             >
-                                <div className="bg-[#111133]/90 backdrop-blur-md p-4 rounded-xl border border-purple-500/50 shadow-[0_10px_50px_-5px_rgba(139,92,246,0.8)]">
+                                <div className="bg-[#111133]/90 backdrop-blur-md p-4 rounded-xl border border-[#8080ff]/50 shadow-[0_10px_50px_-5px_rgba(128,128,255,0.8)]">
                                     <ProfileCard
                                         name={faculty.name}
                                         title="Faculty Coordinator"
@@ -849,7 +848,7 @@ const Association = () => {
                             key={`club-head-hover-${club.id}`} 
                             className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 pointer-events-auto"
                         >
-                            <div className="bg-[#111133]/90 backdrop-blur-md p-4 rounded-xl border border-purple-500/50 shadow-[0_10px_50px_-5px_rgba(139,92,246,0.8)]">
+                            <div className="bg-[#111133]/90 backdrop-blur-md p-4 rounded-xl border border-[#8080ff]/50 shadow-[0_10px_50px_-5px_rgba(128,128,255,0.8)]">
                                 <ProfileCard
                                     name={club.head}
                                     title={`Club Head - ${club.name}`}
@@ -866,12 +865,12 @@ const Association = () => {
 
             <style>{`
                 .text-gradient {
-                    background: linear-gradient(90deg, #a78bfa, #8b5cf6);
+                    background: linear-gradient(90deg, #a8b5fb, #8080ff);
                     background-clip: text;
                     -webkit-background-clip: text;
                     -webkit-text-fill-color: transparent;
-                    text-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
-                    color: #8b5cf6;
+                    text-shadow: 0 0 30px rgba(128, 128, 255, 0.5);
+                    color: #8080ff;
                 }
                 
                 .president-card {
@@ -901,8 +900,8 @@ const Association = () => {
                     pointer-events: none;
                     background: radial-gradient(
                         ellipse at center,
-                        rgba(139, 92, 246, 0.4) 0%,
-                        rgba(139, 92, 246, 0) 70%
+                        rgba(128, 128, 255, 0.4) 0%,
+                        rgba(128, 128, 255, 0) 70%
                     );
                     transition: opacity 0.5s ease-in-out;
                 }
