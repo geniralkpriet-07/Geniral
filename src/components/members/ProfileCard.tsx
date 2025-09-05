@@ -97,7 +97,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
           <div className="pc-content">
             <div className="pc-details">
               <h5 className="text-xl sm:text-2xl font-bold">{name}</h5>
-              <p>{title}</p>
+              <p className="text-2xl sm:text-xxl font-bold">{title}</p>
             </div>
           </div>
         </div>

@@ -4,14 +4,10 @@ import { useState, useRef, useEffect } from "react"
 import ProfileCard from "../components/members/ProfileCard"
 import SimpleProfileCard from "../components/members/SimpleProfileCard"
 import { LightRays } from "../components/loading"
-
-// Deterministic image URLs based on name
 const getAvatarUrl = (name, index) => {
-  // Create a deterministic number from the name and index
   const nameSum = name.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0)
-  const deterministic = (nameSum + index) % 70 // Keep within 0-69 range
+  const deterministic = (nameSum + index) % 70
 
-  // Use even/odd to determine gender based on name to keep it consistent
   const gender = nameSum % 2 === 0 ? "men" : "women"
 
   return `https://randomuser.me/api/portraits/${gender}/${deterministic}.jpg`
@@ -340,10 +336,8 @@ const Association = () => {
   const [hoverPosition, setHoverPosition] = useState({ top: 0, left: 0 })
   const hoverTimeoutsRef = useRef({})
 
-  // Create refs for all section headings
   const headingRefs = useRef([])
 
-  // Effect for heading animations
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -368,7 +362,6 @@ const Association = () => {
     }
   }, [])
 
-  // Add a heading to refs
   const addToRefs = (el) => {
     if (el && !headingRefs.current.includes(el)) {
       headingRefs.current.push(el)
@@ -383,23 +376,19 @@ const Association = () => {
     setActiveClub(clubId === activeClub ? null : clubId)
   }
 
-  // Updated handler functions for hover behavior with position tracking
   const handleMemberMouseEnter = (memberId, event) => {
-    // Clear any existing timeout for this member
     if (hoverTimeoutsRef.current[memberId]) {
       clearTimeout(hoverTimeoutsRef.current[memberId])
       delete hoverTimeoutsRef.current[memberId]
     }
 
-    // Get the position of the hovered element
     if (event && event.currentTarget) {
       const rect = event.currentTarget.getBoundingClientRect()
       const centerX = rect.left + rect.width / 2
       const bottomY = rect.bottom
 
-      // Ensure card doesn't go off-screen
-      const maxHeight = window.innerHeight - 20 // 20px margin
-      const yPos = Math.min(bottomY + 20, maxHeight - 280) // 280px for card height
+      const maxHeight = window.innerHeight - 20 
+      const yPos = Math.min(bottomY + 20, maxHeight - 280) 
 
       setHoverPosition({
         top: yPos,
@@ -412,11 +401,10 @@ const Association = () => {
   }
 
   const handleMemberMouseLeave = (memberId) => {
-    // Set a timeout to hide the profile after 2 seconds
     hoverTimeoutsRef.current[memberId] = setTimeout(() => {
       setMemberProfilesVisible((prev) => ({ ...prev, [memberId]: false }))
       delete hoverTimeoutsRef.current[memberId]
-    }, 800) // 2 second delay
+    }, 800) 
   }
 
   const getRoleOrder = (role) => {
@@ -435,7 +423,6 @@ const Association = () => {
 
   const sortedMembers = [...associationMembers].sort((a, b) => getRoleOrder(a.role) - getRoleOrder(b.role))
 
-  // Create a reusable section heading component with light rays
   const SectionHeading = ({ title }) => (
     <h2 ref={addToRefs} className="text-3xl font-bold mb-10 text-center heading-container">
       <span className="border-b-4 border-[#8080ff] pb-2 text-gradient relative">
@@ -446,8 +433,8 @@ const Association = () => {
   )
 
   return (
-    <div className="min-h-screen text-white bg-[#0a0a18] [background:radial-gradient(circle_at_center,_#111133_0%,_#0a0a18_70%,_#050510_100%)] pt-24 pb-16 overflow-hidden">
-      <div className="light-rays-container absolute inset-0 z-0">
+    <div className="min-h-screen text-white bg-[#0a0a18] [background:radial-gradient(circle_at_center,_#111133_0%,_#0a0a18_70%,_#050510_100%)] pt-16 sm:pt-24 pb-16">
+      <div className="light-rays-container absolute inset-0 z-0 hidden sm:block">
         <LightRays
           raysColor="#8080ff"
           raysSpeed={0.8}
@@ -463,30 +450,29 @@ const Association = () => {
         />
       </div>
 
-      <div className="relative overflow-hidden mb-12">
-        <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-radial from-[#8080ff]/30 via-[#5050aa]/20 to-transparent blur-3xl opacity-60"></div>
+      <div className="relative overflow-hidden mb-8 sm:mb-12">
+        <div className="absolute top-1/2 left-1/2 w-[300px] sm:w-[600px] h-[300px] sm:h-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-radial from-[#8080ff]/30 via-[#5050aa]/20 to-transparent blur-3xl opacity-60"></div>
 
-        <div className="max-w-6xl mx-auto px-6 py-16 relative z-10 text-center">
-          <h1 className="text-5xl font-bold mb-6 drop-shadow-[0_0_30px_rgba(128,128,255,0.3)]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-16 relative z-10 text-center">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 drop-shadow-[0_0_30px_rgba(128,128,255,0.3)]">
             KPRIET <span className="text-gradient">STUDENT ASSOCIATION</span>
           </h1>
-          <p className="text-xl max-w-3xl mx-auto text-white/90 leading-7 mb-6">
+          <p className="text-base sm:text-xl max-w-3xl mx-auto text-white/90 leading-6 sm:leading-7 mb-4 sm:mb-6 px-2">
             Meet our dedicated team of student leaders committed to enhancing campus life and driving student
             initiatives
           </p>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 relative z-10">
-        {/* President & Vice President Section */}
-        <div className="mb-16">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
+        <div className="mb-12 sm:mb-16">
           <SectionHeading title="President & Vice President" />
 
-          <div className="flex justify-center gap-8 mb-14 flex-wrap">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-6 sm:gap-8 mb-10 sm:mb-14">
             {sortedMembers
               .filter((m) => m.role === "President")
               .map((member) => (
-                <div key={member.id} className="w-full max-w-xs ml-[100px] sm:ml-0">
+                <div key={member.id} className="w-full max-w-[280px] sm:max-w-sm ml-[100px] sm:mx-auto sm:ml-[100px]">
                   <ProfileCard
                     name={member.name}
                     title={member.role}
@@ -495,7 +481,7 @@ const Association = () => {
                     contactText="Contact"
                     avatarUrl={member.avatarUrl}
                     showUserInfo={true}
-                    enableTilt={true}
+                    enableTilt={false}
                     enableMobileTilt={false}
                     onContactClick={() => handleContactClick(member)}
                     classInfo={member.class}
@@ -507,7 +493,7 @@ const Association = () => {
             {sortedMembers
               .filter((m) => m.role === "Vice President")
               .map((member) => (
-                <div key={member.id} className="w-full max-w-xs ml-[100px] sm:ml-0">
+                <div key={member.id} className="w-full max-w-[280px] sm:max-w-sm ml-[100px] sm:mx-auto sm:ml-[100px]">
                   <ProfileCard
                     name={member.name}
                     title={member.role}
@@ -516,7 +502,7 @@ const Association = () => {
                     contactText="Contact"
                     avatarUrl={member.avatarUrl}
                     showUserInfo={true}
-                    enableTilt={true}
+                    enableTilt={false}
                     enableMobileTilt={false}
                     onContactClick={() => handleContactClick(member)}
                     classInfo={member.class}
@@ -527,14 +513,14 @@ const Association = () => {
           </div>
         </div>
 
-        <div className="mb-16">
+        <div className="mb-12 sm:mb-16">
           <SectionHeading title="Secretary & Vice Secretary" />
 
-          <div className="flex justify-center gap-8 mb-14 flex-wrap">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-6 sm:gap-8 mb-10 sm:mb-14">
             {sortedMembers
               .filter((m) => m.role === "Secretary")
               .map((member) => (
-                <div key={member.id} className="w-full max-w-xs ml-[100px] sm:ml-0">
+                <div key={member.id} className="w-full max-w-[280px] sm:max-w-sm ml-[100px] sm:mx-auto sm:ml-[100px]">
                   <ProfileCard
                     name={member.name}
                     title={member.role}
@@ -543,7 +529,7 @@ const Association = () => {
                     contactText="Contact"
                     avatarUrl={member.avatarUrl}
                     showUserInfo={true}
-                    enableTilt={true}
+                    enableTilt={false}
                     enableMobileTilt={false}
                     onContactClick={() => handleContactClick(member)}
                     classInfo={member.class}
@@ -555,7 +541,7 @@ const Association = () => {
             {sortedMembers
               .filter((m) => m.role === "Vice Secretary")
               .map((member) => (
-                <div key={member.id} className="w-full max-w-xs ml-[100px] sm:ml-0">
+                <div key={member.id} className="w-full max-w-[280px] sm:max-w-sm ml-[100px] sm:mx-auto sm:ml-[100px]">
                   <ProfileCard
                     name={member.name}
                     title={member.role}
@@ -564,7 +550,7 @@ const Association = () => {
                     contactText="Contact"
                     avatarUrl={member.avatarUrl}
                     showUserInfo={true}
-                    enableTilt={true}
+                    enableTilt={false}
                     enableMobileTilt={false}
                     onContactClick={() => handleContactClick(member)}
                     classInfo={member.class}
@@ -575,14 +561,14 @@ const Association = () => {
           </div>
         </div>
 
-        <div className="mb-16">
+        <div className="mb-12 sm:mb-16">
           <SectionHeading title="Treasurer & Joint Treasurer" />
 
-          <div className="flex justify-center gap-8 mb-14 flex-wrap">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-6 sm:gap-8 mb-10 sm:mb-14">
             {sortedMembers
               .filter((m) => m.role === "Treasurer")
               .map((member) => (
-                <div key={member.id} className="w-full max-w-xs ml-[100px] sm:ml-0">
+                <div key={member.id} className="w-full max-w-[280px] sm:max-w-sm ml-[100px] sm:mx-auto sm:ml-[100px]">
                   <ProfileCard
                     name={member.name}
                     title={member.role}
@@ -591,7 +577,7 @@ const Association = () => {
                     contactText="Contact"
                     avatarUrl={member.avatarUrl}
                     showUserInfo={true}
-                    enableTilt={true}
+                    enableTilt={false}
                     enableMobileTilt={false}
                     onContactClick={() => handleContactClick(member)}
                     classInfo={member.class}
@@ -603,7 +589,7 @@ const Association = () => {
             {sortedMembers
               .filter((m) => m.role === "Joint Treasurer")
               .map((member) => (
-                <div key={member.id} className="w-full max-w-xs ml-[100px] sm:ml-0">
+                <div key={member.id} className="w-full max-w-[280px] sm:max-w-sm ml-[100px] sm:mx-auto sm:ml-[100px]">
                   <ProfileCard
                     name={member.name}
                     title={member.role}
@@ -612,7 +598,7 @@ const Association = () => {
                     contactText="Contact"
                     avatarUrl={member.avatarUrl}
                     showUserInfo={true}
-                    enableTilt={true}
+                    enableTilt={false}
                     enableMobileTilt={false}
                     onContactClick={() => handleContactClick(member)}
                     classInfo={member.class}
@@ -623,19 +609,19 @@ const Association = () => {
           </div>
         </div>
 
-        <div className="mb-16">
+        <div className="mb-12 sm:mb-16">
           <SectionHeading title="Faculty Coordinators" />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {facultyCoordinators.map((faculty, idx) => (
               <div
                 key={`faculty-${idx}`}
                 data-member-id={`faculty-${idx}`}
-                className="bg-[#111133]/30 backdrop-blur-sm rounded-xl overflow-hidden p-6 border border-[#8080ff]/20 shadow-[0_4px_20px_rgba(128,128,255,0.15)] group relative"
+                className="bg-[#111133]/30 backdrop-blur-sm rounded-xl overflow-hidden p-4 sm:p-6 border border-[#8080ff]/20 shadow-[0_4px_20px_rgba(128,128,255,0.15)] group relative"
                 onMouseEnter={(e) => handleMemberMouseEnter(`faculty-${idx}`, e)}
                 onMouseLeave={() => handleMemberMouseLeave(`faculty-${idx}`)}
               >
-                <div className="w-24 h-24 rounded-full overflow-hidden mx-auto mb-4 border-2 border-[#8080ff]">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden mx-auto mb-3 sm:mb-4 border-2 border-[#8080ff]">
                   <img
                     src={faculty.image || "/placeholder.svg"}
                     alt={faculty.name}
@@ -646,43 +632,46 @@ const Association = () => {
                     }}
                   />
                 </div>
-                <h3 className="text-xl font-bold text-center mb-1 text-gradient">{faculty.name}</h3>
-                <p className="text-center text-white/70 mb-3">{faculty.role}</p>
+                <h3 className="text-lg sm:text-xl font-bold text-center mb-1 text-gradient">{faculty.name}</h3>
+                <p className="text-center text-white/70 mb-3 text-sm">{faculty.role}</p>
                 <div className="flex justify-center">
-                  <div className="bg-[#8080ff]/20 px-3 py-1 rounded-full text-sm text-white">{faculty.department}</div>
+                  <div className="bg-[#8080ff]/20 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm text-white">
+                    {faculty.department}
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="mb-16">
+        <div className="mb-12 sm:mb-16">
           <SectionHeading title="Clubs" />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-10">
             {clubs.map((club) => {
               return (
                 <div
                   key={club.id}
                   className="bg-[#111133]/30 backdrop-blur-sm rounded-xl overflow-hidden transition transform hover:scale-105 duration-300 border border-[#8080ff]/20 shadow-[0_4px_20px_rgba(128,128,255,0.15)]"
                 >
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold mb-2 text-gradient">{club.name}</h3>
-                    <p className="text-white/70 mb-4">{club.description}</p>
+                  <div className="p-4 sm:p-6">
+                    <h3 className="text-lg sm:text-xl font-bold mb-2 text-gradient">{club.name}</h3>
+                    <p className="text-white/70 mb-4 text-sm sm:text-base">{club.description}</p>
 
-                    {/* Faculty Info */}
-                    <div className="mb-6">
-                      <h4 className="text-sm text-white/80 mb-2 uppercase tracking-wider">Faculty Coordinators</h4>
-                      <div className="flex flex-wrap gap-4">
+                    <div className="mb-4 sm:mb-6">
+                      <h4 className="text-xs sm:text-sm text-white/80 mb-2 uppercase tracking-wider">
+                        Faculty Coordinators
+                      </h4>
+                      <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4">
                         {club.faculty.map((faculty, idx) => (
                           <div
                             key={`club-faculty-${club.id}-${idx}`}
                             data-member-id={`club-faculty-${club.id}-${idx}`}
-                            className="flex items-center bg-[#111133]/50 p-3 rounded-lg border border-[#8080ff]/10 group relative"
+                            className="flex items-center bg-[#111133]/50 p-2 sm:p-3 rounded-lg border border-[#8080ff]/10 group relative"
                             onMouseEnter={(e) => handleMemberMouseEnter(`club-faculty-${club.id}-${idx}`, e)}
                             onMouseLeave={() => handleMemberMouseLeave(`club-faculty-${club.id}-${idx}`)}
                           >
-                            <div className="w-10 h-10 rounded-full overflow-hidden mr-3 border border-[#8080ff]">
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden mr-2 sm:mr-3 border border-[#8080ff]">
                               <img
                                 src={faculty.image || "/placeholder.svg"}
                                 alt={faculty.name}
@@ -694,7 +683,7 @@ const Association = () => {
                               />
                             </div>
                             <div>
-                              <p className="font-medium text-white text-sm">{faculty.name}</p>
+                              <p className="font-medium text-white text-xs sm:text-sm">{faculty.name}</p>
                               <p className="text-xs text-white/60">{faculty.dept}</p>
                             </div>
                           </div>
@@ -702,16 +691,15 @@ const Association = () => {
                       </div>
                     </div>
 
-                    {/* Student Head */}
-                    <div className="mb-6">
-                      <h4 className="text-sm text-white/80 mb-2 uppercase tracking-wider">Student Head</h4>
+                    <div className="mb-4 sm:mb-6">
+                      <h4 className="text-xs sm:text-sm text-white/80 mb-2 uppercase tracking-wider">Student Head</h4>
                       <div
                         data-member-id={`club-head-${club.id}`}
-                        className="flex items-center bg-[#111133]/50 p-3 rounded-lg border border-[#8080ff]/10 group relative"
+                        className="flex items-center bg-[#111133]/50 p-2 sm:p-3 rounded-lg border border-[#8080ff]/10 group relative"
                         onMouseEnter={(e) => handleMemberMouseEnter(`club-head-${club.id}`, e)}
                         onMouseLeave={() => handleMemberMouseLeave(`club-head-${club.id}`)}
                       >
-                        <div className="w-10 h-10 rounded-full overflow-hidden mr-3 border border-[#8080ff]">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden mr-2 sm:mr-3 border border-[#8080ff]">
                           <img
                             src={club.headImage || "/placeholder.svg"}
                             alt={club.head}
@@ -723,19 +711,19 @@ const Association = () => {
                           />
                         </div>
                         <div>
-                          <p className="font-medium text-white text-sm">{club.head}</p>
+                          <p className="font-medium text-white text-xs sm:text-sm">{club.head}</p>
                           <p className="text-xs text-white/60">{club.headClass}</p>
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                       <div className="text-sm text-white/60">
                         <span className="font-medium text-[#8080ff]">{club.members}</span> members
                       </div>
                       <button
                         onClick={() => handleViewMembers(club.id)}
-                        className={`px-4 py-2 rounded-md font-medium text-sm transition-all ${
+                        className={`w-full sm:w-auto px-3 sm:px-4 py-2 rounded-md font-medium text-xs sm:text-sm transition-all ${
                           activeClub === club.id
                             ? "bg-[#8080ff]/40 text-white shadow-[0_0_15px_rgba(128,128,255,0.5)] border border-[#8080ff]/20"
                             : "bg-[#8080ff]/20 text-[#b1caf8] hover:bg-[#8080ff]/30 hover:shadow-[0_0_10px_rgba(128,128,255,0.3)] border border-[#8080ff]/10"
@@ -747,14 +735,13 @@ const Association = () => {
                   </div>
 
                   {activeClub === club.id && (
-                    <div className="bg-[#111133]/50 p-6 border-t border-[#8080ff]/20">
-                      <h4 className="font-medium text-white mb-4">Club Members</h4>
+                    <div className="bg-[#111133]/50 p-4 sm:p-6 border-t border-[#8080ff]/20">
+                      <h4 className="font-medium text-white mb-3 sm:mb-4 text-sm sm:text-base">Club Members</h4>
 
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                         {club.memberList &&
                           club.memberList.map((memberName, index) => {
                             const memberId = `member-${club.id}-${index}`
-                            // Get consistent avatar URL based on name
                             const avatarUrl = getAvatarUrl(memberName, index)
 
                             const memberData = {
@@ -775,21 +762,22 @@ const Association = () => {
                                 onMouseEnter={(e) => handleMemberMouseEnter(memberId, e)}
                                 onMouseLeave={() => handleMemberMouseLeave(memberId)}
                               >
-                                <div className="flex items-center bg-[#111133]/30 p-3 rounded-lg border border-[#8080ff]/10 shadow-[0_2px_10px_rgba(128,128,255,0.1)] transition-all duration-300 hover:bg-[#111133]/50">
-                                  <div className="w-10 h-10 rounded-full overflow-hidden mr-3 border border-[#8080ff]/50">
+                                <div className="flex items-center bg-[#111133]/30 p-2 sm:p-3 rounded-lg border border-[#8080ff]/10 shadow-[0_2px_10px_rgba(128,128,255,0.1)] transition-all duration-300 hover:bg-[#111133]/50">
+                                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden mr-2 sm:mr-3 border border-[#8080ff]/50">
                                     <img
                                       src={avatarUrl || "/placeholder.svg"}
                                       alt={memberData.name}
                                       className="w-full h-full object-cover"
                                       loading="lazy"
                                       onError={(e) => {
-                                        // Fallback if image fails to load
                                         e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(memberData.name)}&background=111133&color=fff`
                                       }}
                                     />
                                   </div>
-                                  <div>
-                                    <p className="font-medium text-white text-sm">{memberData.name}</p>
+                                  <div className="min-w-0 flex-1">
+                                    <p className="font-medium text-white text-xs sm:text-sm truncate">
+                                      {memberData.name}
+                                    </p>
                                     <p className="text-xs text-white/60">{memberData.class}</p>
                                   </div>
                                 </div>
@@ -805,30 +793,30 @@ const Association = () => {
           </div>
         </div>
 
-        <div className="mb-16">
+        <div className="mb-12 sm:mb-16">
           <SectionHeading title="Executive Members" />
 
-          <div className="bg-[#111133]/30 backdrop-blur-sm rounded-xl p-8 border border-[#8080ff]/20 shadow-[0_4px_20px_rgba(128,128,255,0.15)]">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-[#111133]/30 backdrop-blur-sm rounded-xl p-4 sm:p-8 border border-[#8080ff]/20 shadow-[0_4px_20px_rgba(128,128,255,0.15)]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
               {executiveMembers.map((member, index) => {
                 const execMemberId = `exec-${index}`
                 return (
                   <div
                     key={execMemberId}
                     data-member-id={execMemberId}
-                    className="flex items-center bg-[#111133]/50 p-4 rounded-lg border border-[#8080ff]/10 group relative"
+                    className="flex items-center bg-[#111133]/50 p-3 sm:p-4 rounded-lg border border-[#8080ff]/10 group relative"
                     onMouseEnter={(e) => handleMemberMouseEnter(execMemberId, e)}
                     onMouseLeave={() => handleMemberMouseLeave(execMemberId)}
                   >
-                    <div className="w-12 h-12 rounded-full overflow-hidden mr-3 border border-[#8080ff]">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden mr-2 sm:mr-3 border border-[#8080ff]">
                       <img
                         src={member.image || "/placeholder.svg"}
                         alt={member.name}
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <div>
-                      <p className="font-medium text-white">{member.name}</p>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-white text-sm sm:text-base truncate">{member.name}</p>
                       <div className="flex items-center mt-1">
                         <div className="px-2 py-0.5 bg-[#8080ff]/20 rounded-md text-xs text-white">{member.class}</div>
                       </div>
@@ -841,180 +829,195 @@ const Association = () => {
         </div>
       </div>
 
-      {/* Hover overlay with direct positioning based on hovered element */}
-      <div className="fixed inset-0 pointer-events-none z-[1000]">
-        {Object.entries(memberProfilesVisible).map(([memberId, isVisible]) => {
-          if (!isVisible) return null
+      {typeof window !== "undefined" && window.innerWidth >= 768 && !("ontouchstart" in window) && (
+        <div className="fixed inset-0 pointer-events-none z-[1000]">
+          {Object.entries(memberProfilesVisible).map(([memberId, isVisible]) => {
+            if (!isVisible) return null
 
-          // Find the member data based on the memberId
-          let memberData = {
-            name: "",
-            avatarUrl: "",
-            linkedinUrl: "#",
-          }
-
-          // Association members
-          const assocMember = associationMembers.find((m) => m.id === memberId)
-          if (assocMember) {
-            memberData = {
-              name: assocMember.name,
-              avatarUrl: assocMember.avatarUrl,
-              linkedinUrl: assocMember.linkedin || "#",
+            let memberData = {
+              name: "",
+              avatarUrl: "",
+              linkedinUrl: "#",
             }
-          }
 
-          // Faculty coordinators
-          if (memberId.startsWith("faculty-")) {
-            const idx = Number.parseInt(memberId.split("-")[1])
-            if (facultyCoordinators[idx]) {
+            const assocMember = associationMembers.find((m) => m.id === memberId)
+            if (assocMember) {
               memberData = {
-                name: facultyCoordinators[idx].name,
-                avatarUrl: facultyCoordinators[idx].image,
-                linkedinUrl: "#",
+                name: assocMember.name,
+                avatarUrl: assocMember.avatarUrl,
+                linkedinUrl: assocMember.linkedin || "#",
               }
             }
-          }
 
-          // Club faculty
-          if (memberId.startsWith("club-faculty-")) {
-            const [_, __, clubId, facultyIdx] = memberId.split("-")
-            const club = clubs.find((c) => c.id === clubId)
-            if (club && club.faculty && club.faculty[facultyIdx]) {
-              memberData = {
-                name: club.faculty[facultyIdx].name,
-                avatarUrl: club.faculty[facultyIdx].image,
-                linkedinUrl: "#",
-              }
-            }
-          }
-
-          // Club head
-          if (memberId.startsWith("club-head-")) {
-            const clubId = memberId.split("-")[2]
-            const club = clubs.find((c) => c.id === clubId)
-            if (club) {
-              memberData = {
-                name: club.head,
-                avatarUrl: club.headImage,
-                linkedinUrl: "#",
-              }
-            }
-          }
-
-          // Executive members
-          if (memberId.startsWith("exec-")) {
-            const idx = Number.parseInt(memberId.split("-")[1])
-            if (executiveMembers[idx]) {
-              memberData = {
-                name: executiveMembers[idx].name,
-                avatarUrl: executiveMembers[idx].image,
-                linkedinUrl: "#",
-              }
-            }
-          }
-
-          // Club members
-          if (memberId.startsWith("member-")) {
-            const parts = memberId.split("-")
-            if (parts.length >= 3) {
-              const clubId = parts[1]
-              const memberIdx = Number.parseInt(parts[2])
-              const club = clubs.find((c) => c.id === clubId)
-              if (club && club.memberList && club.memberList[memberIdx]) {
-                const memberName = club.memberList[memberIdx]
-                // Use the same deterministic avatar function
-                const avatarUrl = getAvatarUrl(memberName, memberIdx)
-
+            if (memberId.startsWith("faculty-")) {
+              const idx = Number.parseInt(memberId.split("-")[1])
+              if (facultyCoordinators[idx]) {
                 memberData = {
-                  name: memberName,
-                  avatarUrl: avatarUrl,
+                  name: facultyCoordinators[idx].name,
+                  avatarUrl: facultyCoordinators[idx].image,
                   linkedinUrl: "#",
                 }
               }
             }
+
+            if (memberId.startsWith("club-faculty-")) {
+              const [_, __, clubId, facultyIdx] = memberId.split("-")
+              const club = clubs.find((c) => c.id === clubId)
+              if (club && club.faculty && club.faculty[facultyIdx]) {
+                memberData = {
+                  name: club.faculty[facultyIdx].name,
+                  avatarUrl: club.faculty[facultyIdx].image,
+                  linkedinUrl: "#",
+                }
+              }
+            }
+
+            if (memberId.startsWith("club-head-")) {
+              const clubId = memberId.split("-")[2]
+              const club = clubs.find((c) => c.id === clubId)
+              if (club) {
+                memberData = {
+                  name: club.head,
+                  avatarUrl: club.headImage,
+                  linkedinUrl: "#",
+                }
+              }
+            }
+
+            if (memberId.startsWith("exec-")) {
+              const idx = Number.parseInt(memberId.split("-")[1])
+              if (executiveMembers[idx]) {
+                memberData = {
+                  name: executiveMembers[idx].name,
+                  avatarUrl: executiveMembers[idx].image,
+                  linkedinUrl: "#",
+                }
+              }
+            }
+
+            if (memberId.startsWith("member-")) {
+              const parts = memberId.split("-")
+              if (parts.length >= 3) {
+                const clubId = parts[1]
+                const memberIdx = Number.parseInt(parts[2])
+                const club = clubs.find((c) => c.id === clubId)
+                if (club && club.memberList && club.memberList[memberIdx]) {
+                  const memberName = club.memberList[memberIdx]
+                  const avatarUrl = getAvatarUrl(memberName, memberIdx)
+
+                  memberData = {
+                    name: memberName,
+                    avatarUrl: avatarUrl,
+                    linkedinUrl: "#",
+                  }
+                }
+              }
+            }
+
+            return (
+              <div
+                key={`hover-${memberId}`}
+                className="absolute pointer-events-auto w-64 sm:w-80"
+                style={{
+                  top: `${hoverPosition.top}px`,
+                  left: `${hoverPosition.left}px`,
+                  transform: "translate(-50%, 0)",
+                  zIndex: 1100,
+                }}
+              >
+                <SimpleProfileCard
+                  name={memberData.name}
+                  avatarUrl={memberData.avatarUrl}
+                  linkedinUrl={memberData.linkedinUrl}
+                />
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      <style jsx global>{`
+        .text-gradient {
+          background: linear-gradient(90deg, #a8b5fb, #b1caf8);
+          background-clip: text;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          text-shadow: 0 0 30px rgba(168, 181, 251, 0.5);
+          color: #a8b5fb;
+        }
+        
+        /* Enhanced mobile scrolling fixes */
+        html {
+          overflow-x: hidden;
+          scroll-behavior: smooth;
+        }
+        
+        body {
+          overflow-x: hidden;
+          -webkit-overflow-scrolling: touch;
+          touch-action: pan-y pinch-zoom;
+          overscroll-behavior: contain;
+        }
+        
+        /* Mobile-specific profile card positioning */
+        @media (max-width: 639px) {
+          /* Ensure the page can accommodate the left margin */
+          .max-w-6xl {
+            max-width: calc(100vw - 20px);
+            margin-left: 0;
+            margin-right: 0;
+            padding-left: 10px;
+            padding-right: 10px;
           }
-
-          // If hoverPosition exists for the current member
-          return (
-            <div
-              key={`hover-${memberId}`}
-              className="absolute pointer-events-auto w-80"
-              style={{
-                top: `${hoverPosition.top}px`,
-                left: `${hoverPosition.left}px`,
-                transform: "translate(-50%, 0)",
-                zIndex: 1100,
-              }}
-            >
-              <SimpleProfileCard
-                name={memberData.name}
-                avatarUrl={memberData.avatarUrl}
-                linkedinUrl={memberData.linkedinUrl}
-              />
-            </div>
-          )
-        })}
-      </div>
-
-      <style>{`
-                .text-gradient {
-                    background: linear-gradient(90deg, #a8b5fb, #b1caf8);
-                    background-clip: text;
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                    text-shadow: 0 0 30px rgba(168, 181, 251, 0.5);
-                    color: #a8b5fb;
-                }
-                
-                .president-card {
-                    transform: scale(1.1);
-                }
-                
-                @media (max-width: 768px) {
-                    .president-card {
-                        transform: scale(1);
-                    }
-                }
-                
-                .heading-container {
-                    position: relative;
-                    overflow: visible;
-                    margin-bottom: 4rem;
-                }
-                
-                .heading-rays {
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    width: 200%;
-                    height: 200%;
-                    transform: translate(-50%, -50%);
-                    opacity: 0;
-                    pointer-events: none;
-                    background: radial-gradient(
-                        ellipse at center,
-                        rgba(128, 128, 255, 0.4) 0%,
-                        rgba(128, 128, 255, 0) 70%
-                    );
-                    transition: opacity 0.5s ease-in-out;
-                }
-                
-                .heading-container.heading-visible .heading-rays {
-                    opacity: 0.6;
-                    animation: pulse 3s infinite alternate;
-                }
-                
-                @keyframes pulse {
-                    0% {
-                        transform: translate(-50%, -50%) scale(0.8);
-                        opacity: 0.3;
-                    }
-                    100% {
-                        transform: translate(-50%, -50%) scale(1.2);
-                        opacity: 0.6;
-                    }
-                }
-            `}</style>
+          
+          /* Profile card specific mobile styling */
+          .profile-card-mobile {
+            margin-left: 100px !important;
+            max-width: calc(100vw - 120px);
+          }
+          
+          /* Disable all hover effects and transforms on mobile */
+          .group:hover,
+          .hover\\:scale-105:hover,
+          *:hover {
+            transform: none !important;
+            background-color: inherit !important;
+            box-shadow: inherit !important;
+          }
+          
+          /* Fix button touch targets */
+          button, a, [role="button"] {
+            min-height: 44px;
+            min-width: 44px;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+          }
+          
+          /* Ensure horizontal scrolling is prevented */
+          * {
+            touch-action: pan-y pinch-zoom !important;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+          }
+          
+          /* Allow text selection for actual text content */
+          p, h1, h2, h3, h4, span {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+          }
+        }
+        
+        /* Desktop-only hover effects */
+        @media (min-width: 640px) and (hover: hover) {
+          .hover\\:scale-105:hover {
+            transform: scale(1.05);
+          }
+        }
+      `}</style>
     </div>
   )
 }
