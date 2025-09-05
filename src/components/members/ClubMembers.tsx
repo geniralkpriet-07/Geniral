@@ -463,17 +463,14 @@ const ClubMembers: React.FC<ClubMembersProps> = ({ clubId, onClose }) => {
               <div className="members-grid">
                 {groupedMembers[role].map(member => (
                   <ProfileCard
-                  key={member.id}
-                  name={member.name}
-                  title={`${role} - ${member.department}`}
-                  handle={member.handle}
-                  status={member.status || 'Offline'}
-                  avatarUrl={member.avatarUrl}
-                  contactText="Contact"
-                  showUserInfo={true}
-                  enableTilt={true}
-                  enableMobileTilt={false}
-                  onContactClick={() => handleContactClick(member)}
+                    key={member.id}
+                    name={member.name}
+                    title={`${role} - ${member.department}`}
+                    avatarUrl={member.avatarUrl}
+                    showUserInfo={true}
+                    // Removed handle, status, contactText, enableTilt, enableMobileTilt
+                    // Added onLinkedinClick instead of onContactClick
+                    onLinkedinClick={() => handleContactClick(member)}
                   />
                 ))}
               </div>
