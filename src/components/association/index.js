@@ -1,26 +1,12 @@
-import { associationMembers, clubs, facultyCoordinators, executiveMembers, committees, volunteers } from './data';
-import Leadership from './Leadership';
-import FacultyCoordinators from './FacultyCoordinators';
-import ClubsSection from './ClubsSection';
-import ExecutiveMembers from './ExecutiveMembers';
-import CommitteesSection from './CommitteesSection';
-import VolunteersSection from './VolunteersSection';
-import HoverProfileCard from './HoverProfileCard';
-import SectionHeading from './SectionHeading';
+// Index file for association components and data
 
-export {
-  associationMembers,
-  clubs,
-  facultyCoordinators,
-  executiveMembers,
-  committees,
-  volunteers,
-  Leadership,
-  FacultyCoordinators,
-  ClubsSection,
-  ExecutiveMembers,
-  CommitteesSection,
-  VolunteersSection,
-  HoverProfileCard,
-  SectionHeading
-};
+// Export all data arrays
+export * from './data';
+
+// Export components from this directory
+export { default as SectionHeading } from './SectionHeading';
+export { default as Leadership } from './Leadership';
+export { default as ClubHeads } from './ClubHeads';
+export { default as ClubsSection } from './ClubsSection';
+export { default as FacultyCoordinators } from './FacultyCoordinators';
+export { default as ExecutiveMembers } from './ExecutiveMembers';
