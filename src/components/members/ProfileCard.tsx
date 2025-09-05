@@ -1,7 +1,7 @@
 import React, { useRef, useCallback } from 'react';
 import './ProfileCard.css';
 
-interface ProfileCardProps {
+export interface ProfileCardProps {
   avatarUrl: string;
   className?: string;
   name?: string;
@@ -9,6 +9,12 @@ interface ProfileCardProps {
   linkedinUrl?: string;
   showUserInfo?: boolean;
   onLinkedinClick?: () => void;
+  onContactClick?: () => void;
+  handle?: string;
+  status?: string;
+  contactText?: string;
+  enableTilt?: boolean;
+  enableMobileTilt?: boolean;
   classInfo?: string;
   showGeniral?: boolean;
 }
@@ -23,6 +29,12 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
   linkedinUrl = '',
   showUserInfo = true,
   onLinkedinClick,
+  onContactClick,
+  handle,
+  status,
+  contactText = 'Connect',
+  enableTilt = false,
+  enableMobileTilt = false,
   classInfo = '',
   showGeniral = false
 }) => {
@@ -76,6 +88,16 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
             <div className="pc-details">
               <h2 className="text-2xl font-bold">{name}</h2>
               <p>{title}</p>
+              {handle && <p className="pc-handle">@{handle}</p>}
+              {status && <p className="pc-status">Status: {status}</p>}
+              {onContactClick && (
+                <button 
+                  className="pc-contact-button" 
+                  onClick={onContactClick}
+                >
+                  {contactText}
+                </button>
+              )}
             </div>
           </div>
         </div>
