@@ -58,7 +58,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
 
             {showUserInfo && (
               <div className="pc-user-info linkedin-only">
-                
+                {classInfo && <span className="pc-class-info">{classInfo}</span>}
                 <div 
                   className="pc-social-icon"
                   onClick={handleLinkedinClick}
@@ -74,7 +74,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
           </div>
           <div className="pc-content">
             <div className="pc-details">
-              <h3>{name}</h3>
+              <h2 className="text-2xl font-bold">{name}</h2>
               <p>{title}</p>
             </div>
           </div>

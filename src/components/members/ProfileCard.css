@@ -280,6 +280,7 @@
 
 .pc-user-info.linkedin-only {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
   background: transparent;
   border: none;
@@ -288,6 +289,7 @@
   left: auto;
   width: auto;
   bottom: 15px;
+  gap: 10px;
 }
 
 .pc-user-info.linkedin-only .pc-social-icon {
@@ -296,6 +298,18 @@
   background: var(--primary-violet);
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.pc-class-info {
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  background-color: rgba(17, 17, 51, 0.8);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  padding: 4px 8px;
+  border-radius: 12px;
+  margin-right: 4px;
+  white-space: nowrap;
 }
 
 .pc-user-details {
@@ -399,9 +413,6 @@
 }
 
 .pc-class-info {
-  position: absolute;
-  bottom: 15px;
-  left: 15px;
   font-size: 13px;
   font-weight: 500;
   color: white;
@@ -484,8 +495,6 @@
   .pc-class-info {
     font-size: 10px;
     padding: 3px 8px;
-    bottom: 10px;
-    left: 10px;
   }
 }
 
