@@ -486,7 +486,7 @@ const Association = () => {
             {sortedMembers
               .filter((m) => m.role === "President")
               .map((member) => (
-                <div key={member.id} className="w-full max-w-xs">
+                <div key={member.id} className="w-full max-w-xs ml-[100px] sm:ml-0">
                   <ProfileCard
                     name={member.name}
                     title={member.role}
@@ -507,7 +507,7 @@ const Association = () => {
             {sortedMembers
               .filter((m) => m.role === "Vice President")
               .map((member) => (
-                <div key={member.id} className="w-full max-w-xs">
+                <div key={member.id} className="w-full max-w-xs ml-[100px] sm:ml-0">
                   <ProfileCard
                     name={member.name}
                     title={member.role}
@@ -534,7 +534,7 @@ const Association = () => {
             {sortedMembers
               .filter((m) => m.role === "Secretary")
               .map((member) => (
-                <div key={member.id} className="w-full max-w-xs">
+                <div key={member.id} className="w-full max-w-xs ml-[100px] sm:ml-0">
                   <ProfileCard
                     name={member.name}
                     title={member.role}
@@ -555,7 +555,7 @@ const Association = () => {
             {sortedMembers
               .filter((m) => m.role === "Vice Secretary")
               .map((member) => (
-                <div key={member.id} className="w-full max-w-xs">
+                <div key={member.id} className="w-full max-w-xs ml-[100px] sm:ml-0">
                   <ProfileCard
                     name={member.name}
                     title={member.role}
@@ -582,7 +582,7 @@ const Association = () => {
             {sortedMembers
               .filter((m) => m.role === "Treasurer")
               .map((member) => (
-                <div key={member.id} className="w-full max-w-xs">
+                <div key={member.id} className="w-full max-w-xs ml-[100px] sm:ml-0">
                   <ProfileCard
                     name={member.name}
                     title={member.role}
@@ -603,7 +603,7 @@ const Association = () => {
             {sortedMembers
               .filter((m) => m.role === "Joint Treasurer")
               .map((member) => (
-                <div key={member.id} className="w-full max-w-xs">
+                <div key={member.id} className="w-full max-w-xs ml-[100px] sm:ml-0">
                   <ProfileCard
                     name={member.name}
                     title={member.role}

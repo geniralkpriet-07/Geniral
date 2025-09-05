@@ -48,7 +48,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
   )
 
   return (
-    <div ref={wrapRef} className={`pc-card-wrapper ${className}`.trim()}>
+    <div ref={wrapRef} className={`pc-card-wrapper mx-auto max-w-[280px] sm:max-w-none sm:mx-0 ${className}`.trim()}>
       <section ref={cardRef} className="pc-card">
         <div className="pc-inside">
           {showGeniral && <div className="pc-geniral-tag">Geniral</div>}
@@ -96,7 +96,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
           </div>
           <div className="pc-content">
             <div className="pc-details">
-              <h4 className="text-2xl font-bold">{name}</h4>
+              <h5 className="text-xl sm:text-2xl font-bold">{name}</h5>
               <p>{title}</p>
             </div>
           </div>
