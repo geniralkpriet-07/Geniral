@@ -56,9 +56,11 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
             
           
 
+            {/* Class info always visible on the left side */}
+            {classInfo && <div className="pc-class-info-fixed">{classInfo}</div>}
+            
             {showUserInfo && (
               <div className="pc-user-info linkedin-only">
-                
                 <div 
                   className="pc-social-icon"
                   onClick={handleLinkedinClick}

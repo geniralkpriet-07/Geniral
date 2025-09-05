@@ -468,8 +468,7 @@ const ClubMembers: React.FC<ClubMembersProps> = ({ clubId, onClose }) => {
                     title={`${role} - ${member.department}`}
                     avatarUrl={member.avatarUrl}
                     showUserInfo={true}
-                    // Removed handle, status, contactText, enableTilt, enableMobileTilt
-                    // Added onLinkedinClick instead of onContactClick
+                    classInfo={`${member.year} - ${member.department}`}
                     onLinkedinClick={() => handleContactClick(member)}
                   />
                 ))}
