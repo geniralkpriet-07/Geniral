@@ -707,20 +707,6 @@ const Association = () => {
                               <p className="font-medium text-white text-sm">{faculty.name}</p>
                               <p className="text-xs text-white/60">{faculty.dept}</p>
                             </div>
-                            
-                            {/* Full Profile on Hover */}
-                            <div className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 transition-all duration-300 z-[1000] ${
-                              hoveredMember === `club-faculty-${club.id}-${idx}` ? 'opacity-100 scale-100' : 'opacity-0 scale-90 pointer-events-none'
-                            } profile-hover-container`} style={{ height: 'auto', maxHeight: '80vh' }}>
-                              <ProfileCard
-                                name={faculty.name}
-                                title="Faculty Coordinator"
-                                avatarUrl={faculty.image}
-                                linkedinUrl="#"
-                                showUserInfo={true}
-                                classInfo={faculty.dept}
-                              />
-                            </div>
                           </div>
                         ))}
                       </div>
@@ -740,20 +726,6 @@ const Association = () => {
                         <div>
                           <p className="font-medium text-white text-sm">{club.head}</p>
                           <p className="text-xs text-white/60">{club.headClass}</p>
-                        </div>
-                        
-                        {/* Full Profile on Hover */}
-                        <div className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 transition-all duration-300 z-[1000] ${
-                          hoveredMember === `club-head-${club.id}` ? 'opacity-100 scale-100' : 'opacity-0 scale-90 pointer-events-none'
-                        } profile-hover-container`} style={{ height: 'auto', maxHeight: '80vh' }}>
-                          <ProfileCard
-                            name={club.head}
-                            title={`Club Head - ${club.name}`}
-                            avatarUrl={club.headImage}
-                            linkedinUrl="#"
-                            showUserInfo={true}
-                            classInfo={club.headClass}
-                          />
                         </div>
                       </div>
                     </div>
@@ -813,19 +785,6 @@ const Association = () => {
                                   <p className="font-medium text-white text-sm">{memberData.name}</p>
                                   <p className="text-xs text-white/60">{memberData.class}</p>
                                 </div>
-                              </div>
-                              
-                              <div className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 transition-all duration-300 z-[1000] ${
-                                hoveredMember === memberId ? 'opacity-100 scale-100' : 'opacity-0 scale-90 pointer-events-none'
-                              } profile-hover-container`} style={{ height: 'auto', maxHeight: '80vh' }}>
-                                <ProfileCard
-                                  name={memberData.name}
-                                  title={memberData.role}
-                                  avatarUrl={memberData.avatarUrl}
-                                  linkedinUrl="#"
-                                  showUserInfo={true}
-                                  classInfo={memberData.class}
-                                />
                               </div>
                             </div>
                           );
