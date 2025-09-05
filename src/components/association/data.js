@@ -10,7 +10,7 @@ export const associationMembers = [
         status: 'Online',
         class: 'IV CS-A',
         year: 'Final Year',
-        linkedin: ''
+        linkedin: 'https://v0.app/chat/j3kwm0Xmq0S'
     },
     {
         id: 'vp-1',
