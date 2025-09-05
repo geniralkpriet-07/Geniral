@@ -1,33 +1,29 @@
 import React from 'react';
-import ProfileCard from '../members/ProfileCard';
-import SectionHeading from './SectionHeading';
+import { facultyCoordinators } from './data';
 
-const FacultyCoordinators = ({ facultyCoordinators, setHoveredMember, addToRefs }) => {
-  return (
-    <div className="mb-16">
-      <SectionHeading title="Faculty Coordinators" addToRefs={addToRefs} />
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {facultyCoordinators.map((faculty, idx) => (
-          <div 
-            key={`faculty-${idx}`}
-            className="bg-[#111133]/30 backdrop-blur-sm rounded-xl overflow-hidden p-6 border border-purple-500/20 shadow-[0_4px_20px_rgba(139,92,246,0.15)] group relative"
-            onMouseEnter={() => setHoveredMember(`faculty-${idx}`)}
-            onMouseLeave={() => setHoveredMember(null)}
-          >
-            <div className="w-24 h-24 rounded-full overflow-hidden mx-auto mb-4 border-2 border-purple-500">
-              <img src={faculty.image} alt={faculty.name} className="w-full h-full object-cover" />
+const FacultyCoordinators = () => {
+    return (
+        <div className="faculty-coordinators-section py-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {facultyCoordinators.map((faculty, index) => (
+                    <div key={index} className="faculty-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105">
+                        <div className="p-6 flex items-start">
+                            <img 
+                                src={faculty.image} 
+                                alt={faculty.name} 
+                                className="w-16 h-16 rounded-full mr-4 border-2 border-purple-500"
+                            />
+                            <div>
+                                <h3 className="text-lg font-bold mb-1">{faculty.name}</h3>
+                                <p className="text-purple-600 dark:text-purple-400 mb-1">{faculty.role}</p>
+                                <p className="text-sm text-gray-600 dark:text-gray-300">{faculty.department}</p>
+                            </div>
+                        </div>
+                    </div>
+                ))}
             </div>
-            <h3 className="text-xl font-bold text-center mb-1 text-gradient">{faculty.name}</h3>
-            <p className="text-center text-white/70 mb-3">{faculty.role}</p>
-            <div className="flex justify-center">
-              <div className="bg-purple-600/20 px-3 py-1 rounded-full text-sm text-white">{faculty.department}</div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+        </div>
+    );
 };
 
 export default FacultyCoordinators;
