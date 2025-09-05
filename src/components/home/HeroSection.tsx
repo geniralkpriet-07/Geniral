@@ -56,13 +56,14 @@ const HeroSection: React.FC<HeroSectionProps> = () => {
             className="inline-block px-6 py-3 rounded-full font-medium transition-all bg-[rgba(128,128,255,0.3)] text-white border border-[rgba(128,128,255,0.6)] shadow-[0_0_15px_rgba(128,128,255,0.3)] backdrop-blur-sm hover:bg-[rgba(128,128,255,0.4)] hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(128,128,255,0.4)]"
           >
             Explore Events
-          </a>
+            </a>
+          {/* </a>
           <a
             href="#join"
             className="inline-block px-6 py-3 rounded-full font-medium transition-all bg-white/5 text-white/90 border border-white/20 backdrop-blur-sm hover:bg-white/10 hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)]"
           >
             Join Association
-          </a>
+          </a> */}
         </div>
       </div>
     </section>
