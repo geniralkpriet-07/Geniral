@@ -500,7 +500,37 @@
 
 .pc-user-details,
 .pc-mini-avatar,
-.pc-user-text,
-.pc-handle {
+.pc-user-text {
   display: none;
+}
+
+/* Handle and status styling */
+.pc-handle {
+  font-size: 0.9rem;
+  color: var(--light-violet);
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.pc-status {
+  font-size: 0.85rem;
+  color: var(--secondary-violet);
+  margin-top: 0.25rem;
+}
+
+/* Contact button styling */
+.pc-contact-button {
+  margin-top: 1rem;
+  background-color: var(--primary-violet);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.pc-contact-button:hover {
+  background-color: var(--dark-violet);
 }

@@ -391,13 +391,21 @@ const ClubMembers: React.FC<ClubMembersProps> = ({ clubId, onClose }) => {
     setSelectedClub(clubsData.find(club => club.id === newClubId) || null);
   };
 
-  const groupedMembers = selectedClub?.members.reduce((acc, member) => {
+  const groupedMembers: Record<MemberRole, ClubMember[]> = selectedClub?.members.reduce((acc: Record<MemberRole, ClubMember[]>, member) => {
     if (!acc[member.role]) {
       acc[member.role] = [];
     }
     acc[member.role].push(member);
     return acc;
-  }, {} as Record<MemberRole, ClubMember[]>) || {};
+  }, {} as Record<MemberRole, ClubMember[]>) || {
+    President: [],
+    'Vice President': [],
+    Secretary: [],
+    'Vice Secretary': [],
+    Treasurer: [],
+    'Vice Treasurer': [],
+    Member: []
+  };
 
   const roleOrder: MemberRole[] = [
     'President', 
@@ -448,24 +456,24 @@ const ClubMembers: React.FC<ClubMembersProps> = ({ clubId, onClose }) => {
       )}
 
       <div className="members-wrapper">
-        {roleOrder.map(role => (
+        {roleOrder.map(role =>  (
           groupedMembers[role] && groupedMembers[role].length > 0 && (
             <div key={role} className="role-section">
               <h4 className="role-title">{role}s</h4>
               <div className="members-grid">
                 {groupedMembers[role].map(member => (
                   <ProfileCard
-                    key={member.id}
-                    name={member.name}
-                    title={`${role} - ${member.department}`}
-                    handle={member.handle}
-                    status={member.status || 'Offline'}
-                    avatarUrl={member.avatarUrl}
-                    contactText="Contact"
-                    showUserInfo={true}
-                    enableTilt={true}
-                    enableMobileTilt={false}
-                    onContactClick={() => handleContactClick(member)}
+                  key={member.id}
+                  name={member.name}
+                  title={`${role} - ${member.department}`}
+                  handle={member.handle}
+                  status={member.status || 'Offline'}
+                  avatarUrl={member.avatarUrl}
+                  contactText="Contact"
+                  showUserInfo={true}
+                  enableTilt={true}
+                  enableMobileTilt={false}
+                  onContactClick={() => handleContactClick(member)}
                   />
                 ))}
               </div>
