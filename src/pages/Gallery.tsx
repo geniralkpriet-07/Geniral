@@ -225,7 +225,9 @@ const Gallery = () => {
       {modalItem.images.map((img, idx) => (
         <div
           key={img}
-          ref={(el) => (imgRefs.current[idx] = el)}
+          ref={(el) => {
+            imgRefs.current[idx] = el;
+          }}
           className="py-8 w-full flex justify-center"
           style={{ scrollSnapAlign: "center" }}
         >
