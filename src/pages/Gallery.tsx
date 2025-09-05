@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import LightRays from '../components/loading/LightRays';
 
 type GalleryItem = {
@@ -13,7 +13,19 @@ type GalleryItem = {
 const Gallery = () => {
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [modalItem, setModalItem] = useState<GalleryItem | null>(null);
-  const [modalImageIdx, setModalImageIdx] = useState(0);
+  const [modalStartIndex, setModalStartIndex] = useState<number>(0);
+
+  // Disable website scroll when modal is open
+  useEffect(() => {
+    if (modalItem) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [modalItem]);
 
   const categories = ['All', 'Events', 'Workshops', 'Competitions', 'Club Activities'];
 
@@ -96,18 +108,18 @@ const Gallery = () => {
     ? galleryItems
     : galleryItems.filter(item => item.category === activeCategory);
 
-  // Modal navigation
-  const handlePrevImage = () => {
-    if (!modalItem) return;
-    setModalImageIdx(idx => (idx === 0 ? modalItem.images.length - 1 : idx - 1));
-  };
-  const handleNextImage = () => {
-    if (!modalItem) return;
-    setModalImageIdx(idx => (idx === modalItem.images.length - 1 ? 0 : idx + 1));
-  };
+  // Ref array for scrolling to the clicked image
+  const imgRefs = React.useRef<(HTMLDivElement | null)[]>([]);
+
+  // Scroll to the clicked image when modal opens
+  useEffect(() => {
+    if (modalItem && imgRefs.current[modalStartIndex]) {
+      imgRefs.current[modalStartIndex]?.scrollIntoView({ behavior: 'smooth',  block:  'center', });
+    }
+  }, [modalItem, modalStartIndex]);
 
   return (
-    <div className="min-h-screen text-white bg-[#0a0a18] [background:radial-gradient(circle_at_center,_#111133_0%,_#0a0a18_70%,_#050510_100%)]">
+    <div className="min-h-screen text-white bg-[#0a0a18] [background:radial-gradient(circle_at_center,_#111133_0%,_#0a0a18_50%,_#050510_100%)]">
       {/* Light Rays Background */}
       <div className="fixed inset-0 z-0">
         <LightRays
@@ -175,7 +187,7 @@ const Gallery = () => {
                 style={{ minHeight: 480 }}
                 onClick={() => {
                   setModalItem(item);
-                  setModalImageIdx(0);
+                  setModalStartIndex(0);
                 }}
               >
                 <img
@@ -197,57 +209,36 @@ const Gallery = () => {
         </div>
       </section>
 
-      {/* Modal for images only */}
+      {/* Modal for vertical scroll images - FULL WIDTH & HEIGHT */}
       {modalItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-          <div className="bg-[#181830] rounded-3xl shadow-2xl w-full max-w-3xl mx-4 relative overflow-hidden flex flex-col items-center">
-            <button
-              className="absolute top-4 right-4 text-white/80 hover:text-white text-3xl z-10"
-              onClick={() => setModalItem(null)}
-              aria-label="Close"
-            >
-              &times;
-            </button>
-            <div className="relative w-full flex items-center justify-center py-8">
-              <button
-                onClick={handlePrevImage}
-                className="absolute left-2 top-1/2 -translate-y-1/2 bg-[#23234a]/80 hover:bg-[#8080ff]/80 text-white rounded-full p-2 text-2xl z-10"
-                aria-label="Previous image"
-              >
-                &#8592;
-              </button>
-              <img
-                src={modalItem.images[modalImageIdx]}
-                alt={modalItem.title}
-                className="w-full h-[28rem] object-cover object-center rounded-2xl transition-all duration-300"
-              />
-              <button
-                onClick={handleNextImage}
-                className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#23234a]/80 hover:bg-[#8080ff]/80 text-white rounded-full p-2 text-2xl z-10"
-                aria-label="Next image"
-              >
-                &#8594;
-              </button>
-            </div>
-            {/* Thumbnails */}
-            <div className="flex flex-wrap gap-2 pb-6">
-              {modalItem.images.map((img, idx) => (
-                <img
-                  key={img}
-                  src={img}
-                  alt={`Thumbnail ${idx + 1}`}
-                  className={`w-14 h-14 object-cover rounded-lg border-2 cursor-pointer ${
-                    idx === modalImageIdx
-                      ? 'border-[#8080ff] scale-110'
-                      : 'border-transparent opacity-70 hover:opacity-100'
-                  } transition-all`}
-                  onClick={() => setModalImageIdx(idx)}
-                />
-              ))}
-            </div>
-          </div>
+  <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center">
+    <button
+      className="absolute top-6 right-10 text-white text-4xl"
+      onClick={() => setModalItem(null)}
+    >
+      &times;
+    </button>
+    <div
+      className="w-full h-full overflow-y-auto flex flex-col items-center"
+      style={{ scrollSnapType: "y mandatory" }}
+    >
+      {modalItem.images.map((img, idx) => (
+        <div
+          key={img}
+          ref={(el) => (imgRefs.current[idx] = el)}
+          className="py-8 w-full flex justify-center"
+          style={{ scrollSnapAlign: "center" }}
+        >
+          <img
+            src={img}
+            alt={`${modalItem.title} ${idx + 1}`}
+            className="w-full max-w-5xl h-[80vh] object-cover rounded-xl shadow-2xl"
+          />
         </div>
-      )}
+      ))}
+    </div>
+  </div>
+)}
     </div>
   );
 };
