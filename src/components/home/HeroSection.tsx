@@ -1,5 +1,6 @@
 import React from 'react';
 import { LightRays } from "../loading";
+import backgroundImage from '../../assets/1.jpeg';
 
 interface HeroSectionProps {
 }
@@ -7,7 +8,24 @@ interface HeroSectionProps {
 const HeroSection: React.FC<HeroSectionProps> = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4">
+      {/* Background Image - Increased opacity and added error handling */}
       <div className="absolute inset-0 z-0">
+        <img 
+          src={backgroundImage}
+          alt="Association Background"
+          className="w-full h-full object-cover opacity-70"
+          onError={(e) => {
+            console.error('Image failed to load:', e);
+            e.currentTarget.style.display = 'none';
+          }}
+          onLoad={() => console.log('Image loaded successfully')}
+        />
+        {/* Reduced gradient overlay opacity */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a18]/60 via-[#0a0a18]/40 to-[#0a0a18]/60"></div>
+      </div>
+
+      {/* Light Rays */}
+      <div className="absolute inset-0 z-10">
         <LightRays
           raysColor="#8080ff"
           raysSpeed={0.8}
@@ -23,7 +41,7 @@ const HeroSection: React.FC<HeroSectionProps> = () => {
         />
       </div>
 
-      <div className="relative z-10 max-w-3xl w-full text-center pt-16 md:pt-24">
+      <div className="relative z-20 max-w-3xl w-full text-center pt-16 md:pt-24">
         <div className="inline-block bg-white/10 backdrop-blur-sm rounded-full px-6 py-2 mb-8 text-sm font-medium text-center border border-white/15 shadow-[0_0_15px_rgba(128,128,255,0.1)]">
           <span role="img" aria-label="star">
             ⭐
@@ -56,14 +74,7 @@ const HeroSection: React.FC<HeroSectionProps> = () => {
             className="inline-block px-6 py-3 rounded-full font-medium transition-all bg-[rgba(128,128,255,0.3)] text-white border border-[rgba(128,128,255,0.6)] shadow-[0_0_15px_rgba(128,128,255,0.3)] backdrop-blur-sm hover:bg-[rgba(128,128,255,0.4)] hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(128,128,255,0.4)]"
           >
             Explore Events
-            </a>
-          {/* </a>
-          <a
-            href="#join"
-            className="inline-block px-6 py-3 rounded-full font-medium transition-all bg-white/5 text-white/90 border border-white/20 backdrop-blur-sm hover:bg-white/10 hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)]"
-          >
-            Join Association
-          </a> */}
+          </a>
         </div>
       </div>
     </section>

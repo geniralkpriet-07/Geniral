@@ -10,5 +10,6 @@ export default defineConfig({
   server: {
     allowedHosts: ['lynx-fun-normally.ngrok-free.app'],
     host: true 
-  }
+  },
+  assetsInclude: ['**/*.jpeg', '**/*.jpg', '**/*.png', '**/*.gif']
 })
