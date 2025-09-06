@@ -16,7 +16,7 @@ const HeroSection: React.FC<HeroSectionProps> = () => {
 
   useEffect(() => {
     let index = 0
-    let timer: NodeJS.Timeout
+    let timer: ReturnType<typeof setTimeout>
 
     const typeWriter = () => {
       if (!isDeleting) {
