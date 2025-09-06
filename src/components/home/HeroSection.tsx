@@ -94,18 +94,18 @@ const HeroSection: React.FC<HeroSectionProps> = () => {
 
       <button
         onClick={prevImage}
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 z-30 w-12 h-12 bg-white/10 backdrop-blur-md rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all shadow-[0_0_15px_rgba(128,128,255,0.3)]"
+        className="absolute left-2 sm:left-4 top-1/2 transform -translate-y-1/2 z-30 w-8 h-8 sm:w-12 sm:h-12 bg-white/10 backdrop-blur-md rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all shadow-[0_0_15px_rgba(128,128,255,0.3)]"
       >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
       </button>
 
       <button
         onClick={nextImage}
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 z-30 w-12 h-12 bg-white/10 backdrop-blur-md rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all shadow-[0_0_15px_rgba(128,128,255,0.3)]"
+        className="absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 z-30 w-8 h-8 sm:w-12 sm:h-12 bg-white/10 backdrop-blur-md rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all shadow-[0_0_15px_rgba(128,128,255,0.3)]"
       >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </button>
@@ -126,66 +126,67 @@ const HeroSection: React.FC<HeroSectionProps> = () => {
         />
       </div>
 
-      <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 items-center min-h-screen py-20">
-          <div className="text-left lg:text-left space-y-8">
-            <div className="inline-flex items-center gap-2 bg-black/20 backdrop-blur-md rounded-full px-6 py-3 border border-white/20 shadow-[0_0_20px_rgba(128,128,255,0.15)]">
-              <div className="w-2 h-2 bg-[#8080ff] rounded-full animate-pulse"></div>
-              <span className="text-sm font-medium text-white">KPR Institute of Engineering and Technology</span>
-              <span className="text-xs bg-[#8080ff]/30 text-white px-2 py-1 rounded-full border border-[#8080ff]/50">
+      <div className="relative z-20 w-full max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 items-center min-h-screen py-12 sm:py-20">
+          <div className="text-center lg:text-left space-y-4 sm:space-y-8">
+            <div className="inline-flex items-center gap-1 sm:gap-2 bg-black/20 backdrop-blur-md rounded-full px-3 sm:px-6 py-2 sm:py-3 border border-white/20 shadow-[0_0_20px_rgba(128,128,255,0.15)]">
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[#8080ff] rounded-full animate-pulse"></div>
+              <span className="text-xs sm:text-sm font-medium text-white">KPR Institute of Engineering and Technology</span>
+              <span className="text-[10px] sm:text-xs bg-[#8080ff]/30 text-white px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full border border-[#8080ff]/50">
                 Active
               </span>
             </div>
 
-            <div className="space-y-4">
-              <h1 className="text-5xl md:text-7xl font-black leading-tight tracking-tight">
+            <div className="space-y-2 sm:space-y-4">
+              <h1 className="text-2xl sm:text-5xl md:text-7xl font-black leading-tight tracking-tight">
                 <div className="text-white bg-gradient-to-r from-white via-[#c4c8ff] to-white bg-clip-text">
                   Department of
                 </div>
                 <div className="text-[#8080ff] bg-gradient-to-r from-[#8080ff] via-[#a8b5fb] to-[#8080ff] bg-clip-text animate-gradient">
                   Computer Science
                 </div>
-                <div className="text-white text-4xl md:text-5xl font-bold mt-2">
+                <div className="text-white text-lg sm:text-4xl md:text-5xl font-bold mt-1 sm:mt-2">
                   {displayText}
                   <span className="animate-blink">|</span>
                 </div>
               </h1>
             </div>
 
-            <div className="space-y-4 max-w-xl">
-              <p className="text-xl text-white/95 leading-relaxed">
+            <div className="space-y-2 sm:space-y-4 max-w-xl">
+              <p className="text-sm sm:text-xl text-white/95 leading-relaxed">
                 Fostering innovation, collaboration, and technical excellence among the
                 <span className="text-[#8080ff] font-medium"> future leaders</span> of technology
               </p>
 
-              <div className="flex gap-6 pt-4">
+              <div className="flex gap-3 sm:gap-6 pt-2 sm:pt-4 justify-center lg:justify-start">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-[#8080ff]">500+</div>
-                  <div className="text-xs text-white/90 uppercase tracking-wide">Students</div>
+                  <div className="text-lg sm:text-2xl font-bold text-[#8080ff]">500+</div>
+                  <div className="text-[10px] sm:text-xs text-white/90 uppercase tracking-wide">Students</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-[#8080ff]">50+</div>
-                  <div className="text-xs text-white/90 uppercase tracking-wide">Events</div>
+                  <div className="text-lg sm:text-2xl font-bold text-[#8080ff]">50+</div>
+                  <div className="text-[10px] sm:text-xs text-white/90 uppercase tracking-wide">Events</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-[#8080ff]">25+</div>
-                  <div className="text-xs text-white/90 uppercase tracking-wide">Projects</div>
+                  <div className="text-lg sm:text-2xl font-bold text-[#8080ff]">25+</div>
+                  <div className="text-[10px] sm:text-xs text-white/90 uppercase tracking-wide">Projects</div>
                 </div>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 pt-6">
-              <button className="px-8 py-4 bg-[#8080ff]/30 hover:bg-[#8080ff]/40 rounded-full text-white text-lg font-semibold transition-all border border-[#8080ff]/20 shadow-[0_0_15px_rgba(128,128,255,0.3)] relative overflow-hidden group animate-bounce">
+            {/* Buttons - smaller on mobile */}
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4 sm:pt-6">
+              <button className="px-4 sm:px-8 py-2 sm:py-4 bg-[#8080ff]/30 hover:bg-[#8080ff]/40 rounded-full text-white text-sm sm:text-lg font-semibold transition-all border border-[#8080ff]/20 shadow-[0_0_15px_rgba(128,128,255,0.3)] relative overflow-hidden group animate-bounce">
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-[#8080ff]/20 to-transparent group-hover:via-[#8080ff]/30 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out"></span>
                 <span className="relative z-10">Explore Events</span>
               </button>
 
-              <button className="px-8 py-4 bg-[#8080ff]/30 hover:bg-[#8080ff]/40 rounded-full text-white text-lg font-semibold transition-all border border-[#8080ff]/20 shadow-[0_0_15px_rgba(128,128,255,0.3)] relative overflow-hidden group">
+              <button className="px-4 sm:px-8 py-2 sm:py-4 bg-[#8080ff]/30 hover:bg-[#8080ff]/40 rounded-full text-white text-sm sm:text-lg font-semibold transition-all border border-[#8080ff]/20 shadow-[0_0_15px_rgba(128,128,255,0.3)] relative overflow-hidden group">
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-[#8080ff]/20 to-transparent group-hover:via-[#8080ff]/30 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out"></span>
-                <span className="relative z-10 flex items-center">
+                <span className="relative z-10 flex items-center justify-center">
                   Learn More
                   <svg
-                    className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform"
+                    className="ml-1 sm:ml-2 w-3 h-3 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -199,40 +200,40 @@ const HeroSection: React.FC<HeroSectionProps> = () => {
 
           <div className="hidden lg:flex justify-center items-center relative">
             <div className="relative">
-              <div className="w-80 h-80 bg-gradient-to-br from-[#8080ff]/20 via-[#8080ff]/30 to-[#8080ff]/10 rounded-full blur-3xl animate-pulse"></div>
+              <div className="w-60 lg:w-80 h-60 lg:h-80 bg-gradient-to-br from-[#8080ff]/20 via-[#8080ff]/30 to-[#8080ff]/10 rounded-full blur-3xl animate-pulse"></div>
 
-              <div className="absolute -top-10 -left-10 bg-black/30 backdrop-blur-md rounded-xl p-4 border border-white/20 shadow-xl animate-float-1">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-[#8080ff] rounded-lg flex items-center justify-center">
-                    <span className="text-white text-sm">💻</span>
+              <div className="absolute -top-8 lg:-top-10 -left-8 lg:-left-10 bg-black/30 backdrop-blur-md rounded-lg lg:rounded-xl p-3 lg:p-4 border border-white/20 shadow-xl animate-float-1">
+                <div className="flex items-center gap-2 lg:gap-3">
+                  <div className="w-6 lg:w-8 h-6 lg:h-8 bg-[#8080ff] rounded-md lg:rounded-lg flex items-center justify-center">
+                    <span className="text-white text-xs lg:text-sm">💻</span>
                   </div>
                   <div>
-                    <div className="text-white font-medium text-sm">Coding Club</div>
-                    <div className="text-white/80 text-xs">Active Now</div>
+                    <div className="text-white font-medium text-xs lg:text-sm">Coding Club</div>
+                    <div className="text-white/80 text-[10px] lg:text-xs">Active Now</div>
                   </div>
                 </div>
               </div>
 
-              <div className="absolute -bottom-10 -right-10 bg-black/30 backdrop-blur-md rounded-xl p-4 border border-white/20 shadow-xl animate-float-2">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-[#8080ff] rounded-lg flex items-center justify-center">
-                    <span className="text-white text-sm">🚀</span>
+              <div className="absolute -bottom-8 lg:-bottom-10 -right-8 lg:-right-10 bg-black/30 backdrop-blur-md rounded-lg lg:rounded-xl p-3 lg:p-4 border border-white/20 shadow-xl animate-float-2">
+                <div className="flex items-center gap-2 lg:gap-3">
+                  <div className="w-6 lg:w-8 h-6 lg:h-8 bg-[#8080ff] rounded-md lg:rounded-lg flex items-center justify-center">
+                    <span className="text-white text-xs lg:text-sm">🚀</span>
                   </div>
                   <div>
-                    <div className="text-white font-medium text-sm">Innovation Lab</div>
-                    <div className="text-white/80 text-xs">24/7 Access</div>
+                    <div className="text-white font-medium text-xs lg:text-sm">Innovation Lab</div>
+                    <div className="text-white/80 text-[10px] lg:text-xs">24/7 Access</div>
                   </div>
                 </div>
               </div>
 
-              <div className="absolute top-1/2 -right-20 bg-black/30 backdrop-blur-md rounded-xl p-4 border border-white/20 shadow-xl animate-float-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-[#8080ff] rounded-lg flex items-center justify-center">
-                    <span className="text-white text-sm">🏆</span>
+              <div className="absolute top-1/2 -right-16 lg:-right-20 bg-black/30 backdrop-blur-md rounded-lg lg:rounded-xl p-3 lg:p-4 border border-white/20 shadow-xl animate-float-3">
+                <div className="flex items-center gap-2 lg:gap-3">
+                  <div className="w-6 lg:w-8 h-6 lg:h-8 bg-[#8080ff] rounded-md lg:rounded-lg flex items-center justify-center">
+                    <span className="text-white text-xs lg:text-sm">🏆</span>
                   </div>
                   <div>
-                    <div className="text-white font-medium text-sm">Hackathons</div>
-                    <div className="text-white/80 text-xs">Monthly</div>
+                    <div className="text-white font-medium text-xs lg:text-sm">Hackathons</div>
+                    <div className="text-white/80 text-[10px] lg:text-xs">Monthly</div>
                   </div>
                 </div>
               </div>
@@ -241,11 +242,12 @@ const HeroSection: React.FC<HeroSectionProps> = () => {
         </div>
       </div>
 
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
-        <div className="flex flex-col items-center gap-2 text-white/80">
-          <span className="text-xs uppercase tracking-wide">Scroll Down</span>
-          <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-white/80 rounded-full mt-2 animate-bounce"></div>
+      {/* Scroll indicator - smaller on mobile */}
+      <div className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 z-20">
+        <div className="flex flex-col items-center gap-1 sm:gap-2 text-white/80">
+          <span className="text-[10px] sm:text-xs uppercase tracking-wide">Scroll Down</span>
+          <div className="w-4 sm:w-6 h-6 sm:h-10 border border-white/50 sm:border-2 rounded-full flex justify-center">
+            <div className="w-0.5 sm:w-1 h-2 sm:h-3 bg-white/80 rounded-full mt-1 sm:mt-2 animate-bounce"></div>
           </div>
         </div>
       </div>
