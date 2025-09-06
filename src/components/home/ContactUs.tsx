@@ -36,7 +36,7 @@ const ContactUs: React.FC = () => {
             </p>
             <div className="flex items-center gap-3">
               <Mail className="w-6 h-6 text-blue-400" />
-              <span>ramyagobi2005@example.com</span>
+              <span>ramyagobi2005@gmail.com</span>
             </div>
             <div className="flex items-center gap-3">
               <Phone className="w-6 h-6 text-blue-400" />
