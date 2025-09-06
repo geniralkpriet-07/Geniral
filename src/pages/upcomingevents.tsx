@@ -1,81 +1,75 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { LightRays } from "../components/loading";
 import { motion } from "framer-motion";
 
+interface Event {
+  _id: string;
+  title: string;
+  date: string;
+  time: string;
+  location: string;
+  category: string;
+  imageUrl: string;
+  description: string;
+  featured: boolean;
+  registrationOpen: boolean;
+}
+
 const UpcomingEvents = () => {
   const [activeFilter, setActiveFilter] = useState("all");
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  // Sample events data with categories
-  const events = [
-    {
-      id: 1,
-      title: "Tech Symposium 2025",
-      date: "Sept 15, 2025",
-      time: "10:00 AM - 4:00 PM",
-      location: "Main Auditorium",
-      category: "technical",
-      imageUrl: "https://images.unsplash.com/photo-1540575467063-178a50c2df87",
-      description: "Join us for a day of innovation, tech talks, and networking with industry experts. Featuring workshops on AI, blockchain and IoT.",
-      featured: true
-    },
-    {
-      id: 2,
-      title: "Cultural Festival",
-      date: "Sept 22, 2025",
-      time: "5:00 PM - 9:00 PM",
-      location: "College Grounds",
-      category: "cultural",
-      imageUrl: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3",
-      description: "Experience the vibrant cultural diversity through music, dance, and art performances by talented students.",
-      featured: true
-    },
-    {
-      id: 3,
-      title: "Workshop on Machine Learning",
-      date: "Sept 28, 2025",
-      time: "2:00 PM - 5:00 PM",
-      location: "CS Department Lab",
-      category: "technical",
-      imageUrl: "https://images.unsplash.com/photo-1581092795360-fd1ca04f0952",
-      description: "Hands-on workshop covering the fundamentals of machine learning algorithms and practical applications."
-    },
-    {
-      id: 4,
-      title: "Alumni Meetup 2025",
-      date: "Oct 5, 2025",
-      time: "11:00 AM - 3:00 PM",
-      location: "Seminar Hall",
-      category: "networking",
-      imageUrl: "https://images.unsplash.com/photo-1511578314322-379afb476865",
-      description: "Connect with alumni from various batches, share experiences and build professional networks."
-    },
-    {
-      id: 5,
-      title: "Hackathon Challenge",
-      date: "Oct 12-13, 2025",
-      time: "24 Hours",
-      location: "Innovation Center",
-      category: "technical",
-      imageUrl: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d",
-      description: "A 24-hour coding marathon to solve real-world problems. Amazing prizes for winning teams!"
-    },
-    {
-      id: 6,
-      title: "Sports Tournament",
-      date: "Oct 20-25, 2025",
-      time: "9:00 AM - 6:00 PM",
-      location: "College Sports Complex",
-      category: "sports",
-      imageUrl: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211",
-      description: "Annual inter-department sports competition featuring cricket, basketball, volleyball and athletics."
+  const API_URL = 'http://localhost:7000';
+
+  useEffect(() => {
+    fetchEvents();
+  }, [activeFilter]);
+
+  const fetchEvents = async () => {
+    try {
+      setLoading(true);
+      const url = activeFilter === "all" 
+        ? `${API_URL}/api/events`
+        : `${API_URL}/api/events?category=${activeFilter}`;
+      
+      const response = await fetch(url);
+      const data = await response.json();
+      
+      if (response.ok) {
+        setEvents(data.events);
+      } else {
+        setError(data.error || "Failed to fetch events");
+      }
+    } catch (error) {
+      setError("Failed to connect to server");
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
   const filteredEvents = activeFilter === "all" 
     ? events 
     : events.filter(event => event.category === activeFilter);
 
   const featuredEvents = events.filter(event => event.featured);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white">
+        <div className="text-xl">Loading events...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white">
+        <div className="text-xl text-red-400">Error: {error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen text-white bg-[#0a0a18] [background:radial-gradient(circle_at_center,_#111133_0%,_#0a0a18_70%,_#050510_100%)] pt-24 pb-16">
@@ -138,7 +132,7 @@ const UpcomingEvents = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {featuredEvents.map((event, index) => (
                   <motion.div 
-                    key={event.id}
+                    key={event._id}
                     className="relative group rounded-2xl overflow-hidden h-80 flex items-end"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -230,14 +224,24 @@ const UpcomingEvents = () => {
             Sports
           </button>
           <button 
-            onClick={() => setActiveFilter("networking")}
+            onClick={() => setActiveFilter("symposium")}
             className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
-              activeFilter === "networking" 
+              activeFilter === "symposium" 
                 ? "bg-[#8080ff]/30 border border-[#8080ff]/20 shadow-[0_0_15px_rgba(128,128,255,0.3)] text-white" 
                 : "bg-[#151530]/60 text-white/70 hover:bg-[#151530]/90 hover:text-white"
             }`}
           >
-            Networking
+            Symposium
+          </button>
+          <button 
+            onClick={() => setActiveFilter("hackathon")}
+            className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
+              activeFilter === "hackathon" 
+                ? "bg-[#8080ff]/30 border border-[#8080ff]/20 shadow-[0_0_15px_rgba(128,128,255,0.3)] text-white" 
+                : "bg-[#151530]/60 text-white/70 hover:bg-[#151530]/90 hover:text-white"
+            }`}
+          >
+            Hackathon
           </button>
         </div>
       </div>
@@ -247,7 +251,7 @@ const UpcomingEvents = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredEvents.map((event, index) => (
             <motion.div 
-              key={event.id}
+              key={event._id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 * index }}
@@ -300,7 +304,7 @@ const UpcomingEvents = () => {
                 
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-white/60">
-                    {event.id < 3 ? 'Registration open' : 'Coming soon'}
+                    {event.registrationOpen ? 'Registration open' : 'Coming soon'}
                   </span>
                   <button className="px-5 py-2 bg-[#8080ff]/30 hover:bg-[#8080ff]/40 rounded-md text-white text-sm font-medium transition-all border border-[#8080ff]/20 shadow-[0_0_15px_rgba(128,128,255,0.3)] relative overflow-hidden group">
                     <span className="absolute inset-0 bg-gradient-to-r from-transparent via-[#8080ff]/20 to-transparent group-hover:via-[#8080ff]/30 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out"></span>

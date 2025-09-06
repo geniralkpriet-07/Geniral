@@ -6,6 +6,7 @@ import connectDB from "./config/database.js";
 import { corsOptions, helmetOptions, rateLimitOptions } from "./config/security.js";
 import { createAdminUser } from "./controllers/authController.js";
 import authRoutes from "./routes/authRoutes.js";
+import eventRoutes from "./routes/eventRoutes.js";
 import cors from "cors";
 
 dotenv.config();
@@ -24,6 +25,7 @@ connectDB().then(() => {
 });
 
 app.use("/", authRoutes);
+app.use("/api", eventRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
