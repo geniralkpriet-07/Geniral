@@ -961,6 +961,12 @@ const Association = () => {
         
         /* Mobile-specific profile card positioning */
         @media (max-width: 639px) {
+          /* Remove underline from section headings on mobile */
+          .heading-container span {
+            border-bottom: none !important;
+            padding-bottom: 0 !important;
+          }
+          
           /* Ensure the page can accommodate the left margin */
           .max-w-6xl {
             max-width: calc(100vw - 20px);

@@ -83,7 +83,7 @@ const UpcomingEvents = () => {
         <LightRays
           raysColor="#8080ff"
           raysSpeed={0.8}
-          lightSpread={1.5}
+          lightSpread={2.5}
           rayLength={2}
           followMouse={true}
           mouseInfluence={0.1}
