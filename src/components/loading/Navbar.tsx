@@ -2,6 +2,8 @@
 
 import type React from "react"
 import { useState, useEffect } from "react"
+import { useAuth } from "../../contexts/AuthContext"
+import LoginModal from "../auth/LoginModal"
 
 const TransitionLink = ({ to, className, children, onClick }: any) => (
   <a href={to} className={className} onClick={onClick}>
@@ -22,6 +24,8 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ transparent = false }) => {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [loginModalOpen, setLoginModalOpen] = useState(false)
+  const { user, isAuthenticated, logout } = useAuth()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,6 +62,11 @@ const Navbar: React.FC<NavbarProps> = ({ transparent = false }) => {
       document.body.style.overflow = "unset"
     }
   }, [menuOpen])
+
+  const handleLogout = () => {
+    logout()
+    setMenuOpen(false)
+  }
 
   return (
     <>
@@ -107,30 +116,64 @@ const Navbar: React.FC<NavbarProps> = ({ transparent = false }) => {
                 <TransitionLink to="/upcoming-events" className="nav-link mx-1 lg:mx-2">
                   Upcoming Events
                 </TransitionLink>
+                {isAuthenticated && user?.role === 'admin' && (
+                  <TransitionLink to="/dashboard" className="nav-link mx-1 lg:mx-2">
+                    Dashboard
+                  </TransitionLink>
+                )}
               </div>
 
               <div className="hidden md:block flex-shrink-0">
-                <TransitionLink
-                  to="/resume"
-                  className="inline-flex items-center h-[36px] justify-center px-4 lg:px-6 py-2 rounded-md bg-[#8080ff]/30 hover:bg-[#8080ff]/40 text-white font-medium transition-all duration-300 backdrop-blur-sm border border-[#8080ff]/20 shadow-[0_0_15px_rgba(128,128,255,0.3)] relative overflow-hidden group"
-                >
-                  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-[#8080ff]/20 to-transparent group-hover:via-[#8080ff]/30 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out"></span>
-                  <span className="flex items-center relative z-10">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-4 w-4 mr-2"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
+                {isAuthenticated ? (
+                  <div className="flex items-center space-x-4">
+                    <span className="text-white/80 text-sm">
+                      Welcome, {user?.email}
+                    </span>
+                    <button
+                      onClick={handleLogout}
+                      className="inline-flex items-center h-[36px] justify-center px-4 lg:px-6 py-2 rounded-md bg-red-500/30 hover:bg-red-500/40 text-white font-medium transition-all duration-300 backdrop-blur-sm border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.3)] relative overflow-hidden group"
                     >
-                      <path
-                        fillRule="evenodd"
-                        d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    Login
-                  </span>
-                </TransitionLink>
+                      <span className="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/20 to-transparent group-hover:via-red-500/30 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out"></span>
+                      <span className="flex items-center relative z-10">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-4 w-4 mr-2"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        Logout
+                      </span>
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setLoginModalOpen(true)}
+                    className="inline-flex items-center h-[36px] justify-center px-4 lg:px-6 py-2 rounded-md bg-[#8080ff]/30 hover:bg-[#8080ff]/40 text-white font-medium transition-all duration-300 backdrop-blur-sm border border-[#8080ff]/20 shadow-[0_0_15px_rgba(128,128,255,0.3)] relative overflow-hidden group"
+                  >
+                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-[#8080ff]/20 to-transparent group-hover:via-[#8080ff]/30 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out"></span>
+                    <span className="flex items-center relative z-10">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4 mr-2"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      Login
+                    </span>
+                  </button>
+                )}
               </div>
 
               <button
@@ -196,26 +239,56 @@ const Navbar: React.FC<NavbarProps> = ({ transparent = false }) => {
             <TransitionLink to="/upcoming-events" className="nav-link-mobile block" onClick={() => setMenuOpen(false)}>
               Upcoming Events
             </TransitionLink>
+            {isAuthenticated && user?.role === 'admin' && (
+              <TransitionLink to="/dashboard" className="nav-link-mobile block" onClick={() => setMenuOpen(false)}>
+                Dashboard
+              </TransitionLink>
+            )}
           </div>
 
           <div className="p-6 border-t border-white/10">
-            <TransitionLink
-              to="/resume"
-              className="flex items-center justify-center w-full px-4 py-3 text-center rounded-md bg-[#8080ff]/30 hover:bg-[#8080ff]/40 text-white font-medium transition-all duration-300 border border-[#8080ff]/20 shadow-[0_0_15px_rgba(128,128,255,0.3)]"
-              onClick={() => setMenuOpen(false)}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                <path
-                  fillRule="evenodd"
-                  d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Login
-            </TransitionLink>
+            {isAuthenticated ? (
+              <div className="space-y-4">
+                <div className="text-white/80 text-sm text-center">
+                  Welcome, {user?.email}
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center justify-center w-full px-4 py-3 text-center rounded-md bg-red-500/30 hover:bg-red-500/40 text-white font-medium transition-all duration-300 border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.3)]"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path
+                      fillRule="evenodd"
+                      d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => {
+                  setLoginModalOpen(true)
+                  setMenuOpen(false)
+                }}
+                className="flex items-center justify-center w-full px-4 py-3 text-center rounded-md bg-[#8080ff]/30 hover:bg-[#8080ff]/40 text-white font-medium transition-all duration-300 border border-[#8080ff]/20 shadow-[0_0_15px_rgba(128,128,255,0.3)]"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path
+                    fillRule="evenodd"
+                    d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                Login
+              </button>
+            )}
           </div>
         </div>
       </div>
+
+      <LoginModal isOpen={loginModalOpen} onClose={() => setLoginModalOpen(false)} />
 
       <style>{`
         .nav-link {
