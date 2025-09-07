@@ -1,7 +1,6 @@
 import Event from "../models/Event.js";
 import User from "../models/User.js";
 
-// Event Management
 export const getAllEvents = async (req, res) => {
   try {
     const events = await Event.find().sort({ createdAt: -1 }).populate('createdBy', 'email');
@@ -83,7 +82,6 @@ export const deleteEvent = async (req, res) => {
   }
 };
 
-// User Management
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select('-password').sort({ createdAt: -1 });

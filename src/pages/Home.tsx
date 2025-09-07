@@ -2,6 +2,7 @@ import React from 'react';
 import { 
   HeroSection,
   AnnouncementTicker,
+  // VisionMission,
   FeaturedEvents,
   DepartmentHighlights,
   ClubsSection,
@@ -9,6 +10,8 @@ import {
   Testimonials,
   CallToAction
 } from '../components/home';
+import VisionMission from "../components/home/VisionMission";
+import ContactUs from "../components/home/ContactUs";
 
 function HomePage() {
   return (
@@ -20,6 +23,8 @@ function HomePage() {
       <FeaturedEvents />
 
 
+      <VisionMission/>
+
       <ClubsSection />
 
       <FeaturedProjects />
@@ -27,6 +32,8 @@ function HomePage() {
       <Testimonials />
 
       <CallToAction />
+
+      <ContactUs />
     </div>
   )
 }

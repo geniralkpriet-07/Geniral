@@ -10,7 +10,6 @@ import { authenticateToken, requireAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Admin routes - all require authentication and admin privileges
 router.get('/', authenticateToken, getAllExecutiveMembers);
 router.get('/:id', authenticateToken, getExecutiveMemberById);
 router.post('/', authenticateToken, requireAdmin, createExecutiveMember);

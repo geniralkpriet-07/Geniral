@@ -1,7 +1,6 @@
 import Club from "../models/Club.js";
 import mongoose from 'mongoose';
 
-// Admin controller functions - require authentication
 export const getAllClubs = async (req, res) => {
   try {
     const clubs = await Club.find().sort({ name: 1 });
@@ -14,14 +13,12 @@ export const getAllClubs = async (req, res) => {
 
 export const getClubById = async (req, res) => {
   try {
-    // First try to find by MongoDB _id
     let club = null;
     
     if (mongoose.Types.ObjectId.isValid(req.params.id)) {
       club = await Club.findById(req.params.id);
     }
     
-    // If not found, try by custom id field
     if (!club) {
       club = await Club.findOne({ id: req.params.id });
     }
@@ -53,7 +50,6 @@ export const createClub = async (req, res) => {
       events
     } = req.body;
     
-    // Check if ID already exists
     const existingClub = await Club.findOne({ id });
     if (existingClub) {
       return res.status(400).json({ 
@@ -61,7 +57,6 @@ export const createClub = async (req, res) => {
       });
     }
     
-    // Also check if name already exists
     const existingClubName = await Club.findOne({ name });
     if (existingClubName) {
       return res.status(400).json({ 
@@ -112,11 +107,9 @@ export const updateClub = async (req, res) => {
       events
     } = req.body;
     
-    // Check if name already exists and doesn't belong to this club
     if (name) {
       let query = { name };
       
-      // Try to exclude current club from name check
       if (mongoose.Types.ObjectId.isValid(req.params.id)) {
         query._id = { $ne: req.params.id };
       } else {
@@ -139,7 +132,6 @@ export const updateClub = async (req, res) => {
       members: members || memberList?.length || 0
     };
     
-    // Only update these fields if they are provided
     if (logoBase64) updateData.logoBase64 = logoBase64;
     if (faculty) updateData.faculty = faculty;
     if (head) updateData.head = head;
@@ -149,7 +141,6 @@ export const updateClub = async (req, res) => {
     
     let updatedClub = null;
     
-    // First try to update by MongoDB _id
     if (mongoose.Types.ObjectId.isValid(req.params.id)) {
       updatedClub = await Club.findByIdAndUpdate(
         req.params.id,
@@ -158,7 +149,6 @@ export const updateClub = async (req, res) => {
       );
     }
     
-    // If not found by _id, try by custom id field
     if (!updatedClub) {
       updatedClub = await Club.findOneAndUpdate(
         { id: req.params.id },
@@ -191,12 +181,10 @@ export const deleteClub = async (req, res) => {
   try {
     let deletedClub = null;
     
-    // First try to delete by MongoDB _id
     if (mongoose.Types.ObjectId.isValid(req.params.id)) {
       deletedClub = await Club.findByIdAndDelete(req.params.id);
     }
     
-    // If not found by _id, try by custom id field
     if (!deletedClub) {
       deletedClub = await Club.findOneAndDelete({ id: req.params.id });
     }
@@ -212,19 +200,16 @@ export const deleteClub = async (req, res) => {
   }
 };
 
-// Member CRUD operations
 export const addClubMember = async (req, res) => {
   try {
     const { name, class: className, role, imageBase64 } = req.body;
     
     let club = null;
     
-    // First try to find by MongoDB _id
     if (mongoose.Types.ObjectId.isValid(req.params.id)) {
       club = await Club.findById(req.params.id);
     }
     
-    // If not found, try by custom id field
     if (!club) {
       club = await Club.findOne({ id: req.params.id });
     }
@@ -236,13 +221,11 @@ export const addClubMember = async (req, res) => {
       });
     }
     
-    // Check if member already exists
     const memberExists = club.memberList.some(member => member.name === name);
     if (memberExists) {
       return res.status(400).json({ message: 'Member already exists in this club' });
     }
     
-    // Use findOneAndUpdate with runValidators: false to avoid validation issues
     const updatedClub = await Club.findByIdAndUpdate(
       club._id,
       {
@@ -283,12 +266,10 @@ export const updateClubMember = async (req, res) => {
     
     let club = null;
     
-    // First try to find by MongoDB _id
     if (mongoose.Types.ObjectId.isValid(req.params.id)) {
       club = await Club.findById(req.params.id);
     }
     
-    // If not found, try by custom id field
     if (!club) {
       club = await Club.findOne({ id: req.params.id });
     }
@@ -305,7 +286,6 @@ export const updateClubMember = async (req, res) => {
       return res.status(404).json({ message: 'Member not found in this club' });
     }
     
-    // Use findOneAndUpdate with runValidators: false to avoid validation issues
     const updatedMember = {
       name: name || club.memberList[memberIndex].name,
       class: className || club.memberList[memberIndex].class,
@@ -313,7 +293,6 @@ export const updateClubMember = async (req, res) => {
       imageBase64: imageBase64 || club.memberList[memberIndex].imageBase64
     };
     
-    // MongoDB update with $ positional operator
     const updatedClub = await Club.findByIdAndUpdate(
       club._id,
       { $set: { [`memberList.${memberIndex}`]: updatedMember } },
@@ -343,12 +322,10 @@ export const removeClubMember = async (req, res) => {
     
     let club = null;
     
-    // First try to find by MongoDB _id
     if (mongoose.Types.ObjectId.isValid(req.params.id)) {
       club = await Club.findById(req.params.id);
     }
     
-    // If not found, try by custom id field
     if (!club) {
       club = await Club.findOne({ id: req.params.id });
     }
@@ -367,7 +344,6 @@ export const removeClubMember = async (req, res) => {
       return res.status(404).json({ message: 'Member not found in this club' });
     }
     
-    // Use findOneAndUpdate with runValidators: false to avoid validation issues
     const updatedClub = await Club.findByIdAndUpdate(
       club._id,
       { 
@@ -388,19 +364,16 @@ export const removeClubMember = async (req, res) => {
   }
 };
 
-// Faculty CRUD operations
 export const addFaculty = async (req, res) => {
   try {
     const { name, dept, role, imageBase64 } = req.body;
     
     let club = null;
     
-    // First try to find by MongoDB _id
     if (mongoose.Types.ObjectId.isValid(req.params.id)) {
       club = await Club.findById(req.params.id);
     }
     
-    // If not found, try by custom id field
     if (!club) {
       club = await Club.findOne({ id: req.params.id });
     }
@@ -412,13 +385,11 @@ export const addFaculty = async (req, res) => {
       });
     }
     
-    // Check if faculty already exists
     const facultyExists = club.faculty.some(f => f.name === name);
     if (facultyExists) {
       return res.status(400).json({ message: 'Faculty already exists in this club' });
     }
     
-    // Use findOneAndUpdate with runValidators: false to avoid validation issues
     const updatedClub = await Club.findByIdAndUpdate(
       club._id,
       {
@@ -458,12 +429,10 @@ export const updateFaculty = async (req, res) => {
     
     let club = null;
     
-    // First try to find by MongoDB _id
     if (mongoose.Types.ObjectId.isValid(req.params.id)) {
       club = await Club.findById(req.params.id);
     }
     
-    // If not found, try by custom id field
     if (!club) {
       club = await Club.findOne({ id: req.params.id });
     }
@@ -487,7 +456,6 @@ export const updateFaculty = async (req, res) => {
       imageBase64: imageBase64 || club.faculty[facultyIndex].imageBase64
     };
     
-    // MongoDB update with $ positional operator
     const updatedClub = await Club.findByIdAndUpdate(
       club._id,
       { $set: { [`faculty.${facultyIndex}`]: updatedFaculty } },
@@ -517,12 +485,10 @@ export const removeFaculty = async (req, res) => {
     
     let club = null;
     
-    // First try to find by MongoDB _id
     if (mongoose.Types.ObjectId.isValid(req.params.id)) {
       club = await Club.findById(req.params.id);
     }
     
-    // If not found, try by custom id field
     if (!club) {
       club = await Club.findOne({ id: req.params.id });
     }
@@ -540,7 +506,6 @@ export const removeFaculty = async (req, res) => {
       return res.status(404).json({ message: 'Faculty not found in this club' });
     }
     
-    // Use findOneAndUpdate with runValidators: false to avoid validation issues
     const updatedClub = await Club.findByIdAndUpdate(
       club._id,
       { $pull: { faculty: { name: facultyName } } },
@@ -558,19 +523,16 @@ export const removeFaculty = async (req, res) => {
   }
 };
 
-// Club head
 export const updateClubHead = async (req, res) => {
   try {
     const { name, class: className, position, email, imageBase64 } = req.body;
     
     let club = null;
     
-    // First try to find by MongoDB _id
     if (mongoose.Types.ObjectId.isValid(req.params.id)) {
       club = await Club.findById(req.params.id);
     }
     
-    // If not found, try by custom id field
     if (!club) {
       club = await Club.findOne({ id: req.params.id });
     }
@@ -582,7 +544,6 @@ export const updateClubHead = async (req, res) => {
       });
     }
     
-    // Use findOneAndUpdate with runValidators: false to avoid validation issues
     const updatedClub = await Club.findByIdAndUpdate(
       club._id,
       {
@@ -616,7 +577,6 @@ export const updateClubHead = async (req, res) => {
   }
 };
 
-// Club content
 export const updateClubContent = async (req, res) => {
   try {
     const { content } = req.body;
@@ -627,12 +587,10 @@ export const updateClubContent = async (req, res) => {
     
     let club = null;
     
-    // First try to find by MongoDB _id
     if (mongoose.Types.ObjectId.isValid(req.params.id)) {
       club = await Club.findById(req.params.id);
     }
     
-    // If not found, try by custom id field
     if (!club) {
       club = await Club.findOne({ id: req.params.id });
     }
@@ -644,7 +602,6 @@ export const updateClubContent = async (req, res) => {
       });
     }
     
-    // Use findOneAndUpdate with runValidators: false to avoid validation issues
     const updatedClub = await Club.findByIdAndUpdate(
       club._id,
       { $set: { content } },

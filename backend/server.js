@@ -12,8 +12,8 @@ import associationHeadRoutes from "./routes/associationHeadRoutes.js";
 import associationHeadAdminRoutes from "./routes/associationHeadRoutesAdmin.js"; 
 import clubRoutes from "./routes/clubRoutes.js"; 
 import clubRoutesAdmin from "./routes/clubRoutesAdmin.js"; 
-import executiveMemberRoutes from "./routes/executiveMemberRoutes.js"; // Add this
-import executiveMemberRoutesAdmin from "./routes/executiveMemberRoutesAdmin.js"; // Add this
+import executiveMemberRoutes from "./routes/executiveMemberRoutes.js";
+import executiveMemberRoutesAdmin from "./routes/executiveMemberRoutesAdmin.js"; 
 import cors from "cors";
 
 dotenv.config();
@@ -35,12 +35,12 @@ app.use("/", authRoutes);
 app.use("/api", eventRoutes);
 app.use("/api/association-members", associationHeadRoutes);
 app.use("/api/clubs", clubRoutes); 
-app.use("/api/executive-members", executiveMemberRoutes); // Add this
+app.use("/api/executive-members", executiveMemberRoutes); 
 
 app.use("/admin", adminRoutes);
 app.use("/admin/association-heads", associationHeadAdminRoutes);
 app.use("/admin/clubs", clubRoutesAdmin); 
-app.use("/admin/executive-members", executiveMemberRoutesAdmin); // Add this
+app.use("/admin/executive-members", executiveMemberRoutesAdmin); 
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

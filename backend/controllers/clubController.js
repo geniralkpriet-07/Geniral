@@ -1,6 +1,5 @@
 import Club from "../models/Club.js";
 
-// Public controller functions - no authentication required
 export const getAllClubs = async (req, res) => {
   try {
     const clubs = await Club.find().sort({ name: 1 });

@@ -1,6 +1,5 @@
 import ExecutiveMember from '../models/ExecutiveMember.js';
 
-// Get all executive members - Public access
 export const getAllExecutiveMembers = async (req, res) => {
   try {
     const members = await ExecutiveMember.find()
@@ -21,7 +20,6 @@ export const getAllExecutiveMembers = async (req, res) => {
   }
 };
 
-// Get executive member by ID - Public access
 export const getExecutiveMemberById = async (req, res) => {
   try {
     const member = await ExecutiveMember.findById(req.params.id).select('-__v');
