@@ -14,7 +14,7 @@ import {
   updateClubHead,
   updateClubContent
 } from '../controllers/clubControllerAdmin.js';
-import { authenticateToken, requireAdmin } from '../middleware/auth.js';
+import { authenticateToken ,requireAdmin} from '../middleware/auth.js';
 
 const router = express.Router();
 

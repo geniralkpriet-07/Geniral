@@ -1,141 +1,35 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
-import axios from "axios"
-import ProfileCard from "../components/members/ProfileCard"
-import SimpleProfileCard from "../components/members/SimpleProfileCard"
-import { LightRays } from "../components/loading"
-
+import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
+import LightRays from '../components/loading/LightRays';
+import ProfileCard from '../components/members/ProfileCard';
+import SectionHeading from '../components/association/SectionHeading';
+import SimpleProfileCard from '../components/members/SimpleProfileCard';
 
 const getAvatarUrl = (name, index) => {
-  const nameSum = name.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0)
-  const deterministic = (nameSum + index) % 70
-  const gender = nameSum % 2 === 0 ? "men" : "women"
-  return `https://randomuser.me/api/portraits/${gender}/${deterministic}.jpg`
-}
-
-const clubHeads = [
-  {
-    id: "ch-1",
-    name: "Harshan R",
-    role: "Club Head - Tech Patrons",
-    avatarUrl: "https://randomuser.me/api/portraits/men/32.jpg",
-    handle: "harshan_r",
-    status: "Online",
-    class: "III CS-A",
-    year: "Third Year",
-  },
-  {
-    id: "ch-2",
-    name: "Adhithiee Suresh",
-    role: "Club Head - Speakzy",
-    avatarUrl: "https://randomuser.me/api/portraits/women/44.jpg",
-    handle: "adhithiee_s",
-    status: "Away",
-    class: "III CS-B",
-    year: "Third Year",
-  },
-  {
-    id: "ch-3",
-    name: "Jei Keshav S",
-    role: "Club Head - ECO/ISR",
-    avatarUrl: "https://randomuser.me/api/portraits/men/75.jpg",
-    handle: "jeikeshav_s",
-    status: "Online",
-    class: "II CS-A",
-    year: "Second Year",
-  },
-  {
-    id: "ch-4",
-    name: "Kabila U S",
-    role: "Club Head - Admire Hands",
-    avatarUrl: "https://randomuser.me/api/portraits/women/22.jpg",
-    handle: "kabila_us",
-    status: "Offline",
-    class: "III CS-A",
-    year: "Third Year",
-  },
-  {
-    id: "ch-5",
-    name: "Arul M",
-    role: "Club Head - Crazy Brains",
-    avatarUrl: "https://randomuser.me/api/portraits/men/42.jpg",
-    handle: "arul_m",
-    status: "Online",
-    class: "III CS-B",
-    year: "Third Year",
-  },
-  {
-    id: "ch-6",
-    name: "Poojaa S",
-    role: "Club Head - Happy Bridge",
-    avatarUrl: "https://randomuser.me/api/portraits/women/33.jpg",
-    handle: "poojaa_s",
-    status: "Away",
-    class: "II CS-A",
-    year: "Second Year",
-  },
-]
-
-const facultyCoordinators = [
-  {
-    name: "Dr. Jayanth Choudary",
-    role: "Technical Support",
-    department: "Professor, CSE",
-    image: "https://randomuser.me/api/portraits/men/42.jpg",
-  },
-  {
-    name: "Dr. Nisha Soms",
-    role: "Speakzy",
-    department: "Asst. Professor, CSE",
-    image: "https://randomuser.me/api/portraits/women/42.jpg",
-  },
-  {
-    name: "Mr. Rajeshkumar S",
-    role: "Tech Patrons",
-    department: "Asst. Professor, CSE",
-    image: "https://randomuser.me/api/portraits/men/32.jpg",
-  },
-  {
-    name: "Mr. Premkumar",
-    role: "ECO/ISR",
-    department: "Asst. Professor, ECE",
-    image: "https://randomuser.me/api/portraits/men/45.jpg",
-  },
-  {
-    name: "Mr. Mohan",
-    role: "Admire Hands",
-    department: "Asst. Professor, CSE",
-    image: "https://randomuser.me/api/portraits/men/36.jpg",
-  },
-  {
-    name: "Ms. Sasikala",
-    role: "Crazy Brains",
-    department: "Asst. Professor, IT",
-    image: "https://randomuser.me/api/portraits/women/36.jpg",
-  },
-]
-
-const executiveMembers = [
-  { name: "Sharmili", class: "II ME CS", image: "https://randomuser.me/api/portraits/women/20.jpg" },
-  { name: "Anjali Chaudhary", class: "II CS A", image: "https://randomuser.me/api/portraits/women/21.jpg" },
-  { name: "Ariharan A", class: "II CS A", image: "https://randomuser.me/api/portraits/men/21.jpg" },
-  { name: "Makavishnu S", class: "II CS B", image: "https://randomuser.me/api/portraits/men/22.jpg" },
-  { name: "Gayathri N", class: "II CS B", image: "https://randomuser.me/api/portraits/women/22.jpg" },
-  { name: "Arunkumar K R", class: "III CS A", image: "https://randomuser.me/api/portraits/men/23.jpg" },
-  { name: "Bala Sivakannan J", class: "III CS A", image: "https://randomuser.me/api/portraits/men/24.jpg" },
-  { name: "Pranav V M", class: "III CS B", image: "https://randomuser.me/api/portraits/men/25.jpg" },
-  { name: "Kavya S", class: "III CS B", image: "https://randomuser.me/api/portraits/women/25.jpg" },
-]
+  if (!name || typeof name !== 'string') {
+    return `https://randomuser.me/api/portraits/men/1.jpg`;
+  }
+  const nameSum = name.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  const deterministic = (nameSum + index) % 70;
+  const gender = nameSum % 2 === 0 ? "men" : "women";
+  return `https://randomuser.me/api/portraits/${gender}/${deterministic}.jpg`;
+};
 
 const Association = () => {
-  const [associationMembers, setAssociationMembers] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [associationMembers, setAssociationMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
-  const [clubs, setClubs] = useState([])
-  const [clubsLoading, setClubsLoading] = useState(true)
-  const [clubsError, setClubsError] = useState(null)
+  // Add these state variables for executive members
+  const [executiveMembers, setExecutiveMembers] = useState([]);
+  const [executiveMembersLoading, setExecutiveMembersLoading] = useState(true);
+  const [executiveMembersError, setExecutiveMembersError] = useState(null);
+  
+  const [clubs, setClubs] = useState([]);
+  const [clubsLoading, setClubsLoading] = useState(true);
+  const [clubsError, setClubsError] = useState(null);
   
   const [activeClub, setActiveClub] = useState(null)
   const [hoveredMember, setHoveredMember] = useState(null)
@@ -145,12 +39,13 @@ const Association = () => {
 
   const headingRefs = useRef([])
 
-  // Fetch association members from the API
+  // Add this near the top of your component where other state variables are defined
+  const [facultyCoordinators, setFacultyCoordinators] = useState([])
+
   useEffect(() => {
     const fetchAssociationMembers = async () => {
       try {
-        setLoading(true)
-        // Note: Using /api/association-members as the route based on your server.js
+        setLoading(true);
         const response = await fetch('http://localhost:7000/api/association-members')
         
         if (!response.ok) {
@@ -159,12 +54,10 @@ const Association = () => {
         
         const data = await response.json()
         
-        // Transform the data to match the format expected by the components
         const transformedMembers = data.members.map(member => ({
           id: member._id,
           name: member.name,
           role: member.role,
-          // Convert the base64 image to a URL
           avatarUrl: member.avatarBase64 ? member.avatarBase64 : getAvatarUrl(member.name, 0),
           handle: member.handle,
           status: member.status || "Offline",
@@ -251,29 +144,117 @@ const Association = () => {
       }
     }
 
-    fetchAssociationMembers()
-  }, [])
+    const fetchExecutiveMembers = async () => {
+      try {
+        setExecutiveMembersLoading(true);
+        const response = await axios.get("http://localhost:7000/api/executive-members");
+        
+        if (response.data && response.data.members) {
+          const fetchedMembers = response.data.members.map(member => ({
+            id: member._id,
+            name: member.name,
+            class: member.class,
+            role: member.role || 'Member',
+            year: member.year || '',
+            avatarUrl: member.avatarBase64 || getAvatarUrl(member.name, 0),
+            handle: member.name.toLowerCase().replace(/\s+/g, '_'),
+            status: member.status || 'Offline',
+            linkedin: member.linkedin || ''
+          }));
+          
+          setExecutiveMembers(fetchedMembers);
+          setExecutiveMembersError(null);
+        }
+      } catch (error) {
+        console.error("Error fetching executive members:", error);
+        setExecutiveMembersError("Failed to load executive members. Please try again later.");
+        // Set fallback data in case of error
+        setExecutiveMembers([
+          {
+            id: "exec-1",
+            name: "Arun Kumar K",
+            role: "Technical Lead",
+            avatarUrl: getAvatarUrl("Arun Kumar K", 1),
+            handle: "arun_k",
+            status: "Online",
+            class: "IV CS-A",
+            year: "Final Year"
+          },
+          // Add more fallback members if needed
+        ]);
+      } finally {
+        setExecutiveMembersLoading(false);
+      }
+    };
 
-  // Fetch clubs from the API
-  useEffect(() => {
     const fetchClubs = async () => {
       try {
-        setClubsLoading(true)
-        const response = await axios.get("http://localhost:7000/api/clubs")
-        setClubs(response.data.clubs || [])
-        setClubsError(null)
-      } catch (error) {
-        console.error('Error fetching clubs:', error)
-        setClubsError("Failed to load clubs. Using demo data instead.")
-        setClubs([])
-      } finally {
-        setClubsLoading(false)
-      }
-    }
-    fetchClubs()
-  }, [])
+        setClubsLoading(true);
+        const response = await axios.get("http://localhost:7000/api/clubs");
+        
+        const transformedClubs = response.data && response.data.clubs ? 
+          response.data.clubs.map(club => {
+            if (!club || typeof club !== 'object') {
+              return null;
+            }
 
-  // Keep all the existing code for intersection observer
+            return {
+              id: club._id || club.id || `club-${Math.random().toString(36).substring(2, 9)}`,
+              name: club.name || "Unnamed Club",
+              description: club.description || "No description available",
+              members: Array.isArray(club.memberList) ? club.memberList.length : 0,
+              faculty: Array.isArray(club.faculty) ? club.faculty.map(f => {
+                if (!f || typeof f !== 'object') return null;
+                return {
+                  name: f.name || 'Faculty Member',
+                  dept: f.department || f.dept || 'Department',
+                  image: f.imageBase64 || f.image || getAvatarUrl(f.name || 'Faculty', 0)
+                };
+              }).filter(Boolean) : [], 
+              head: typeof club.head === 'string' ? club.head : 
+                    (typeof club.head === 'object' && club.head && club.head.name) ? club.head.name : 'Club Head',
+              headImage: club.headImageBase64 || club.logoBase64 || 
+                         getAvatarUrl(typeof club.head === 'string' ? club.head : 
+                                     (typeof club.head === 'object' && club.head && club.head.name) ? 
+                                     club.head.name : 'Club Head', 0),
+              headClass: club.headClass || '',
+              memberList: Array.isArray(club.memberList) ? 
+                club.memberList
+                  .filter(member => member && (typeof member === 'string' || (typeof member === 'object' && member.name)))
+                  .map(member => typeof member === 'string' ? member : member.name || 'Member')
+                : []
+            };
+          }).filter(Boolean) : []; 
+        
+        setClubs(transformedClubs);
+        setClubsError(null);
+      } catch (error) {
+        console.error('Error fetching clubs:', error);
+        setClubsError("Failed to load clubs. Please try again later.");
+        setClubs([]);
+      } finally {
+        setClubsLoading(false);
+      }
+    };
+    fetchAssociationMembers();
+    fetchExecutiveMembers();
+    fetchClubs();
+    
+    // Set a default value for facultyCoordinators
+    setFacultyCoordinators([
+      {
+        name: "Dr. Sathyamoorthy",
+        dept: "Computer Science",
+        image: getAvatarUrl("Dr. Sathyamoorthy", 1)
+      },
+      {
+        name: "Dr. Vasuki",
+        dept: "Electronics",
+        image: getAvatarUrl("Dr. Vasuki", 2)
+      }
+    ]);
+  }, []);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -359,15 +340,6 @@ const Association = () => {
 
   const sortedMembers = [...associationMembers].sort((a, b) => getRoleOrder(a.role) - getRoleOrder(b.role))
 
-  const SectionHeading = ({ title }) => (
-    <h2 ref={addToRefs} className="text-3xl font-bold mb-10 text-center heading-container">
-      <span className="border-b-4 border-[#8080ff] pb-2 text-gradient relative">
-        {title}
-        <div className="heading-rays"></div>
-      </span>
-    </h2>
-  )
-
   return (
     <div className="min-h-screen text-white bg-[#0a0a18] [background:radial-gradient(circle_at_center,_#111133_0%,_#0a0a18_70%,_#050510_100%)] pt-16 sm:pt-24 pb-16">
       <div className="light-rays-container absolute inset-0 z-0 hidden sm:block">
@@ -398,14 +370,12 @@ const Association = () => {
             initiatives
           </p>
           
-          {/* Show error message if there's an error loading data */}
           {error && (
             <div className="bg-red-500/20 border border-red-500/30 rounded-md p-3 mt-4 max-w-lg mx-auto">
               <p className="text-sm text-white">{error}</p>
             </div>
           )}
           
-          {/* Loading indicator */}
           {loading && (
             <div className="flex justify-center items-center py-8">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#8080ff]"></div>
@@ -415,7 +385,6 @@ const Association = () => {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
-        {/* Modified section with API data */}
         <div className="mb-12 sm:mb-16">
           <SectionHeading title="President & Vice President" />
 
@@ -563,7 +532,7 @@ const Association = () => {
         <div className="mb-12 sm:mb-16">
           <SectionHeading title="Clubs" />
 
-          {/* Clubs loading/error states */}
+          
           {clubsError && (
             <div className="bg-red-500/20 border border-red-500/30 rounded-md p-3 mt-4 max-w-lg mx-auto">
               <p className="text-sm text-white">{clubsError}</p>
@@ -575,7 +544,8 @@ const Association = () => {
             </div>
           )}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-10">
-            {clubs.map((club) => {
+            {Array.isArray(clubs) && clubs.map((club) => {
+              if (!club || typeof club !== 'object' || !club.id) return null;
               return (
                 <div
                   key={club.id}
@@ -590,58 +560,69 @@ const Association = () => {
                         Faculty Coordinators
                       </h4>
                       <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4">
-                        {club.faculty.map((faculty, idx) => (
-                          <div
-                            key={`club-faculty-${club.id}-${idx}`}
-                            data-member-id={`club-faculty-${club.id}-${idx}`}
-                            className="flex items-center bg-[#111133]/50 p-2 sm:p-3 rounded-lg border border-[#8080ff]/10 group relative"
-                            onMouseEnter={(e) => handleMemberMouseEnter(`club-faculty-${club.id}-${idx}`, e)}
-                            onMouseLeave={() => handleMemberMouseLeave(`club-faculty-${club.id}-${idx}`)}
-                          >
-                            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden mr-2 sm:mr-3 border border-[#8080ff]">
-                              <img
-                                src={faculty.image || "/placeholder.svg"}
-                                alt={faculty.name}
-                                className="w-full h-full object-cover"
-                                loading="lazy"
-                                onError={(e) => {
-                                  e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(faculty.name)}&background=111133&color=fff`
-                                }}
-                              />
-                            </div>
-                            <div>
-                              <p className="font-medium text-white text-xs sm:text-sm">{faculty.name}</p>
-                              <p className="text-xs text-white/60">{faculty.dept}</p>
-                            </div>
-                          </div>
-                        ))}
+                        {Array.isArray(club.faculty) && club.faculty.length > 0 ? (
+                          club.faculty.map((faculty, idx) => {
+                            if (!faculty || typeof faculty !== 'object') return null;
+                            return (
+                              <div
+                                key={`club-faculty-${club.id}-${idx}`}
+                                data-member-id={`club-faculty-${club.id}-${idx}`}
+                                className="flex items-center bg-[#111133]/50 p-2 sm:p-3 rounded-lg border border-[#8080ff]/10 group relative"
+                                onMouseEnter={(e) => handleMemberMouseEnter(`club-faculty-${club.id}-${idx}`, e)}
+                                onMouseLeave={() => handleMemberMouseLeave(`club-faculty-${club.id}-${idx}`)}
+                              >
+                                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden mr-2 sm:mr-3 border border-[#8080ff]">
+                                  <img
+                                    src={faculty.image || "/placeholder.svg"}
+                                    alt={faculty.name || "Faculty"}
+                                    className="w-full h-full object-cover"
+                                    loading="lazy"
+                                    onError={(e) => {
+                                      e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(faculty.name || "Faculty")}&background=111133&color=fff`
+                                    }}
+                                  />
+                                </div>
+                                <div>
+                                  <p className="font-medium text-white text-xs sm:text-sm">{faculty.name || "Faculty"}</p>
+                                  <p className="text-xs text-white/60">{faculty.dept || ""}</p>
+                                </div>
+                              </div>
+                            );
+                          })
+                        ) : (
+                          <div className="text-sm text-white/60 p-2">No faculty coordinators available</div>
+                        )}
                       </div>
                     </div>
 
                     <div className="mb-4 sm:mb-6">
                       <h4 className="text-xs sm:text-sm text-white/80 mb-2 uppercase tracking-wider">Student Head</h4>
-                      <div
-                        data-member-id={`club-head-${club.id}`}
-                        className="flex items-center bg-[#111133]/50 p-2 sm:p-3 rounded-lg border border-[#8080ff]/10 group relative"
-                        onMouseEnter={(e) => handleMemberMouseEnter(`club-head-${club.id}`, e)}
-                        onMouseLeave={() => handleMemberMouseLeave(`club-head-${club.id}`)}
-                      >
-                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden mr-2 sm:mr-3 border border-[#8080ff]">
-                          <img
-                            src={club.headImage || "/placeholder.svg"}
-                            alt={club.head}
-                            className="w-full h-full object-cover"
-                            loading="lazy"
-                            onError={(e) => {
-                              e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(club.head)}&background=111133&color=fff`
-                            }}
-                          />
+                      {club.head && club.head.length > 0 ? (
+                        <div
+                          data-member-id={`club-head-${club.id}`}
+                          className="flex items-center bg-[#111133]/50 p-2 sm:p-3 rounded-lg border border-[#8080ff]/10 group relative"
+                          onMouseEnter={(e) => handleMemberMouseEnter(`club-head-${club.id}`, e)}
+                          onMouseLeave={() => handleMemberMouseLeave(`club-head-${club.id}`)}
+                        >
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden mr-2 sm:mr-3 border border-[#8080ff]">
+                            <img
+                              src={club.headImage || "/placeholder.svg"}
+                              alt={club.head || "Club Head"}
+                              className="w-full h-full object-cover"
+                              loading="lazy"
+                              onError={(e) => {
+                                e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(club.head || "Club Head")}&background=111133&color=fff`
+                              }}
+                            />
+                          </div>
+                          <div>
+                            <p className="font-medium text-white text-xs sm:text-sm">{club.head}</p>
+                            <p className="text-xs text-white/60">{club.headClass || ""}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-medium text-white text-xs sm:text-sm">{club.head}</p>
-                          <p className="text-xs text-white/60">{club.headClass}</p>
-                        </div>
-                      </div>
+                      ) : (
+                        <div className="text-sm text-white/60 p-2">No club head assigned</div>
+                      )}
                     </div>
 
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
@@ -666,18 +647,20 @@ const Association = () => {
                       <h4 className="font-medium text-white mb-3 sm:mb-4 text-sm sm:text-base">Club Members</h4>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-                        {club.memberList &&
+                        {Array.isArray(club.memberList) && club.memberList.length > 0 ? (
                           club.memberList.map((memberName, index) => {
-                            const memberId = `member-${club.id}-${index}`
-                            const avatarUrl = getAvatarUrl(memberName, index)
+                            if (!memberName) return null;
+                            const memberId = `member-${club.id}-${index}`;
+                            const memberDisplayName = typeof memberName === 'string' ? memberName : 'Member';
+                            const avatarUrl = getAvatarUrl(memberDisplayName, index);
 
                             const memberData = {
                               id: memberId,
-                              name: memberName,
+                              name: memberDisplayName,
                               role: "Member",
                               avatarUrl: avatarUrl,
                               class: `III CS-${String.fromCharCode(65 + (index % 3))}`,
-                              handle: memberName.toLowerCase().replace(/\s+/g, "_"),
+                              handle: memberDisplayName.toLowerCase().replace(/\s+/g, "_"),
                               status: index % 3 === 0 ? "Online" : index % 3 === 1 ? "Away" : "Offline",
                             }
 
@@ -710,7 +693,12 @@ const Association = () => {
                                 </div>
                               </div>
                             )
-                          })}
+                          })
+                        ) : (
+                          <div className="col-span-full text-center py-6">
+                            <p className="text-white/60 text-sm">No members in this club yet</p>
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -723,50 +711,70 @@ const Association = () => {
         <div className="mb-12 sm:mb-16">
           <SectionHeading title="Executive Members" />
 
-          <div className="bg-[#111133]/30 backdrop-blur-sm rounded-xl p-4 sm:p-8 border border-[#8080ff]/20 shadow-[0_4px_20px_rgba(128,128,255,0.15)]">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-              {executiveMembers.map((member, index) => {
-                const execMemberId = `exec-${index}`
-                return (
+          {executiveMembersError && (
+            <div className="bg-red-500/20 border border-red-500/30 rounded-md p-3 mt-4 max-w-lg mx-auto">
+              <p className="text-sm text-white">{executiveMembersError}</p>
+            </div>
+          )}
+          
+          {executiveMembersLoading ? (
+            <div className="flex justify-center items-center py-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#8080ff]"></div>
+            </div>
+          ) : (
+            <div className="bg-[#111133]/30 backdrop-blur-sm rounded-xl p-4 sm:p-8 border border-[#8080ff]/20 shadow-[0_4px_20px_rgba(128,128,255,0.15)]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+                {executiveMembers.map((member, index) => (
                   <div
-                    key={execMemberId}
-                    data-member-id={execMemberId}
-                    className="flex items-center bg-[#111133]/50 p-3 sm:p-4 rounded-lg border border-[#8080ff]/10 group relative"
-                    onMouseEnter={(e) => handleMemberMouseEnter(execMemberId, e)}
-                    onMouseLeave={() => handleMemberMouseLeave(execMemberId)}
+                    key={member.id || index}
+                    className="group relative p-3 rounded-lg hover:bg-[#1a1a4a]/30 transition-all duration-300"
                   >
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden mr-2 sm:mr-3 border border-[#8080ff]">
-                      <img
-                        src={member.image || "/placeholder.svg"}
-                        alt={member.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="font-medium text-white text-sm sm:text-base truncate">{member.name}</p>
-                      <div className="flex items-center mt-1">
-                        <div className="px-2 py-0.5 bg-[#8080ff]/20 rounded-md text-xs text-white">{member.class}</div>
+                    <div className="flex items-center space-x-3">
+                      <div className="flex-shrink-0">
+                        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#8080ff]/30">
+                          <img
+                            src={member.avatarUrl}
+                            alt={member.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-white truncate">
+                          {member.name}
+                        </p>
+                        <p className="text-xs text-gray-400 truncate">
+                          {member.role}
+                        </p>
+                      </div>
+                      <div className="flex-shrink-0">
+                        <span className={`inline-block w-2 h-2 rounded-full ${
+                          member.status === 'Online'
+                            ? 'bg-green-400'
+                            : member.status === 'Away'
+                            ? 'bg-yellow-400'
+                            : 'bg-gray-400'
+                        }`}></span>
                       </div>
                     </div>
                   </div>
-                )
-              })}
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
-      {/* Keep the hover profile cards section unchanged */}
       {typeof window !== "undefined" && window.innerWidth >= 768 && !("ontouchstart" in window) && (
         <div className="fixed inset-0 pointer-events-none z-[1000]">
           {Object.entries(memberProfilesVisible).map(([memberId, isVisible]) => {
-            if (!isVisible) return null
+            if (!isVisible) return null;
 
             let memberData = {
               name: "",
               avatarUrl: "",
               linkedinUrl: "#",
-            }
+            };
 
             const assocMember = associationMembers.find((m) => m.id === memberId)
             if (assocMember) {
@@ -788,27 +796,32 @@ const Association = () => {
               }
             }
 
-            if (memberId.startsWith("club-faculty-")) {
-              const [_, __, clubId, facultyIdx] = memberId.split("-")
-              const club = clubs.find((c) => c.id === clubId)
-              if (club && club.faculty && club.faculty[facultyIdx]) {
-                memberData = {
-                  name: club.faculty[facultyIdx].name,
-                  avatarUrl: club.faculty[facultyIdx].image,
-                  linkedinUrl: "#",
+              if (memberId.startsWith("club-faculty-")) {
+                const parts = memberId.split("-");
+                if (parts.length >= 4) {
+                  const clubId = parts[2];
+                  const facultyIdx = parseInt(parts[3]);
+                  const club = clubs.find((c) => c.id === clubId);
+                  if (club && Array.isArray(club.faculty) && club.faculty[facultyIdx]) {
+                    const faculty = club.faculty[facultyIdx];
+                    memberData = {
+                      name: faculty.name || "Faculty",
+                      avatarUrl: faculty.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(faculty.name || "Faculty")}&background=111133&color=fff`,
+                      linkedinUrl: "#",
+                    };
+                  }
                 }
               }
-            }
-
-            if (memberId.startsWith("club-head-")) {
-              const clubId = memberId.split("-")[2]
-              const club = clubs.find((c) => c.id === clubId)
+              
+              if (memberId.startsWith("club-head-")) {
+              const clubId = memberId.split("-")[2];
+              const club = clubs.find((c) => c.id === clubId);
               if (club) {
                 memberData = {
-                  name: club.head,
-                  avatarUrl: club.headImage,
+                  name: club.head || "Club Head",
+                  avatarUrl: club.headImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(club.head || "Club Head")}&background=111133&color=fff`,
                   linkedinUrl: "#",
-                }
+                };
               }
             }
 
@@ -824,20 +837,21 @@ const Association = () => {
             }
 
             if (memberId.startsWith("member-")) {
-              const parts = memberId.split("-")
+              const parts = memberId.split("-");
               if (parts.length >= 3) {
-                const clubId = parts[1]
-                const memberIdx = Number.parseInt(parts[2])
-                const club = clubs.find((c) => c.id === clubId)
-                if (club && club.memberList && club.memberList[memberIdx]) {
-                  const memberName = club.memberList[memberIdx]
-                  const avatarUrl = getAvatarUrl(memberName, memberIdx)
+                const clubId = parts[1];
+                const memberIdx = Number.parseInt(parts[2]);
+                const club = clubs.find((c) => c.id === clubId);
+                if (club && Array.isArray(club.memberList) && club.memberList[memberIdx]) {
+                  const memberName = club.memberList[memberIdx];
+                  const memberDisplayName = typeof memberName === 'string' ? memberName : 'Member';
+                  const avatarUrl = getAvatarUrl(memberDisplayName, memberIdx);
 
                   memberData = {
-                    name: memberName,
+                    name: memberDisplayName,
                     avatarUrl: avatarUrl,
                     linkedinUrl: "#",
-                  }
+                  };
                 }
               }
             }
@@ -859,7 +873,7 @@ const Association = () => {
                   linkedinUrl={memberData.linkedinUrl}
                 />
               </div>
-            )
+            );
           })}
         </div>
       )}
@@ -953,7 +967,7 @@ const Association = () => {
         }
       `}</style>
     </div>
-  )
-}
+  );
+};
 
-export default Association
+export default Association;

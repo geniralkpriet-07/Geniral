@@ -4,6 +4,7 @@ import UserManagement from './UserManagement';
 import EventManagement from './EventManagement';
 import AssociationHeadManagement from './AssociationHeadManagement';
 import ClubManagement from './ClubManagement';
+import ExecutiveMemberManagement from './ExecutiveMemberManagement'; // Add this import
 import { Navigate } from 'react-router-dom';
 import LightRays from '../../components/loading/LightRays';
 
@@ -199,6 +200,17 @@ const AdminDashboard: React.FC = () => {
             >
               Club Management
             </button>
+            {/* Add this new button */}
+            <button
+              onClick={() => setActiveTab('executiveMembers')}
+              className={`${
+                activeTab === 'executiveMembers'
+                  ? 'border-[#8080ff] text-[#8080ff] shadow-[0_0_15px_rgba(128,128,255,0.3)]'
+                  : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300'
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-all duration-300`}
+            >
+              Executive Members
+            </button>
           </nav>
         </div>
 
@@ -216,6 +228,7 @@ const AdminDashboard: React.FC = () => {
             {activeTab === 'events' && <EventManagement />}
             {activeTab === 'association' && <AssociationHeadManagement />}
             {activeTab === 'clubs' && <ClubManagement />}
+            {activeTab === 'executiveMembers' && <ExecutiveMemberManagement />} {/* Add this line */}
           </div>
         </div>
       </div>
