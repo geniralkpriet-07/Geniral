@@ -36,6 +36,9 @@ const Association = () => {
   const [memberProfilesVisible, setMemberProfilesVisible] = useState({})
   const [hoverPosition, setHoverPosition] = useState({ top: 0, left: 0 })
   const hoverTimeoutsRef = useRef({})
+  
+  // API URL from environment variables
+  const API_URL = import.meta.env.VITE_API_URL
 
   const headingRefs = useRef([])
 
@@ -46,7 +49,7 @@ const Association = () => {
     const fetchAssociationMembers = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:7000/api/association-members')
+        const response = await fetch(`${API_URL}/api/association-members`)
         
         if (!response.ok) {
           throw new Error('Failed to fetch association members')
@@ -148,7 +151,7 @@ const Association = () => {
       try {
         setExecutiveMembersLoading(true);
         console.log("Fetching executive members...");
-        const response = await axios.get("http://localhost:7000/api/executive-members");
+        const response = await axios.get(`${API_URL}/api/executive-members`);
         console.log("Executive members response:", response.data);
         
         if (response.data && response.data.members) {
@@ -214,7 +217,7 @@ const Association = () => {
     const fetchClubs = async () => {
       try {
         setClubsLoading(true);
-        const response = await axios.get("http://localhost:7000/api/clubs");
+        const response = await axios.get(`${API_URL}/api/clubs`);
         
         const transformedClubs = response.data && response.data.clubs ? 
           response.data.clubs.map(club => {

@@ -97,7 +97,7 @@ const ClubManagement: React.FC = () => {
     imagePreview: ''
   });
 
-  const API_URL = 'http://localhost:7000';
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const [showContentPreview, setShowContentPreview] = useState(false);
 

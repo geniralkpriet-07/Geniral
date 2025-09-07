@@ -16,7 +16,7 @@ const UserManagement: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const API_URL = 'http://localhost:7000';
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     fetchUsers();

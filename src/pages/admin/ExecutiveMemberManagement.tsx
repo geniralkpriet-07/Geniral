@@ -16,7 +16,7 @@ interface ExecutiveMember {
 }
 
 const ExecutiveMemberManagement: React.FC = () => {
-    const API_URL='http://localhost:7000';
+    const API_URL=import.meta.env.VITE_API_URL;
   const { token } = useAuth();
   const [members, setMembers] = useState<ExecutiveMember[]>([]);
   const [isLoading, setIsLoading] = useState(true);

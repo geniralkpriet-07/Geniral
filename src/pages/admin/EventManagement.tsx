@@ -48,7 +48,7 @@ const EventManagement: React.FC = () => {
     isRegistrationOpen: true
   });
 
-  const API_URL = 'http://localhost:7000';
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     fetchEvents();
