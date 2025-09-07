@@ -329,7 +329,7 @@ const AssociationHeadManagement: React.FC = () => {
                   className="mt-1 focus:ring-[#8080ff] focus:border-[#8080ff] block w-full shadow-sm sm:text-sm border-gray-700 rounded-md bg-gray-800/50 text-white backdrop-blur-sm disabled:bg-gray-700/50 disabled:text-gray-400"
                 />
                 {editingHead && (
-                  <p className="mt-1 text-xs text-gray-500">ID cannot be changed after creation.</p>
+                  <p className="mt-1 text-xs text-gray-400">ID cannot be changed after creation.</p>
                 )}
               </div>
 
@@ -395,14 +395,14 @@ const AssociationHeadManagement: React.FC = () => {
                 <label className="block text-sm font-medium text-gray-300">
                   Avatar Image
                 </label>
-                <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-700 border-dashed rounded-md bg-gray-800/30 backdrop-blur-sm">
+                <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-purple-500/30 border-dashed rounded-md bg-gray-800/30 backdrop-blur-sm">
                   <div className="space-y-1 text-center">
                     {formData.avatarPreview ? (
                       <div>
                         <img 
                           src={formData.avatarPreview} 
                           alt="Avatar preview" 
-                          className="mx-auto h-32 w-32 rounded-full object-cover border border-gray-700 shadow-[0_0_15px_rgba(128,128,255,0.3)]" 
+                          className="mx-auto h-32 w-32 rounded-full object-cover border border-purple-500/30 shadow-[0_0_15px_rgba(128,128,255,0.3)]" 
                         />
                         <button
                           type="button"
@@ -445,7 +445,7 @@ const AssociationHeadManagement: React.FC = () => {
                           </label>
                           <p className="pl-1">or drag and drop</p>
                         </div>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-400">
                           PNG, JPG, GIF up to 10MB
                         </p>
                       </div>
@@ -540,54 +540,54 @@ const AssociationHeadManagement: React.FC = () => {
       ) : (
         <div className="overflow-x-auto">
           {associationHeads.length > 0 ? (
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-gray-700">
+              <thead className="bg-[#1a1a2e]/70 backdrop-blur-sm">
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                     Member
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                     ID
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                     Role
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                     Class
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                     Status
                   </th>
-                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-[#1a1a2e]/50 divide-y divide-gray-700">
                 {associationHeads.map((head) => (
-                  <tr key={head._id}>
+                  <tr key={head._id} className="hover:bg-[#2a2a3e]/70 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="flex-shrink-0 h-10 w-10">
                           {head.avatarBase64 ? (
                             <img 
-                              className="h-10 w-10 rounded-full object-cover"
+                              className="h-10 w-10 rounded-full object-cover border border-purple-500/30 shadow-[0_0_10px_rgba(128,128,255,0.3)]"
                               src={head.avatarBase64} 
                               alt={head.name}
                             />
                           ) : (
-                            <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                            <div className="h-10 w-10 rounded-full bg-[#2a2a4e] flex items-center justify-center text-gray-300 border border-purple-500/30 shadow-[0_0_10px_rgba(128,128,255,0.3)]">
                               {head.name.charAt(0).toUpperCase()}
                             </div>
                           )}
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">{head.name}</div>
-                          <div className="text-sm text-gray-500">@{head.handle}</div>
+                          <div className="text-sm font-medium text-white">{head.name}</div>
+                          <div className="text-sm text-gray-400">@{head.handle}</div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                       {head.id}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -595,7 +595,7 @@ const AssociationHeadManagement: React.FC = () => {
                         {head.role}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                       {head.class} • {head.year}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -606,13 +606,13 @@ const AssociationHeadManagement: React.FC = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button
                         onClick={() => handleEdit(head)}
-                        className="text-indigo-600 hover:text-indigo-900 mr-4"
+                        className="text-[#8080ff] hover:text-[#a0a0ff] mr-4"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDeleteHead(head.id)}
-                        className="text-red-600 hover:text-red-900"
+                        className="text-red-400 hover:text-red-300"
                       >
                         Delete
                       </button>
@@ -622,8 +622,8 @@ const AssociationHeadManagement: React.FC = () => {
               </tbody>
             </table>
           ) : (
-            <div className="text-center py-10">
-              <p className="text-gray-500">No association heads found</p>
+            <div className="text-center py-10 bg-[#1a1a2e]/70 backdrop-blur-sm">
+              <p className="text-gray-400">No association heads found</p>
             </div>
           )}
         </div>
