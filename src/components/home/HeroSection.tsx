@@ -4,6 +4,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { LightRays } from "../loading"
 import "./hero.css"
+// Using relative path with type declaration support
 import img from "../../assets/1.jpeg"
 type HeroSectionProps = {}
 

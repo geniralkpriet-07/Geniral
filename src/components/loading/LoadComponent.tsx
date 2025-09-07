@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LightRays } from '.'
+// Using relative path with type declaration support
 import genniralLogo from '../../assets/logo.png'
 
 function LoadComponent() {

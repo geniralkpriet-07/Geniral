@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import '../../App.css'
 import { LightRays } from '../../components/loading'
+// Using public path with type declaration support
 import genniralLogo from '/logo.png'
 
 function LoadingScreen() {
