@@ -1,5 +1,6 @@
 import ExecutiveMember from '../models/ExecutiveMember.js';
 import mongoose from 'mongoose';
+import { invalidateExecutiveMemberCache } from '../utils/cacheInvalidation.js';
 
 export const getAllExecutiveMembers = async (req, res) => {
   try {
@@ -75,6 +76,9 @@ export const createExecutiveMember = async (req, res) => {
     
     await newMember.save();
     
+    // Invalidate cache after creating a new executive member
+    await invalidateExecutiveMemberCache();
+    
     res.status(201).json({
       success: true,
       member: newMember
@@ -131,6 +135,9 @@ export const updateExecutiveMember = async (req, res) => {
       });
     }
     
+    // Invalidate cache after updating executive member
+    await invalidateExecutiveMemberCache(req.params.id);
+    
     res.status(200).json({
       success: true,
       member: updatedMember
@@ -162,6 +169,9 @@ export const deleteExecutiveMember = async (req, res) => {
         message: 'Executive member not found'
       });
     }
+    
+    // Invalidate cache after deleting executive member
+    await invalidateExecutiveMemberCache(req.params.id);
     
     res.status(200).json({
       success: true,

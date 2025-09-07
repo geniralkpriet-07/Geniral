@@ -1,4 +1,5 @@
 import Event from "../models/Event.js";
+import { invalidateEventCache } from "../utils/cacheInvalidation.js";
 
 export const getAllEvents = async (req, res) => {
   try {
@@ -58,6 +59,10 @@ export const createEvent = async (req, res) => {
     });
 
     await event.save();
+    
+    // Invalidate cache after creating a new event
+    await invalidateEventCache();
+    
     res.status(201).json({ message: "Event created successfully", event });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -75,6 +80,9 @@ export const updateEvent = async (req, res) => {
     if (!event) {
       return res.status(404).json({ error: "Event not found" });
     }
+    
+    // Invalidate cache after updating an event
+    await invalidateEventCache(req.params.id);
     
     res.json({ message: "Event updated successfully", event });
   } catch (error) {

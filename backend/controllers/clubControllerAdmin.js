@@ -1,5 +1,6 @@
 import Club from "../models/Club.js";
 import mongoose from 'mongoose';
+import { invalidateClubCache } from "../utils/cacheInvalidation.js";
 
 export const getAllClubs = async (req, res) => {
   try {
@@ -79,6 +80,10 @@ export const createClub = async (req, res) => {
     });
     
     const savedClub = await newClub.save();
+    
+    // Invalidate cache after creating a new club
+    await invalidateClubCache();
+    
     res.status(201).json({ 
       message: 'Club created successfully',
       club: savedClub 

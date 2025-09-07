@@ -15,6 +15,8 @@ import clubRoutesAdmin from "./routes/clubRoutesAdmin.js";
 import executiveMemberRoutes from "./routes/executiveMemberRoutes.js";
 import executiveMemberRoutesAdmin from "./routes/executiveMemberRoutesAdmin.js"; 
 import cors from "cors";
+// Import Redis for caching
+import { redis } from "./config/redis.js";
 
 dotenv.config();
 

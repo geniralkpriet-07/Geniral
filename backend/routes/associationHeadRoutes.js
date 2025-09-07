@@ -4,13 +4,14 @@ import {
   getAssociationMemberById,
   getAssociationMembersByRole
 } from '../controllers/associationHeadController.js';
+import { cacheMiddleware } from '../middleware/cache.js';
 
 const router = express.Router();
 
-router.get('/', getAllAssociationMembers);
+router.get('/', cacheMiddleware(3600), getAllAssociationMembers);
 
-router.get('/id/:id', getAssociationMemberById);
+router.get('/id/:id', cacheMiddleware(3600), getAssociationMemberById);
 
-router.get('/role/:role', getAssociationMembersByRole);
+router.get('/role/:role', cacheMiddleware(3600), getAssociationMembersByRole);
 
 export default router;

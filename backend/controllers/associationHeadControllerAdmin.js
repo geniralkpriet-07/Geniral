@@ -1,4 +1,5 @@
 import AssociationHead from '../models/AssociationMember.js';
+import { invalidateAssociationMemberCache } from '../utils/cacheInvalidation.js';
 
 export const getAllAssociationHeads = async (req, res) => {
   try {
@@ -52,6 +53,9 @@ export const createAssociationHead = async (req, res) => {
     });
 
     const savedHead = await newHead.save();
+    
+    await invalidateAssociationMemberCache();
+    
     res.status(201).json(savedHead);
   } catch (error) {
     console.error('Error creating association head:', error);
@@ -93,6 +97,9 @@ export const updateAssociationHead = async (req, res) => {
       return res.status(404).json({ message: 'Association head not found' });
     }
 
+    // Invalidate cache after updating association head
+    await invalidateAssociationMemberCache(req.params.id);
+    
     res.status(200).json(updatedHead);
   } catch (error) {
     console.error('Error updating association head:', error);
@@ -107,6 +114,9 @@ export const deleteAssociationHead = async (req, res) => {
     if (!deletedHead) {
       return res.status(404).json({ message: 'Association head not found' });
     }
+    
+    // Invalidate cache after deleting association head
+    await invalidateAssociationMemberCache(req.params.id);
     
     res.status(200).json({ message: 'Association head deleted successfully' });
   } catch (error) {
