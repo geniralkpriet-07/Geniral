@@ -22,7 +22,6 @@ const Association = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  // Add these state variables for executive members
   const [executiveMembers, setExecutiveMembers] = useState([]);
   const [executiveMembersLoading, setExecutiveMembersLoading] = useState(true);
   const [executiveMembersError, setExecutiveMembersError] = useState(null);
@@ -37,12 +36,10 @@ const Association = () => {
   const [hoverPosition, setHoverPosition] = useState({ top: 0, left: 0 })
   const hoverTimeoutsRef = useRef({})
   
-  // API URL from environment variables
   const API_URL = import.meta.env.VITE_API_URL
 
   const headingRefs = useRef([])
 
-  // Add this near the top of your component where other state variables are defined
   const [facultyCoordinators, setFacultyCoordinators] = useState([])
 
   useEffect(() => {
@@ -412,6 +409,72 @@ const Association = () => {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
+        <div className="mb-12 sm:mb-16">
+          <SectionHeading title="Founder" />
+          
+          <div className="flex justify-center items-center mb-10 sm:mb-14 ml-[100px]">
+            <div className="w-full max-w-[280px] sm:max-w-sm mx-auto">
+              <ProfileCard
+                name="Ramji K"
+                title="Founder"
+                handle="ramji_k"
+                status="Online"
+                contactText="Contact"
+                avatarUrl="https://randomuser.me/api/portraits/men/32.jpg"
+                showUserInfo={true}
+                enableTilt={false}
+                enableMobileTilt={false}
+                onContactClick={() => handleContactClick({name: "Ramji K", role: "Founder"})}
+                classInfo="IV CSE-A"
+                linkedinUrl="#"
+                showGeniral={true}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="mb-12 sm:mb-16">
+          <SectionHeading title="Co-founders" />
+          
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-6 sm:gap-8 mb-10 sm:mb-14">
+            <div className="w-full max-w-[280px] sm:max-w-sm ml-[100px] sm:mx-auto sm:ml-[100px]">
+              <ProfileCard
+                name="Kishore R"
+                title="Co-founder"
+                handle="kishore_r"
+                status="Online"
+                contactText="Contact"
+                avatarUrl="https://randomuser.me/api/portraits/men/45.jpg"
+                showUserInfo={true}
+                enableTilt={false}
+                enableMobileTilt={false}
+                onContactClick={() => handleContactClick({name: "Kishore R", role: "Co-founder"})}
+                classInfo="IV CSE-B"
+                linkedinUrl="#"
+                showGeniral={true}
+              />
+            </div>
+
+            <div className="w-full max-w-[280px] sm:max-w-sm ml-[100px] sm:mx-auto sm:ml-[100px]">
+              <ProfileCard
+                name="Raman K"
+                title="Co-founder"
+                handle="raman_k"
+                status="Online"
+                contactText="Contact"
+                avatarUrl="https://randomuser.me/api/portraits/men/68.jpg"
+                showUserInfo={true}
+                enableTilt={false}
+                enableMobileTilt={false}
+                onContactClick={() => handleContactClick({name: "Raman K", role: "Co-founder"})}
+                classInfo="IV CSE-A"
+                linkedinUrl="#"
+                showGeniral={true}
+              />
+            </div>
+          </div>
+        </div>
+        
         <div className="mb-12 sm:mb-16">
           <SectionHeading title="President & Vice President" />
 

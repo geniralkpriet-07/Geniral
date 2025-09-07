@@ -244,9 +244,6 @@ const Navbar: React.FC<NavbarProps> = ({ transparent = false }) => {
             </TransitionLink>
             {isAuthenticated && user?.role === 'admin' && (
               <>
-                <TransitionLink to="/dashboard" className="nav-link-mobile block" onClick={() => setMenuOpen(false)}>
-                  Dashboard
-                </TransitionLink>
                 <TransitionLink to="/admin" className="nav-link-mobile block" onClick={() => setMenuOpen(false)}>
                   Admin Panel
                 </TransitionLink>
