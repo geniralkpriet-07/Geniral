@@ -415,17 +415,17 @@ const Association = () => {
           <div className="flex justify-center items-center mb-10 sm:mb-14 ml-[100px]">
             <div className="w-full max-w-[280px] sm:max-w-sm mx-auto">
               <ProfileCard
-                name="Ramji K"
+                name="Krithika J"
                 title="Founder"
-                handle="ramji_k"
+                handle="krithika_j"
                 status="Online"
                 contactText="Contact"
-                avatarUrl="https://randomuser.me/api/portraits/men/32.jpg"
+                avatarUrl="https://randomuser.me/api/portraits/women/32.jpg"
                 showUserInfo={true}
                 enableTilt={false}
                 enableMobileTilt={false}
-                onContactClick={() => handleContactClick({name: "Ramji K", role: "Founder"})}
-                classInfo="IV CSE-A"
+                onContactClick={() => handleContactClick({name: "Krithika J", role: "Founder"})}
+                classInfo="Professor, CSE"
                 linkedinUrl="#"
                 showGeniral={true}
               />
@@ -439,17 +439,17 @@ const Association = () => {
           <div className="flex flex-col sm:flex-row justify-center items-center gap-6 sm:gap-8 mb-10 sm:mb-14">
             <div className="w-full max-w-[280px] sm:max-w-sm ml-[100px] sm:mx-auto sm:ml-[100px]">
               <ProfileCard
-                name="Kishore R"
+                name="Amirtha"
                 title="Co-founder"
-                handle="kishore_r"
+                handle="amirtha"
                 status="Online"
                 contactText="Contact"
-                avatarUrl="https://randomuser.me/api/portraits/men/45.jpg"
+                avatarUrl="https://randomuser.me/api/portraits/women/45.jpg"
                 showUserInfo={true}
                 enableTilt={false}
                 enableMobileTilt={false}
-                onContactClick={() => handleContactClick({name: "Kishore R", role: "Co-founder"})}
-                classInfo="IV CSE-B"
+                onContactClick={() => handleContactClick({name: "Amirtha", role: "Co-founder"})}
+                classInfo="CSE, Alumni"
                 linkedinUrl="#"
                 showGeniral={true}
               />
@@ -457,17 +457,17 @@ const Association = () => {
 
             <div className="w-full max-w-[280px] sm:max-w-sm ml-[100px] sm:mx-auto sm:ml-[100px]">
               <ProfileCard
-                name="Raman K"
+                name="Pranesh"
                 title="Co-founder"
-                handle="raman_k"
+                handle="pranesh"
                 status="Online"
                 contactText="Contact"
                 avatarUrl="https://randomuser.me/api/portraits/men/68.jpg"
                 showUserInfo={true}
                 enableTilt={false}
                 enableMobileTilt={false}
-                onContactClick={() => handleContactClick({name: "Raman K", role: "Co-founder"})}
-                classInfo="IV CSE-A"
+                onContactClick={() => handleContactClick({name: "Pranesh", role: "Co-founder"})}
+                classInfo="Department of CSE, Alumni"
                 linkedinUrl="#"
                 showGeniral={true}
               />
