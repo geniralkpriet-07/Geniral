@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import UserManagement from './UserManagement';
 import EventManagement from './EventManagement';
-import AssociationHeadManagement from './AssociationHeadManagement';
+import ResponsiveAssociationHeadManagement from './ResponsiveAssociationHeadManagement';
 import ClubManagement from './ClubManagement';
-import ExecutiveMemberManagement from './ExecutiveMemberManagement'; // Add this import
+import ExecutiveMemberManagement from './ExecutiveMemberManagement';
 import { Navigate } from 'react-router-dom';
 import LightRays from '../../components/loading/LightRays';
+import './admin.css';
 
 // Enhanced animated light ray component
 const AnimatedLightRays = () => {
@@ -139,17 +140,17 @@ const AdminDashboard: React.FC = () => {
       <div className="absolute inset-0 z-0">
         <LightRays className="header-rays" />
       </div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 bg-white/10 backdrop-blur-md rounded-xl">
-        <div className="flex justify-between h-20">
-          <div className="flex">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 relative z-10 bg-white/10 backdrop-blur-md rounded-xl">
+        <div className="flex flex-col sm:flex-row sm:justify-between py-4 sm:py-0 sm:h-20 gap-2 sm:gap-0">
+          <div className="flex justify-center sm:justify-start">
             <div className="flex-shrink-0 flex items-center">
-              <h1 className="text-2xl font-bold text-white drop-shadow-[0_0_30px_rgba(161,196,253,0.5)]">
+              <h1 className="text-xl sm:text-2xl font-bold text-white text-center sm:text-left drop-shadow-[0_0_30px_rgba(161,196,253,0.5)]">
                 Admin Dashboard
               </h1>
             </div>
           </div>
-          <div className="flex items-center">
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#8080ff]/30 text-white border border-[#8080ff]/20 shadow-[0_0_15px_rgba(128,128,255,0.3)]">
+          <div className="flex justify-center sm:justify-start items-center">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-[#8080ff]/30 text-white border border-[#8080ff]/20 shadow-[0_0_15px_rgba(128,128,255,0.3)] max-w-[90vw] sm:max-w-full truncate">
               {user?.email}
             </span>
           </div>
@@ -159,62 +160,61 @@ const AdminDashboard: React.FC = () => {
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 relative z-10">
         <div className="border-b border-gray-700/50 relative overflow-hidden rounded-t-lg backdrop-blur-sm">
           <div className="absolute inset-0 bg-[#1a1a2e]/30 pointer-events-none"></div>
-          <nav className="-mb-px flex space-x-8 relative z-10 px-4">
+          <nav className="admin-tabs admin-scrollbar -mb-px flex flex-wrap sm:flex-nowrap gap-2 sm:gap-4 relative z-10 px-2 sm:px-4 overflow-x-auto">
             <button
               onClick={() => setActiveTab('users')}
-              className={`${
+              className={`admin-tab ${
                 activeTab === 'users'
                   ? 'border-[#8080ff] text-[#8080ff] shadow-[0_0_15px_rgba(128,128,255,0.3)]'
                   : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300'
-              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-all duration-300`}
+              } whitespace-nowrap py-3 sm:py-4 px-1 border-b-2 font-medium text-xs sm:text-sm flex-shrink-0 transition-all duration-300`}
             >
-              User Management
+              Users
             </button>
             <button
               onClick={() => setActiveTab('events')}
-              className={`${
+              className={`admin-tab ${
                 activeTab === 'events'
                   ? 'border-[#8080ff] text-[#8080ff] shadow-[0_0_15px_rgba(128,128,255,0.3)]'
                   : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300'
-              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-all duration-300`}
+              } whitespace-nowrap py-3 sm:py-4 px-1 border-b-2 font-medium text-xs sm:text-sm flex-shrink-0 transition-all duration-300`}
             >
-              Event Management
+              Events
             </button>
             <button
               onClick={() => setActiveTab('association')}
-              className={`${
+              className={`admin-tab ${
                 activeTab === 'association'
                   ? 'border-[#8080ff] text-[#8080ff] shadow-[0_0_15px_rgba(128,128,255,0.3)]'
                   : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300'
-              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-all duration-300`}
+              } whitespace-nowrap py-3 sm:py-4 px-1 border-b-2 font-medium text-xs sm:text-sm flex-shrink-0 transition-all duration-300`}
             >
-              Association Management
+              Association
             </button>
             <button
               onClick={() => setActiveTab('clubs')}
-              className={`${
+              className={`admin-tab ${
                 activeTab === 'clubs'
                   ? 'border-[#8080ff] text-[#8080ff] shadow-[0_0_15px_rgba(128,128,255,0.3)]'
                   : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300'
-              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-all duration-300`}
+              } whitespace-nowrap py-3 sm:py-4 px-1 border-b-2 font-medium text-xs sm:text-sm flex-shrink-0 transition-all duration-300`}
             >
-              Club Management
+              Clubs
             </button>
-            {/* Add this new button */}
             <button
               onClick={() => setActiveTab('executiveMembers')}
-              className={`${
+              className={`admin-tab ${
                 activeTab === 'executiveMembers'
                   ? 'border-[#8080ff] text-[#8080ff] shadow-[0_0_15px_rgba(128,128,255,0.3)]'
                   : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300'
-              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-all duration-300`}
+              } whitespace-nowrap py-3 sm:py-4 px-1 border-b-2 font-medium text-xs sm:text-sm flex-shrink-0 transition-all duration-300`}
             >
-              Executive Members
+              Executives
             </button>
           </nav>
         </div>
 
-        <div className="py-6 relative">
+        <div className="py-6 relative admin-content">
           {/* Content panel with subtle light effects */}
           <div className="absolute inset-0 -z-10 rounded-lg overflow-hidden">
             <div className="absolute inset-0 bg-[#1a1a2e]/20 backdrop-blur-sm"></div>
@@ -226,9 +226,9 @@ const AdminDashboard: React.FC = () => {
           <div className="relative z-10">
             {activeTab === 'users' && <UserManagement />}
             {activeTab === 'events' && <EventManagement />}
-            {activeTab === 'association' && <AssociationHeadManagement />}
+            {activeTab === 'association' && <ResponsiveAssociationHeadManagement />}
             {activeTab === 'clubs' && <ClubManagement />}
-            {activeTab === 'executiveMembers' && <ExecutiveMemberManagement />} {/* Add this line */}
+            {activeTab === 'executiveMembers' && <ExecutiveMemberManagement />}
           </div>
         </div>
       </div>

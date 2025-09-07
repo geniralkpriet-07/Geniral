@@ -1,0 +1,158 @@
+/* Admin panel responsive styles */
+
+/* General mobile adjustments */
+@media (max-width: 640px) {
+  .admin-content {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  
+  .admin-table-wrapper {
+    margin-left: -1rem;
+    margin-right: -1rem;
+    overflow-x: auto;
+  }
+  
+  .admin-card {
+    padding: 1rem;
+  }
+  
+  /* Form adjustments for mobile */
+  .admin-form-grid {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .admin-form-field {
+    margin-bottom: 1rem;
+  }
+  
+  /* Make buttons stack on mobile */
+  .admin-button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  /* Table mobile adjustments */
+  .admin-table {
+    min-width: 100%;
+    font-size: 0.875rem;
+  }
+  
+  .admin-table th,
+  .admin-table td {
+    padding: 0.5rem;
+  }
+  
+  /* Mobile cards for tables */
+  .admin-mobile-card {
+    background-color: rgba(26, 26, 46, 0.5);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid rgba(128, 128, 255, 0.2);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  .admin-mobile-card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+  
+  .admin-mobile-card-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+    margin-right: 0.75rem;
+    object-fit: cover;
+    border: 1px solid rgba(128, 128, 255, 0.3);
+    box-shadow: 0 0 10px rgba(128, 128, 255, 0.3);
+  }
+  
+  .admin-mobile-card-name {
+    font-weight: 500;
+    color: white;
+  }
+  
+  .admin-mobile-card-handle {
+    font-size: 0.75rem;
+    color: rgba(209, 213, 219, 0.7);
+  }
+  
+  .admin-mobile-card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .admin-mobile-card-field {
+    background-color: rgba(26, 26, 62, 0.5);
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+  }
+  
+  .admin-mobile-card-label {
+    color: rgba(209, 213, 219, 0.7);
+    margin-bottom: 0.25rem;
+  }
+  
+  .admin-mobile-card-value {
+    color: rgba(255, 255, 255, 0.9);
+  }
+  
+  .admin-mobile-card-actions {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .admin-mobile-card-button {
+    background-color: rgba(42, 42, 78, 1);
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    flex-grow: 1;
+  }
+  
+  .admin-mobile-card-button:first-child {
+    margin-right: 0.5rem;
+  }
+  
+  /* Admin tabs for mobile */
+  .admin-tabs {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .admin-tab {
+    padding: 0.5rem 0.75rem;
+    white-space: nowrap;
+    font-size: 0.75rem;
+    border-bottom-width: 2px;
+  }
+}
+
+/* Scrollbar styling */
+.admin-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.admin-scrollbar::-webkit-scrollbar-track {
+  background: rgba(30, 30, 50, 0.5);
+  border-radius: 3px;
+}
+
+.admin-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 255, 0.3);
+  border-radius: 3px;
+}
+
+.admin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(128, 128, 255, 0.5);
+}

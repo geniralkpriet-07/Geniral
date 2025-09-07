@@ -288,33 +288,33 @@ const AssociationHeadManagement: React.FC = () => {
   // UI Rendering
   return (
     <div className="bg-[#1a1a2e]/50 shadow-lg shadow-purple-500/10 overflow-hidden sm:rounded-lg backdrop-blur-md border border-purple-500/20">
-      <div className="px-4 py-5 sm:px-6 flex justify-between items-center border-b border-gray-700">
+      <div className="px-4 py-5 sm:px-6 flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-700 gap-4">
         <h3 className="text-lg leading-6 font-medium text-white">Association Head Management</h3>
         <button
           onClick={handleAddNew}
-          className="inline-flex items-center px-4 py-2 border border-[#8080ff]/20 text-sm font-medium rounded-md shadow-sm text-white bg-[#8080ff]/30 hover:bg-[#8080ff]/40 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#8080ff]/50 shadow-[0_0_15px_rgba(128,128,255,0.3)]"
+          className="inline-flex items-center px-4 py-2 border border-[#8080ff]/20 text-sm font-medium rounded-md shadow-sm text-white bg-[#8080ff]/30 hover:bg-[#8080ff]/40 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#8080ff]/50 shadow-[0_0_15px_rgba(128,128,255,0.3)] w-full sm:w-auto justify-center"
         >
           Add New Member
         </button>
       </div>
 
       {error && (
-        <div className="mx-4 mb-4 p-4 bg-red-500/30 border border-red-500/30 text-white rounded backdrop-blur-sm">
+        <div className="mx-4 my-4 p-4 bg-red-500/30 border border-red-500/30 text-white rounded backdrop-blur-sm">
           {error}
         </div>
       )}
 
       {successMessage && (
-        <div className="mx-4 mb-4 p-4 bg-green-500/30 border border-green-500/30 text-white rounded backdrop-blur-sm">
+        <div className="mx-4 my-4 p-4 bg-green-500/30 border border-green-500/30 text-white rounded backdrop-blur-sm">
           {successMessage}
         </div>
       )}
 
       {showForm ? (
-        <div className="p-6 border-t border-gray-700">
+        <div className="p-4 sm:p-6 border-t border-gray-700">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-              <div className="sm:col-span-3">
+              <div className="col-span-full sm:col-span-3">
                 <label htmlFor="id" className="block text-sm font-medium text-gray-300">
                   ID *
                 </label>
@@ -333,7 +333,7 @@ const AssociationHeadManagement: React.FC = () => {
                 )}
               </div>
 
-              <div className="sm:col-span-3">
+              <div className="col-span-full sm:col-span-3">
                 <label htmlFor="name" className="block text-sm font-medium text-gray-300">
                   Name *
                 </label>
@@ -348,7 +348,7 @@ const AssociationHeadManagement: React.FC = () => {
                 />
               </div>
 
-              <div className="sm:col-span-3">
+              <div className="col-span-full sm:col-span-3">
                 <label htmlFor="role" className="block text-sm font-medium text-gray-300">
                   Role *
                 </label>
@@ -371,7 +371,7 @@ const AssociationHeadManagement: React.FC = () => {
                 </select>
               </div>
 
-              <div className="sm:col-span-3">
+              <div className="col-span-full sm:col-span-3">
                 <label htmlFor="handle" className="block text-sm font-medium text-gray-300">
                   Handle *
                 </label>
@@ -391,7 +391,7 @@ const AssociationHeadManagement: React.FC = () => {
                 </div>
               </div>
 
-              <div className="sm:col-span-6">
+              <div className="col-span-full">
                 <label className="block text-sm font-medium text-gray-300">
                   Avatar Image
                 </label>
@@ -428,7 +428,7 @@ const AssociationHeadManagement: React.FC = () => {
                             strokeLinejoin="round"
                           />
                         </svg>
-                        <div className="flex text-sm text-gray-600">
+                        <div className="flex flex-col sm:flex-row justify-center text-sm text-gray-600">
                           <label
                             htmlFor="avatarFile"
                             className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
@@ -454,7 +454,7 @@ const AssociationHeadManagement: React.FC = () => {
                 </div>
               </div>
 
-              <div className="sm:col-span-3">
+              <div className="col-span-full sm:col-span-3">
                 <label htmlFor="status" className="block text-sm font-medium text-gray-300">
                   Status
                 </label>
@@ -471,7 +471,7 @@ const AssociationHeadManagement: React.FC = () => {
                 </select>
               </div>
 
-              <div className="sm:col-span-3">
+              <div className="col-span-full sm:col-span-3">
                 <label htmlFor="class" className="block text-sm font-medium text-gray-300">
                   Class *
                 </label>
@@ -487,7 +487,7 @@ const AssociationHeadManagement: React.FC = () => {
                 />
               </div>
 
-              <div className="sm:col-span-3">
+              <div className="col-span-full sm:col-span-3">
                 <label htmlFor="year" className="block text-sm font-medium text-gray-300">
                   Year *
                 </label>
@@ -503,7 +503,7 @@ const AssociationHeadManagement: React.FC = () => {
                 />
               </div>
 
-              <div className="sm:col-span-3">
+              <div className="col-span-full sm:col-span-3">
                 <label htmlFor="linkedin" className="block text-sm font-medium text-gray-300">
                   LinkedIn Profile
                 </label>
@@ -519,18 +519,18 @@ const AssociationHeadManagement: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex justify-end space-x-3">
+            <div className="flex flex-col sm:flex-row justify-center sm:justify-end space-y-3 sm:space-y-0 space-x-0 sm:space-x-3">
               <button
                 type="button"
                 onClick={handleCancel}
-                className="inline-flex items-center px-4 py-2 border border-gray-700 shadow-sm text-sm font-medium rounded-md text-gray-300 bg-gray-800/50 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#8080ff]/50"
+                className="w-full sm:w-auto inline-flex justify-center items-center px-4 py-2 border border-gray-700 shadow-sm text-sm font-medium rounded-md text-gray-300 bg-gray-800/50 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#8080ff]/50"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isLoading}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#8080ff]/30 hover:bg-[#8080ff]/40 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#8080ff]/50"
+                className="w-full sm:w-auto inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#8080ff]/30 hover:bg-[#8080ff]/40 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#8080ff]/50"
               >
                 {isLoading ? 'Saving...' : editingHead ? 'Update Member' : 'Create Member'}
               </button>
@@ -538,45 +538,115 @@ const AssociationHeadManagement: React.FC = () => {
           </form>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          {associationHeads.length > 0 ? (
-            <table className="min-w-full divide-y divide-gray-700">
-              <thead className="bg-[#1a1a2e]/70 backdrop-blur-sm">
-                <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    Member
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    ID
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    Role
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    Class
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-[#1a1a2e]/50 divide-y divide-gray-700">
+        <div>
+          {/* Desktop view - Hidden on mobile */}
+          <div className="hidden sm:block overflow-x-auto">
+            {associationHeads.length > 0 ? (
+              <table className="min-w-full divide-y divide-gray-700">
+                <thead className="bg-[#1a1a2e]/70 backdrop-blur-sm">
+                  <tr>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      Member
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      ID
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      Role
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      Class
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-[#1a1a2e]/50 divide-y divide-gray-700">
+                  {associationHeads.map((head) => (
+                    <tr key={head._id} className="hover:bg-[#2a2a3e]/70 transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0 h-10 w-10">
+                            {head.avatarBase64 ? (
+                              <img 
+                                className="h-10 w-10 rounded-full object-cover border border-purple-500/30 shadow-[0_0_10px_rgba(128,128,255,0.3)]"
+                                src={head.avatarBase64} 
+                                alt={head.name}
+                              />
+                            ) : (
+                              <div className="h-10 w-10 rounded-full bg-[#2a2a4e] flex items-center justify-center text-gray-300 border border-purple-500/30 shadow-[0_0_10px_rgba(128,128,255,0.3)]">
+                                {head.name.charAt(0).toUpperCase()}
+                              </div>
+                            )}
+                          </div>
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-white">{head.name}</div>
+                            <div className="text-sm text-gray-400">@{head.handle}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                        {head.id}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getRoleBadgeClass(head.role)}`}>
+                          {head.role}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                        {head.class} • {head.year}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(head.status)}`}>
+                          {head.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button
+                          onClick={() => handleEdit(head)}
+                          className="text-[#8080ff] hover:text-[#a0a0ff] mr-4"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteHead(head.id)}
+                          className="text-red-400 hover:text-red-300"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <div className="text-center py-10 bg-[#1a1a2e]/70 backdrop-blur-sm">
+                <p className="text-gray-400">No association heads found</p>
+              </div>
+            )}
+          </div>
+          
+          {/* Mobile view - Only visible on mobile */}
+          <div className="sm:hidden">
+            {associationHeads.length > 0 ? (
+              <div className="space-y-4 px-4 py-4">
                 {associationHeads.map((head) => (
-                  <tr key={head._id} className="hover:bg-[#2a2a3e]/70 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap">
+                  <div key={head._id} className="bg-[#2a2a3e]/70 rounded-lg shadow overflow-hidden backdrop-blur-sm border border-purple-500/20">
+                    <div className="p-4">
                       <div className="flex items-center">
-                        <div className="flex-shrink-0 h-10 w-10">
+                        <div className="flex-shrink-0 h-12 w-12">
                           {head.avatarBase64 ? (
                             <img 
-                              className="h-10 w-10 rounded-full object-cover border border-purple-500/30 shadow-[0_0_10px_rgba(128,128,255,0.3)]"
+                              className="h-12 w-12 rounded-full object-cover border border-purple-500/30 shadow-[0_0_10px_rgba(128,128,255,0.3)]"
                               src={head.avatarBase64} 
                               alt={head.name}
                             />
                           ) : (
-                            <div className="h-10 w-10 rounded-full bg-[#2a2a4e] flex items-center justify-center text-gray-300 border border-purple-500/30 shadow-[0_0_10px_rgba(128,128,255,0.3)]">
+                            <div className="h-12 w-12 rounded-full bg-[#2a2a4e] flex items-center justify-center text-gray-300 border border-purple-500/30 shadow-[0_0_10px_rgba(128,128,255,0.3)]">
                               {head.name.charAt(0).toUpperCase()}
                             </div>
                           )}
@@ -586,46 +656,56 @@ const AssociationHeadManagement: React.FC = () => {
                           <div className="text-sm text-gray-400">@{head.handle}</div>
                         </div>
                       </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                      {head.id}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getRoleBadgeClass(head.role)}`}>
-                        {head.role}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                      {head.class} • {head.year}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(head.status)}`}>
-                        {head.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <button
-                        onClick={() => handleEdit(head)}
-                        className="text-[#8080ff] hover:text-[#a0a0ff] mr-4"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDeleteHead(head.id)}
-                        className="text-red-400 hover:text-red-300"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
+                      <div className="mt-3 grid grid-cols-2 gap-2">
+                        <div>
+                          <span className="text-xs text-gray-400">ID:</span>
+                          <p className="text-sm text-gray-300">{head.id}</p>
+                        </div>
+                        <div>
+                          <span className="text-xs text-gray-400">Role:</span>
+                          <p>
+                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getRoleBadgeClass(head.role)}`}>
+                              {head.role}
+                            </span>
+                          </p>
+                        </div>
+                        <div>
+                          <span className="text-xs text-gray-400">Class:</span>
+                          <p className="text-sm text-gray-300">{head.class} • {head.year}</p>
+                        </div>
+                        <div>
+                          <span className="text-xs text-gray-400">Status:</span>
+                          <p>
+                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(head.status)}`}>
+                              {head.status}
+                            </span>
+                          </p>
+                        </div>
+                      </div>
+                      <div className="mt-4 flex justify-end space-x-3">
+                        <button
+                          onClick={() => handleEdit(head)}
+                          className="text-[#8080ff] hover:text-[#a0a0ff] text-sm"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteHead(head.id)}
+                          className="text-red-400 hover:text-red-300 text-sm"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 ))}
-              </tbody>
-            </table>
-          ) : (
-            <div className="text-center py-10 bg-[#1a1a2e]/70 backdrop-blur-sm">
-              <p className="text-gray-400">No association heads found</p>
-            </div>
-          )}
+              </div>
+            ) : (
+              <div className="text-center py-10 bg-[#1a1a2e]/70 backdrop-blur-sm">
+                <p className="text-gray-400">No association heads found</p>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

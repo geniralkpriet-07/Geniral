@@ -1,0 +1,107 @@
+/* Mobile-specific CSS classes */
+.is-mobile-device .tap-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.is-mobile-device .larger-tap-targets button,
+.is-mobile-device .larger-tap-targets a,
+.is-mobile-device .larger-tap-targets input[type="checkbox"],
+.is-mobile-device .larger-tap-targets input[type="radio"],
+.is-mobile-device .larger-tap-targets .clickable {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 10px;
+}
+
+/* Fix for iOS vh units */
+.mobile-full-height {
+  height: 100vh; /* Fallback */
+  height: calc(var(--vh, 1vh) * 100);
+}
+
+/* Prevent iOS text size adjust after orientation change */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Enhanced touch feedback */
+.is-mobile-device .touch-feedback:active {
+  opacity: 0.7;
+  transform: scale(0.98);
+}
+
+/* Mobile scrolling improvements */
+.is-mobile-device .smooth-scroll {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Mobile optimized table styles */
+.is-mobile-device .responsive-table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile-friendly form elements */
+.is-mobile-device input[type="text"],
+.is-mobile-device input[type="email"],
+.is-mobile-device input[type="password"],
+.is-mobile-device input[type="number"],
+.is-mobile-device input[type="tel"],
+.is-mobile-device select,
+.is-mobile-device textarea {
+  font-size: 16px; /* Prevents iOS from zooming in */
+  max-width: 100%;
+}
+
+/* Adjust font sizes for better readability on small screens */
+@media (max-width: 640px) {
+  h1 {
+    font-size: 1.75rem;
+  }
+  h2 {
+    font-size: 1.5rem;
+  }
+  h3 {
+    font-size: 1.25rem;
+  }
+  p, li, td, th {
+    font-size: 0.95rem;
+  }
+  .text-sm {
+    font-size: 0.85rem;
+  }
+  .text-xs {
+    font-size: 0.75rem;
+  }
+}
+
+/* Handle fixed position elements to respect iOS safe areas */
+.fixed-bottom {
+  position: fixed;
+  bottom: 0;
+  bottom: env(safe-area-inset-bottom, 0);
+  left: 0;
+  right: 0;
+}
+
+.fixed-top {
+  position: fixed;
+  top: 0;
+  top: env(safe-area-inset-top, 0);
+  left: 0;
+  right: 0;
+}
+
+/* Add padding for iOS notches and similar features */
+.safe-padding-horizontal {
+  padding-left: env(safe-area-inset-left, 0.5rem);
+  padding-right: env(safe-area-inset-right, 0.5rem);
+}
+
+.safe-padding-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0.5rem);
+}
