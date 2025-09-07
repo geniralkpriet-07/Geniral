@@ -6,9 +6,11 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import HomePage from "./pages/Home";
 import Gallery from "./pages/Gallery";
 import Dashboard from "./pages/Dashboard";
-import "./index.css";
-import UpcomingEvents from "./pages/upcomingevents";
+import AdminPanel from "./pages/admin/AdminDashboard";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 import Association from "./pages/Association";
+import UpcomingEvents from "./pages/upcomingevents";
+import "./index.css";
 
 const Layout = () => (
   <div className="site-layout">
@@ -53,6 +55,22 @@ function App() {
             element={
               <ProtectedRoute adminOnly={true}>
                 <Dashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/panel/*" 
+            element={
+              <ProtectedRoute adminOnly={true}>
+                <AdminPanel />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin" 
+            element={
+              <ProtectedRoute adminOnly={true}>
+                <AdminDashboard />
               </ProtectedRoute>
             } 
           />

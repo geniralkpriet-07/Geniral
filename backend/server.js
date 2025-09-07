@@ -7,6 +7,11 @@ import { corsOptions, helmetOptions, rateLimitOptions } from "./config/security.
 import { createAdminUser } from "./controllers/authController.js";
 import authRoutes from "./routes/authRoutes.js";
 import eventRoutes from "./routes/eventRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
+import associationHeadRoutes from "./routes/associationHeadRoutes.js"; // Public routes
+import associationHeadAdminRoutes from "./routes/associationHeadRoutesAdmin.js"; // Admin routes
+import clubRoutes from "./routes/clubRoutes.js"; 
+import clubRoutesAdmin from "./routes/clubRoutesAdmin.js"; 
 import cors from "cors";
 
 dotenv.config();
@@ -26,6 +31,12 @@ connectDB().then(() => {
 
 app.use("/", authRoutes);
 app.use("/api", eventRoutes);
+app.use("/api/association-members", associationHeadRoutes);
+app.use("/api/clubs", clubRoutes); 
+
+app.use("/admin", adminRoutes);
+app.use("/admin/association-heads", associationHeadAdminRoutes);
+app.use("/admin/clubs", clubRoutesAdmin); 
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

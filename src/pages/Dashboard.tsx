@@ -1,5 +1,6 @@
 import React from 'react'
 import { useAuth } from '../contexts/AuthContext'
+import { Link } from 'react-router-dom'
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth()
@@ -18,21 +19,21 @@ const Dashboard: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <Link to="/admin/panel" className="bg-[#8080ff]/10 border border-[#8080ff]/20 rounded-lg p-6 hover:bg-[#8080ff]/20 transition-colors">
+              <h3 className="text-lg font-semibold text-white mb-2">
+                Event Management
+              </h3>
+              <p className="text-white/70 text-sm">
+                Manage events with full CRUD operations
+              </p>
+            </Link>
+
             <div className="bg-[#8080ff]/10 border border-[#8080ff]/20 rounded-lg p-6">
               <h3 className="text-lg font-semibold text-white mb-2">
                 User Management
               </h3>
               <p className="text-white/70 text-sm">
                 Manage users and permissions
-              </p>
-            </div>
-
-            <div className="bg-[#8080ff]/10 border border-[#8080ff]/20 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-white mb-2">
-                Content Management
-              </h3>
-              <p className="text-white/70 text-sm">
-                Manage gallery and events
               </p>
             </div>
 

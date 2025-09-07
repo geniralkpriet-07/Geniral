@@ -5,14 +5,17 @@ import { motion } from "framer-motion";
 interface Event {
   _id: string;
   title: string;
-  date: string;
-  time: string;
+  startDate: string;
+  endDate: string;
+  startTime: string;
+  endTime: string;
   location: string;
   category: string;
   imageUrl: string;
   description: string;
   featured: boolean;
-  registrationOpen: boolean;
+  registrationLink: string;
+  isRegistrationOpen: boolean;
 }
 
 const UpcomingEvents = () => {
@@ -150,7 +153,7 @@ const UpcomingEvents = () => {
                           {event.category.charAt(0).toUpperCase() + event.category.slice(1)}
                         </span>
                         <span className="px-3 py-1 bg-black/50 rounded-full text-xs font-medium backdrop-blur-sm">
-                          {event.date}
+                          {event.startDate}
                         </span>
                       </div>
                       <h3 className="text-2xl font-bold mb-2 group-hover:text-[#b1caf8] transition-colors">
@@ -281,13 +284,13 @@ const UpcomingEvents = () => {
                     <svg className="w-4 h-4 mr-2 text-[#8080ff]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    <span>{event.date}</span>
+                    <span>{event.startDate} - {event.endDate}</span>
                   </div>
                   <div className="w-full flex items-center">
                     <svg className="w-4 h-4 mr-2 text-[#8080ff]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span>{event.time}</span>
+                    <span>{event.startTime} - {event.endTime}</span>
                   </div>
                   <div className="w-full flex items-center">
                     <svg className="w-4 h-4 mr-2 text-[#8080ff]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -304,12 +307,37 @@ const UpcomingEvents = () => {
                 
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-white/60">
-                    {event.registrationOpen ? 'Registration open' : 'Coming soon'}
+                    {event.registrationLink 
+                      ? (event.isRegistrationOpen ? 'Registration open' : 'Registration closed') 
+                      : 'No registration required'}
                   </span>
-                  <button className="px-5 py-2 bg-[#8080ff]/30 hover:bg-[#8080ff]/40 rounded-md text-white text-sm font-medium transition-all border border-[#8080ff]/20 shadow-[0_0_15px_rgba(128,128,255,0.3)] relative overflow-hidden group">
-                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-[#8080ff]/20 to-transparent group-hover:via-[#8080ff]/30 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out"></span>
-                    <span className="relative z-10">Register Now</span>
-                  </button>
+                  {event.registrationLink ? (
+                    <a 
+                      href={event.isRegistrationOpen ? event.registrationLink : "#"}
+                      target={event.isRegistrationOpen ? "_blank" : "_self"}
+                      rel="noopener noreferrer"
+                      className={`px-5 py-2 ${
+                        event.isRegistrationOpen 
+                          ? "bg-[#8080ff]/30 hover:bg-[#8080ff]/40 border border-[#8080ff]/20 shadow-[0_0_15px_rgba(128,128,255,0.3)]" 
+                          : "bg-gray-500/30 hover:bg-gray-500/40 border border-gray-500/20 cursor-not-allowed"
+                      } rounded-md text-white text-sm font-medium transition-all relative overflow-hidden group`}
+                      onClick={(e) => {
+                        if (!event.isRegistrationOpen) {
+                          e.preventDefault();
+                          alert("Registration is currently closed for this event.");
+                        }
+                      }}
+                    >
+                      <span className="absolute inset-0 bg-gradient-to-r from-transparent via-[#8080ff]/20 to-transparent group-hover:via-[#8080ff]/30 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out"></span>
+                      <span className="relative z-10">
+                        {event.isRegistrationOpen ? "Register Now" : "Registration Closed"}
+                      </span>
+                    </a>
+                  ) : (
+                    <span className="px-5 py-2 bg-gray-500/30 border border-gray-500/20 rounded-md text-gray-300 text-sm font-medium">
+                      No Registration Required
+                    </span>
+                  )}
                 </div>
               </div>
             </motion.div>

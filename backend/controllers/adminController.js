@@ -1,26 +1,13 @@
 import Event from "../models/Event.js";
+import User from "../models/User.js";
 
+// Event Management
 export const getAllEvents = async (req, res) => {
   try {
-    const { category } = req.query;
-    const filter = category && category !== 'all' ? { category } : {};
-    
-    const events = await Event.find(filter).sort({ createdAt: -1 });
+    const events = await Event.find().sort({ createdAt: -1 }).populate('createdBy', 'email');
     res.json({ events });
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch events" });
-  }
-};
-
-export const getEventById = async (req, res) => {
-  try {
-    const event = await Event.findById(req.params.id);
-    if (!event) {
-      return res.status(404).json({ error: "Event not found" });
-    }
-    res.json({ event });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch event" });
   }
 };
 
@@ -96,11 +83,50 @@ export const deleteEvent = async (req, res) => {
   }
 };
 
-export const getFeaturedEvents = async (req, res) => {
+// User Management
+export const getAllUsers = async (req, res) => {
   try {
-    const events = await Event.find({ featured: true }).sort({ createdAt: -1 });
-    res.json({ events });
+    const users = await User.find().select('-password').sort({ createdAt: -1 });
+    res.json({ users });
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch featured events" });
+    res.status(500).json({ error: "Failed to fetch users" });
+  }
+};
+
+export const toggleUserStatus = async (req, res) => {
+  try {
+    const { isActive } = req.body;
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { isActive },
+      { new: true }
+    ).select('-password');
+    
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    
+    res.json({ message: "User status updated successfully", user });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+export const deleteUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    
+    if (user.role === 'admin') {
+      return res.status(403).json({ error: "Cannot delete admin user" });
+    }
+    
+    await User.findByIdAndDelete(req.params.id);
+    res.json({ message: "User deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete user" });
   }
 };

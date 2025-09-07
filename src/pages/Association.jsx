@@ -1,87 +1,18 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import axios from "axios"
 import ProfileCard from "../components/members/ProfileCard"
 import SimpleProfileCard from "../components/members/SimpleProfileCard"
 import { LightRays } from "../components/loading"
+
+
 const getAvatarUrl = (name, index) => {
   const nameSum = name.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0)
   const deterministic = (nameSum + index) % 70
-
   const gender = nameSum % 2 === 0 ? "men" : "women"
-
   return `https://randomuser.me/api/portraits/${gender}/${deterministic}.jpg`
 }
-
-const associationMembers = [
-  {
-    id: "pres-1",
-    name: "Raman Kishore R R",
-    role: "President",
-    avatarUrl: "https://randomuser.me/api/portraits/men/32.jpg",
-    handle: "raman_k",
-    status: "Online",
-    class: "IV CS-A",
-    year: "Final Year",
-    linkedin: "https://v0.app/chat/j3kwm0Xmq0S",
-  },
-  {
-    id: "vp-1",
-    name: "Ramya G",
-    role: "Vice President",
-    avatarUrl: "https://randomuser.me/api/portraits/women/44.jpg",
-    handle: "ramya_g",
-    status: "Away",
-    class: "III CS-B",
-    year: "Third Year",
-    linkedin: "",
-  },
-
-  {
-    id: "sec-1",
-    name: "Divyashri T K S",
-    role: "Secretary",
-    avatarUrl: "https://randomuser.me/api/portraits/women/22.jpg",
-    handle: "divyashri_t",
-    status: "Online",
-    class: "IV CS-B",
-    year: "Final Year",
-    linkedin: "",
-  },
-  {
-    id: "jsec-1",
-    name: "Dhanya Sai Shree M",
-    role: "Vice Secretary",
-    avatarUrl: "https://randomuser.me/api/portraits/women/41.jpg",
-    handle: "dhanya_m",
-    status: "Online",
-    class: "III CS-A",
-    year: "Third Year",
-    linkedin: "",
-  },
-  {
-    id: "tres-1",
-    name: "Karthikeyan M",
-    role: "Treasurer",
-    avatarUrl: "https://randomuser.me/api/portraits/men/65.jpg",
-    handle: "karthikeyan_m",
-    status: "Away",
-    class: "III CS-B",
-    year: "Third Year",
-    linkedin: "",
-  },
-  {
-    id: "jtres-1",
-    name: "Lakshmi Narasimar R",
-    role: "Joint Treasurer",
-    avatarUrl: "https://randomuser.me/api/portraits/men/22.jpg",
-    handle: "lakshmi_n",
-    status: "Offline",
-    class: "II CS-B",
-    year: "Second Year",
-    linkedin: "",
-  },
-]
 
 const clubHeads = [
   {
@@ -146,138 +77,6 @@ const clubHeads = [
   },
 ]
 
-const clubs = [
-  {
-    id: "tech-patrons",
-    name: "TECH PATRONS",
-    description: "Leading technological innovation on campus",
-    members: 9,
-    faculty: [
-      { name: "Mr. Rajeshkumar S", dept: "CSE", image: "https://randomuser.me/api/portraits/men/42.jpg" },
-      { name: "Ms. Vishnupriya", dept: "IT", image: "https://randomuser.me/api/portraits/women/41.jpg" },
-    ],
-    head: "Harshan R",
-    headImage: "https://randomuser.me/api/portraits/men/32.jpg",
-    headClass: "III CS-A",
-    memberList: [
-      "Mohanappriya K",
-      "Pavithra",
-      "Aborrvaa Ammaiyappan",
-      "Abdul Majeed R",
-      "Mithuna Kamalanathan",
-      "Karnika N",
-      "Makavishnu S",
-      "Arjun T",
-      "Antony Rojes M",
-    ],
-  },
-  {
-    id: "speakzy",
-    name: "SPEAKZY",
-    description: "Focused on developing communication and public speaking skills",
-    members: 8,
-    faculty: [
-      { name: "Dr. Nisha Soms", dept: "CSE", image: "https://randomuser.me/api/portraits/women/42.jpg" },
-      { name: "Ms. Mouthami", dept: "ECE", image: "https://randomuser.me/api/portraits/women/43.jpg" },
-    ],
-    head: "Adhithiee Suresh",
-    headImage: "https://randomuser.me/api/portraits/women/44.jpg",
-    headClass: "III CS-B",
-    memberList: [
-      "Harini L",
-      "Afsa Parveen A",
-      "Aakhasii J P",
-      "Charulatha M",
-      "Gowtham J",
-      "Indira Devi V",
-      "Kavirathna T",
-      "Kalin Cammrina P",
-    ],
-  },
-  {
-    id: "eco-isr",
-    name: "ECO/ISR",
-    description: "Promoting environmental awareness and social responsibility",
-    members: 7,
-    faculty: [
-      { name: "Mr. Premkumar", dept: "CSE", image: "https://randomuser.me/api/portraits/men/45.jpg" },
-      { name: "Dr. Primya", dept: "IT", image: "https://randomuser.me/api/portraits/women/45.jpg" },
-    ],
-    head: "Jei Keshav S",
-    headImage: "https://randomuser.me/api/portraits/men/75.jpg",
-    headClass: "II CS-A",
-    memberList: [
-      "Kanimuthu AR M",
-      "Devamithra A",
-      "Dipika Jasmine J",
-      "Harshini N S",
-      "Kanishka S",
-      "Adhithya R",
-      "Gokuladharshin",
-    ],
-  },
-  {
-    id: "admire-hands",
-    name: "ADMIRE HANDS",
-    description: "Celebrating creativity and artistic expression",
-    members: 8,
-    faculty: [
-      { name: "Mr. Mohan", dept: "CSE", image: "https://randomuser.me/api/portraits/men/36.jpg" },
-      { name: "Mr. Kandasamy", dept: "IT", image: "https://randomuser.me/api/portraits/men/37.jpg" },
-    ],
-    head: "Kabila U S",
-    headImage: "https://randomuser.me/api/portraits/women/22.jpg",
-    headClass: "III CS-A",
-    memberList: [
-      "Divya Dharshini R",
-      "Bhavasri K",
-      "Bharath S",
-      "Madhumitha Perananthan",
-      "Akarshana G",
-      "Merlin Vanetta V",
-      "Harshid S",
-      "Mouriyan",
-    ],
-  },
-  {
-    id: "crazy-brains",
-    name: "CRAZY BRAINS",
-    description: "Exploring innovative problem-solving",
-    members: 8,
-    faculty: [
-      { name: "Ms. Sasikala", dept: "IT", image: "https://randomuser.me/api/portraits/women/36.jpg" },
-      { name: "Ms. Jeevitha", dept: "CSE", image: "https://randomuser.me/api/portraits/women/37.jpg" },
-    ],
-    head: "Arul M",
-    headImage: "https://randomuser.me/api/portraits/men/42.jpg",
-    headClass: "III CS-B",
-    memberList: [
-      "Lhathika V",
-      "Bhoomika P",
-      "Deepika R",
-      "Divya K M",
-      "Manunanditha T",
-      "Muralitharan",
-      "Mukilan",
-      "Manoranjan",
-    ],
-  },
-  {
-    id: "happy-bridge",
-    name: "HAPPY BRIDGE",
-    description: "Building connections through cultural and social activities",
-    members: 7,
-    faculty: [
-      { name: "Ms. Sri Sathya", dept: "CSE", image: "https://randomuser.me/api/portraits/women/38.jpg" },
-      { name: "Ms. Avani Chandran", dept: "ECE", image: "https://randomuser.me/api/portraits/women/39.jpg" },
-    ],
-    head: "Poojaa S",
-    headImage: "https://randomuser.me/api/portraits/women/33.jpg",
-    headClass: "II CS-A",
-    memberList: ["Dharchana M A", "Dharanisri K", "Divya R", "Laksitha S", "Monika M", "Midhun P", "Bavan K N"],
-  },
-]
-
 const facultyCoordinators = [
   {
     name: "Dr. Jayanth Choudary",
@@ -330,6 +129,14 @@ const executiveMembers = [
 ]
 
 const Association = () => {
+  const [associationMembers, setAssociationMembers] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  
+  const [clubs, setClubs] = useState([])
+  const [clubsLoading, setClubsLoading] = useState(true)
+  const [clubsError, setClubsError] = useState(null)
+  
   const [activeClub, setActiveClub] = useState(null)
   const [hoveredMember, setHoveredMember] = useState(null)
   const [memberProfilesVisible, setMemberProfilesVisible] = useState({})
@@ -338,6 +145,135 @@ const Association = () => {
 
   const headingRefs = useRef([])
 
+  // Fetch association members from the API
+  useEffect(() => {
+    const fetchAssociationMembers = async () => {
+      try {
+        setLoading(true)
+        // Note: Using /api/association-members as the route based on your server.js
+        const response = await fetch('http://localhost:7000/api/association-members')
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch association members')
+        }
+        
+        const data = await response.json()
+        
+        // Transform the data to match the format expected by the components
+        const transformedMembers = data.members.map(member => ({
+          id: member._id,
+          name: member.name,
+          role: member.role,
+          // Convert the base64 image to a URL
+          avatarUrl: member.avatarBase64 ? member.avatarBase64 : getAvatarUrl(member.name, 0),
+          handle: member.handle,
+          status: member.status || "Offline",
+          class: member.class,
+          year: member.year,
+          linkedin: member.linkedin || "",
+        }))
+        
+        setAssociationMembers(transformedMembers)
+        setError(null)
+      } catch (error) {
+        console.error('Error fetching association members:', error)
+        setError('Failed to load association members. Using demo data instead.')
+        setAssociationMembers([
+          {
+            id: "pres-1",
+            name: "Raman Kishore R R",
+            role: "President",
+            avatarUrl: "https://randomuser.me/api/portraits/men/32.jpg",
+            handle: "raman_k",
+            status: "Online",
+            class: "IV CS-A",
+            year: "Final Year",
+            linkedin: "https://v0.app/chat/j3kwm0Xmq0S",
+          },
+          {
+            id: "vp-1",
+            name: "Ramya G",
+            role: "Vice President",
+            avatarUrl: "https://randomuser.me/api/portraits/women/44.jpg",
+            handle: "ramya_g",
+            status: "Away",
+            class: "III CS-B",
+            year: "Third Year",
+            linkedin: "",
+          },
+          {
+            id: "sec-1",
+            name: "Divyashri T K S",
+            role: "Secretary",
+            avatarUrl: "https://randomuser.me/api/portraits/women/22.jpg",
+            handle: "divyashri_t",
+            status: "Online",
+            class: "IV CS-B",
+            year: "Final Year",
+            linkedin: "",
+          },
+          {
+            id: "jsec-1",
+            name: "Dhanya Sai Shree M",
+            role: "Vice Secretary",
+            avatarUrl: "https://randomuser.me/api/portraits/women/41.jpg",
+            handle: "dhanya_m",
+            status: "Online",
+            class: "III CS-A",
+            year: "Third Year",
+            linkedin: "",
+          },
+          {
+            id: "tres-1",
+            name: "Karthikeyan M",
+            role: "Treasurer",
+            avatarUrl: "https://randomuser.me/api/portraits/men/65.jpg",
+            handle: "karthikeyan_m",
+            status: "Away",
+            class: "III CS-B",
+            year: "Third Year",
+            linkedin: "",
+          },
+          {
+            id: "jtres-1",
+            name: "Lakshmi Narasimar R",
+            role: "Joint Treasurer",
+            avatarUrl: "https://randomuser.me/api/portraits/men/22.jpg",
+            handle: "lakshmi_n",
+            status: "Offline",
+            class: "II CS-B",
+            year: "Second Year",
+            linkedin: "",
+          },
+        ])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchAssociationMembers()
+  }, [])
+
+  // Fetch clubs from the API
+  useEffect(() => {
+    const fetchClubs = async () => {
+      try {
+        setClubsLoading(true)
+        const response = await axios.get("http://localhost:7000/api/clubs")
+        setClubs(response.data.clubs || [])
+        setClubsError(null)
+      } catch (error) {
+        console.error('Error fetching clubs:', error)
+        setClubsError("Failed to load clubs. Using demo data instead.")
+        setClubs([])
+      } finally {
+        setClubsLoading(false)
+      }
+    }
+    fetchClubs()
+  }, [])
+
+  // Keep all the existing code for intersection observer
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -411,10 +347,10 @@ const Association = () => {
     const roleOrder = {
       President: 1,
       "Vice President": 2,
-      Treasurer: 3,
-      "Joint Treasurer": 4,
-      Secretary: 5,
-      "Vice Secretary": 6,
+      Secretary: 3,
+      "Vice Secretary": 4,
+      Treasurer: 5,
+      "Joint Treasurer": 6,
       "Club Head": 7,
       Member: 8,
     }
@@ -461,10 +397,25 @@ const Association = () => {
             Meet our dedicated team of student leaders committed to enhancing campus life and driving student
             initiatives
           </p>
+          
+          {/* Show error message if there's an error loading data */}
+          {error && (
+            <div className="bg-red-500/20 border border-red-500/30 rounded-md p-3 mt-4 max-w-lg mx-auto">
+              <p className="text-sm text-white">{error}</p>
+            </div>
+          )}
+          
+          {/* Loading indicator */}
+          {loading && (
+            <div className="flex justify-center items-center py-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#8080ff]"></div>
+            </div>
+          )}
         </div>
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
+        {/* Modified section with API data */}
         <div className="mb-12 sm:mb-16">
           <SectionHeading title="President & Vice President" />
 
@@ -610,43 +561,19 @@ const Association = () => {
         </div>
 
         <div className="mb-12 sm:mb-16">
-          <SectionHeading title="Faculty Coordinators" />
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {facultyCoordinators.map((faculty, idx) => (
-              <div
-                key={`faculty-${idx}`}
-                data-member-id={`faculty-${idx}`}
-                className="bg-[#111133]/30 backdrop-blur-sm rounded-xl overflow-hidden p-4 sm:p-6 border border-[#8080ff]/20 shadow-[0_4px_20px_rgba(128,128,255,0.15)] group relative"
-                onMouseEnter={(e) => handleMemberMouseEnter(`faculty-${idx}`, e)}
-                onMouseLeave={() => handleMemberMouseLeave(`faculty-${idx}`)}
-              >
-                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden mx-auto mb-3 sm:mb-4 border-2 border-[#8080ff]">
-                  <img
-                    src={faculty.image || "/placeholder.svg"}
-                    alt={faculty.name}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                    onError={(e) => {
-                      e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(faculty.name)}&background=111133&color=fff`
-                    }}
-                  />
-                </div>
-                <h3 className="text-lg sm:text-xl font-bold text-center mb-1 text-gradient">{faculty.name}</h3>
-                <p className="text-center text-white/70 mb-3 text-sm">{faculty.role}</p>
-                <div className="flex justify-center">
-                  <div className="bg-[#8080ff]/20 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm text-white">
-                    {faculty.department}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="mb-12 sm:mb-16">
           <SectionHeading title="Clubs" />
 
+          {/* Clubs loading/error states */}
+          {clubsError && (
+            <div className="bg-red-500/20 border border-red-500/30 rounded-md p-3 mt-4 max-w-lg mx-auto">
+              <p className="text-sm text-white">{clubsError}</p>
+            </div>
+          )}
+          {clubsLoading && (
+            <div className="flex justify-center items-center py-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#8080ff]"></div>
+            </div>
+          )}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-10">
             {clubs.map((club) => {
               return (
@@ -671,7 +598,7 @@ const Association = () => {
                             onMouseEnter={(e) => handleMemberMouseEnter(`club-faculty-${club.id}-${idx}`, e)}
                             onMouseLeave={() => handleMemberMouseLeave(`club-faculty-${club.id}-${idx}`)}
                           >
-                            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden mr-2 sm:mr-3 border border-[#8080ff]">
+                            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden mr-2 sm:mr-3 border border-[#8080ff]">
                               <img
                                 src={faculty.image || "/placeholder.svg"}
                                 alt={faculty.name}
@@ -829,6 +756,7 @@ const Association = () => {
         </div>
       </div>
 
+      {/* Keep the hover profile cards section unchanged */}
       {typeof window !== "undefined" && window.innerWidth >= 768 && !("ontouchstart" in window) && (
         <div className="fixed inset-0 pointer-events-none z-[1000]">
           {Object.entries(memberProfilesVisible).map(([memberId, isVisible]) => {

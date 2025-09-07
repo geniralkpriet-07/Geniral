@@ -6,11 +6,19 @@ const eventSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  date: {
+  startDate: {
     type: String,
     required: true
   },
-  time: {
+  endDate: {
+    type: String,
+    required: true
+  },
+  startTime: {
+    type: String,
+    required: true
+  },
+  endTime: {
     type: String,
     required: true
   },
@@ -35,7 +43,11 @@ const eventSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  registrationOpen: {
+  registrationLink: {
+    type: String,
+    default: ""
+  },
+  isRegistrationOpen: {
     type: Boolean,
     default: true
   },

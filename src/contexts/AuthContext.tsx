@@ -9,6 +9,7 @@ interface User {
 
 interface AuthContextType {
   user: User | null
+  token: string | null
   isAuthenticated: boolean
   isLoading: boolean
   login: (email: string, password: string) => Promise<void>
@@ -25,6 +26,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
+  const [token, setToken] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   const API_URL = 'http://localhost:7000'
@@ -46,6 +48,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       localStorage.setItem('token', data.token)
+      setToken(data.token)
       setUser(data.user)
     } catch (error) {
       throw error
@@ -69,6 +72,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       localStorage.setItem('token', data.token)
+      setToken(data.token)
       setUser(data.user)
     } catch (error) {
       throw error
@@ -77,21 +81,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem('token')
+    setToken(null)
     setUser(null)
   }
 
   const checkAuth = async () => {
-    const token = localStorage.getItem('token')
+    const storedToken = localStorage.getItem('token')
     
-    if (!token) {
+    if (!storedToken) {
       setIsLoading(false)
       return
     }
 
+    setToken(storedToken)
+
     try {
       const response = await fetch(`${API_URL}/verify`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${storedToken}`,
         },
       })
 
@@ -100,9 +107,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUser(data.user)
       } else {
         localStorage.removeItem('token')
+        setToken(null)
       }
     } catch (error) {
       localStorage.removeItem('token')
+      setToken(null)
     } finally {
       setIsLoading(false)
     }
@@ -114,6 +123,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const value: AuthContextType = {
     user,
+    token,
     isAuthenticated: !!user,
     isLoading,
     login,
