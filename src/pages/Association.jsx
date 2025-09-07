@@ -147,7 +147,9 @@ const Association = () => {
     const fetchExecutiveMembers = async () => {
       try {
         setExecutiveMembersLoading(true);
+        console.log("Fetching executive members...");
         const response = await axios.get("http://localhost:7000/api/executive-members");
+        console.log("Executive members response:", response.data);
         
         if (response.data && response.data.members) {
           const fetchedMembers = response.data.members.map(member => ({
@@ -167,7 +169,7 @@ const Association = () => {
         }
       } catch (error) {
         console.error("Error fetching executive members:", error);
-        setExecutiveMembersError("Failed to load executive members. Please try again later.");
+        setExecutiveMembersError("Failed to load executive members. Using fallback data.");
         // Set fallback data in case of error
         setExecutiveMembers([
           {
@@ -178,9 +180,31 @@ const Association = () => {
             handle: "arun_k",
             status: "Online",
             class: "IV CS-A",
-            year: "Final Year"
+            year: "Final Year",
+            linkedin: "https://linkedin.com/in/arunkumark"
           },
-          // Add more fallback members if needed
+          {
+            id: "exec-2",
+            name: "Priya Sharma",
+            role: "Creative Head",
+            avatarUrl: getAvatarUrl("Priya Sharma", 2),
+            handle: "priya_s",
+            status: "Away",
+            class: "III CS-B",
+            year: "Third Year",
+            linkedin: "https://linkedin.com/in/priyasharma"
+          },
+          {
+            id: "exec-3",
+            name: "Raj Patel",
+            role: "Event Coordinator",
+            avatarUrl: getAvatarUrl("Raj Patel", 3),
+            handle: "raj_p",
+            status: "Online",
+            class: "III CS-A",
+            year: "Third Year",
+            linkedin: "https://linkedin.com/in/rajpatel"
+          }
         ]);
       } finally {
         setExecutiveMembersLoading(false);
@@ -748,13 +772,22 @@ const Association = () => {
                         </p>
                       </div>
                       <div className="flex-shrink-0">
-                        <span className={`inline-block w-2 h-2 rounded-full ${
-                          member.status === 'Online'
-                            ? 'bg-green-400'
-                            : member.status === 'Away'
-                            ? 'bg-yellow-400'
-                            : 'bg-gray-400'
-                        }`}></span>
+                        <a 
+                          href={member.linkedin || "#"} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-[#0077b5] hover:text-[#0a66c2] transition-colors"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <svg 
+                            xmlns="http://www.w3.org/2000/svg" 
+                            viewBox="0 0 24 24" 
+                            fill="currentColor" 
+                            className="w-5 h-5"
+                          >
+                            <path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"></path>
+                          </svg>
+                        </a>
                       </div>
                     </div>
                   </div>
