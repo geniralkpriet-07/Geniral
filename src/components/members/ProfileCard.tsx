@@ -41,7 +41,7 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
   }, [])
 
   return (
-    <div ref={wrapRef} className={`pc-card-wrapper mx-auto max-w-[280px] sm:max-w-none sm:mx-0 ${className}`.trim()}>
+    <div ref={wrapRef} className={`pc-card-wrapper mx-auto max-w-[220px] sm:max-w-[280px] mobile-card-margin sm:mx-0 ${className}`.trim()}>
       <section ref={cardRef} className="pc-card purple-theme" style={{ zIndex: 1 }}>
         <div className="pc-inside" style={{ zIndex: 1 }}>
           {showGeniral && <div className="pc-geniral-tag">Geniral</div>}

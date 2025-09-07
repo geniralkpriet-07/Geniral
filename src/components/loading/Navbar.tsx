@@ -118,9 +118,7 @@ const Navbar: React.FC<NavbarProps> = ({ transparent = false }) => {
                 </TransitionLink>
                 {isAuthenticated && user?.role === 'admin' && (
                   <>
-                    {/* <TransitionLink to="/dashboard" className="nav-link mx-1 lg:mx-2">
-                      Dashboard
-                    </TransitionLink> */}
+                   
                     <TransitionLink to="/admin" className="nav-link mx-1 lg:mx-2">
                       Admin Panel
                     </TransitionLink>
