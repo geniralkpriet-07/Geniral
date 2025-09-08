@@ -18,14 +18,5 @@
       }
     }
   ],
-  "functions": {
-    "api/**/*.ts": {
-      "runtime": "nodejs18.x",
-      "regions": ["bom1"]
-    },
-    "server.js": {
-      "runtime": "nodejs18.x",
-      "regions": ["bom1"]
-    }
-  }
+  "regions": ["bom1"]
 }
