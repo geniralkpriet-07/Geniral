@@ -65,6 +65,10 @@ const clubSchema = new Schema({
     imageBase64: {
       type: String,
       default: ''
+    },
+    linkedin: {
+      type: String,
+      default: ''
     }
   },
   memberList: [{
@@ -81,6 +85,10 @@ const clubSchema = new Schema({
       default: 'Member'
     },
     imageBase64: {
+      type: String,
+      default: ''
+    },
+    linkedin: {
       type: String,
       default: ''
     }

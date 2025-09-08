@@ -6,6 +6,7 @@ interface ClubMember {
   class: string;
   role?: string;
   imageBase64: string;
+  linkedin?: string;
 }
 
 interface Faculty {
@@ -42,6 +43,7 @@ interface Club {
     position?: string;
     email?: string;
     imageBase64: string;
+    linkedin?: string;
   };
   memberList: ClubMember[];
   achievements?: Achievement[];
@@ -71,6 +73,7 @@ const ClubManagement: React.FC = () => {
     headClass: '',
     headPosition: '',
     headEmail: '',
+    headLinkedin: '',
     headImageFile: null as File | null,
     headImagePreview: '',
     faculty: [] as Faculty[],
@@ -83,8 +86,7 @@ const ClubManagement: React.FC = () => {
     name: '',
     class: '',
     role: '',
-    imageFile: null as File | null,
-    imagePreview: ''
+    linkedin: ''
   });
   
   const [showFacultyForm, setShowFacultyForm] = useState(false);
@@ -165,44 +167,10 @@ const ClubManagement: React.FC = () => {
     }
   };
 
-  const handleHeadImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      
-      reader.onloadend = () => {
-        setFormData({
-          ...formData,
-          headImageFile: file,
-          headImagePreview: reader.result as string
-        });
-      };
-      
-      reader.readAsDataURL(file);
-    }
-  };
-
   // Member form handling
   const handleMemberInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setMemberFormData({ ...memberFormData, [name]: value });
-  };
-
-  const handleMemberImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      
-      reader.onloadend = () => {
-        setMemberFormData({
-          ...memberFormData,
-          imageFile: file,
-          imagePreview: reader.result as string
-        });
-      };
-      
-      reader.readAsDataURL(file);
-    }
   };
 
   // Faculty form handling
@@ -241,6 +209,7 @@ const ClubManagement: React.FC = () => {
       headClass: '',
       headPosition: '',
       headEmail: '',
+      headLinkedin: '',
       headImageFile: null,
       headImagePreview: '',
       faculty: [],
@@ -256,8 +225,7 @@ const ClubManagement: React.FC = () => {
       name: '',
       class: '',
       role: '',
-      imageFile: null,
-      imagePreview: ''
+      linkedin: ''
     });
     setShowMemberForm(false);
     setEditingMember(null);
@@ -294,6 +262,7 @@ const ClubManagement: React.FC = () => {
       headClass: club.head?.class || '',
       headPosition: club.head?.position || '',
       headEmail: club.head?.email || '',
+      headLinkedin: club.head?.linkedin || '',
       headImageFile: null,
       headImagePreview: club.head?.imageBase64 || '',
       faculty: club.faculty || [],
@@ -321,8 +290,7 @@ const ClubManagement: React.FC = () => {
       name: member.name,
       class: member.class,
       role: member.role || '',
-      imageFile: null,
-      imagePreview: member.imageBase64 || ''
+      linkedin: member.linkedin || ''
     });
     setEditingMember(member.name);
     setShowMemberForm(true);
@@ -653,7 +621,8 @@ const ClubManagement: React.FC = () => {
           class: formData.headClass || '',
           position: formData.headPosition || '',
           email: formData.headEmail || '',
-          imageBase64: formData.headImagePreview || null
+          imageBase64: '',  // Empty string for image
+          linkedin: formData.headLinkedin || ''
         },
         memberList: formData.memberList
       };
@@ -760,7 +729,8 @@ const ClubManagement: React.FC = () => {
       name: memberFormData.name,
       class: memberFormData.class,
       role: memberFormData.role || 'Member',
-      imageBase64: memberFormData.imagePreview || ''
+      imageBase64: '', // Empty string for image
+      linkedin: memberFormData.linkedin || ''
     };
     
     if (editingClub && editingMember) {
@@ -1358,26 +1328,21 @@ const ClubManagement: React.FC = () => {
                       />
                     </div>
                     <div className="sm:col-span-2">
-                      <label htmlFor="headImageFile" className="block text-sm font-medium text-gray-300">
-                        Photo
+                      <label htmlFor="headLinkedin" className="block text-sm font-medium text-gray-300">
+                        LinkedIn Profile URL
                       </label>
-                      <div className="mt-1 flex items-center">
-                        {formData.headImagePreview && (
-                          <img
-                            src={formData.headImagePreview}
-                            alt="Club head"
-                            className="h-16 w-16 rounded-full object-cover mr-4 border border-gray-700"
-                          />
-                        )}
-                        <input
-                          type="file"
-                          name="headImageFile"
-                          id="headImageFile"
-                          accept="image/*"
-                          onChange={handleHeadImageChange}
-                          className="block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#8080ff]/30 file:text-white hover:file:bg-[#8080ff]/40"
-                        />
-                      </div>
+                      <input
+                        type="url"
+                        name="headLinkedin"
+                        id="headLinkedin"
+                        value={formData.headLinkedin}
+                        onChange={handleInputChange}
+                        placeholder="https://linkedin.com/in/username"
+                        className="mt-1 focus:ring-[#8080ff] focus:border-[#8080ff] block w-full shadow-sm sm:text-sm border-gray-700 rounded-md bg-gray-800/50 text-white backdrop-blur-sm"
+                      />
+                      <p className="mt-1 text-xs text-gray-500">
+                        Profile pictures are no longer required for students. Please provide a LinkedIn profile URL instead.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -1600,26 +1565,21 @@ const ClubManagement: React.FC = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="memberImageFile" className="block text-sm font-medium text-gray-300">
-                    Image (Optional)
+                  <label htmlFor="memberLinkedin" className="block text-sm font-medium text-gray-300">
+                    LinkedIn Profile URL (Optional)
                   </label>
                   <input
-                    type="file"
-                    name="imageFile"
-                    id="memberImageFile"
-                    accept="image/*"
-                    onChange={handleMemberImageChange}
-                    className="mt-1 block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#8080ff]/30 file:text-white hover:file:bg-[#8080ff]/40"
+                    type="url"
+                    name="linkedin"
+                    id="memberLinkedin"
+                    value={memberFormData.linkedin}
+                    onChange={handleMemberInputChange}
+                    placeholder="e.g., https://linkedin.com/in/username"
+                    className="mt-1 focus:ring-[#8080ff] focus:border-[#8080ff] block w-full shadow-sm sm:text-sm border-gray-700 rounded-md bg-gray-800/50 text-white backdrop-blur-sm"
                   />
-                  {memberFormData.imagePreview && (
-                    <div className="mt-2">
-                      <img
-                        src={memberFormData.imagePreview}
-                        alt="Member preview"
-                        className="h-12 w-12 object-cover rounded-full border border-gray-700"
-                      />
-                    </div>
-                  )}
+                  <p className="mt-1 text-xs text-gray-500">
+                    Profile pictures are no longer required for students. Please provide a LinkedIn profile URL instead.
+                  </p>
                 </div>
               </div>
 

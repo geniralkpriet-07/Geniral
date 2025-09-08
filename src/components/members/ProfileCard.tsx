@@ -54,17 +54,26 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
 
           <div className="pc-content pc-avatar-content" style={{ zIndex: 1 }}>
             <div className="pc-avatar-container">
-              <img
-                className="avatar"
-                src={avatarUrl || "/placeholder.svg?height=200&width=200&query=profile"}
-                alt={`${name || "User"} avatar`}
-                loading="lazy"
-                style={{ zIndex: 1 }}
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement
-                  target.src = "/placeholder.svg?height=200&width=200"
-                }}
-              />
+              {avatarUrl ? (
+                <img
+                  className="avatar"
+                  src={avatarUrl}
+                  alt={`${name || "User"} avatar`}
+                  loading="lazy"
+                  style={{ zIndex: 1 }}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement
+                    target.src = "/placeholder.svg?height=200&width=200"
+                  }}
+                />
+              ) : (
+                <div 
+                  className="avatar flex items-center justify-center bg-purple-700 text-white text-xl font-bold"
+                  style={{ zIndex: 1 }}
+                >
+                  {name ? name.charAt(0) : "U"}
+                </div>
+              )}
 
               {showUserInfo && (
                 <div className="pc-linkedin-overlay" style={{ zIndex: 99999 }}>

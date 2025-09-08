@@ -28,7 +28,6 @@ const ExecutiveMemberManagement: React.FC = () => {
     class: '',
     role: 'Member',
     year: '',
-    avatarPreview: '',
     status: 'Offline',
     linkedin: ''
   });
@@ -75,29 +74,12 @@ const ExecutiveMemberManagement: React.FC = () => {
     }));
   };
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setFormData(prev => ({
-            ...prev,
-            avatarPreview: event.target?.result as string
-          }));
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const resetForm = () => {
     setFormData({
       name: '',
       class: '',
       role: 'Member',
       year: '',
-      avatarPreview: '',
       status: 'Offline',
       linkedin: ''
     });
@@ -111,7 +93,6 @@ const ExecutiveMemberManagement: React.FC = () => {
       class: member.class,
       role: member.role,
       year: member.year || '',
-      avatarPreview: member.avatarBase64 || '',
       status: member.status,
       linkedin: member.linkedin || ''
     });
@@ -173,7 +154,7 @@ const ExecutiveMemberManagement: React.FC = () => {
         class: formData.class,
         role: formData.role,
         year: formData.year,
-        avatarBase64: formData.avatarPreview,
+        avatarBase64: '', // Empty string for avatar
         status: formData.status,
         linkedin: formData.linkedin
       };
@@ -362,52 +343,21 @@ const ExecutiveMemberManagement: React.FC = () => {
 
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-1">
-            Profile Picture
+            LinkedIn Profile
           </label>
-          <div className="flex items-start space-x-4">
-            <div className="flex-shrink-0">
-              {formData.avatarPreview ? (
-                <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-[#8080ff]">
-                  <img
-                    src={formData.avatarPreview}
-                    alt="Avatar preview"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ) : (
-                <div className="w-24 h-24 rounded-full bg-gray-700 flex items-center justify-center border-2 border-gray-600">
-                  <span className="text-gray-400">No Image</span>
-                </div>
-              )}
-            </div>
-            <div className="flex-grow">
-              <input
-                type="file"
-                id="avatar"
-                name="avatar"
-                onChange={handleAvatarChange}
-                accept="image/*"
-                className="hidden"
-              />
-              <label
-                htmlFor="avatar"
-                className="inline-block px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600 cursor-pointer transition"
-              >
-                Choose Image
-              </label>
-              {formData.avatarPreview && (
-                <button
-                  type="button"
-                  onClick={() => setFormData(prev => ({ ...prev, avatarPreview: '' }))}
-                  className="ml-2 px-4 py-2 bg-red-500/20 text-white rounded-md hover:bg-red-500/30 transition"
-                >
-                  Remove
-                </button>
-              )}
-              <p className="mt-2 text-xs text-gray-400">
-                Upload a profile picture. Recommended size: 400x400px (square).
-              </p>
-            </div>
+          <div className="flex-grow">
+            <p className="text-xs text-gray-400 mb-2">
+              Images are no longer required for student executive members. Please provide a LinkedIn profile URL instead.
+            </p>
+            <input
+              type="url"
+              id="linkedin"
+              name="linkedin"
+              value={formData.linkedin}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:outline-none focus:border-[#8080ff]"
+              placeholder="https://linkedin.com/in/username"
+            />
           </div>
         </div>
 

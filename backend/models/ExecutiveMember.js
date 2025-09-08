@@ -22,11 +22,13 @@ const executiveMemberSchema = new mongoose.Schema({
   },
   avatarBase64: {
     type: String,
+    default: '',
     validate: {
       validator: function(v) {
-        return v.startsWith('data:image');
+        // Skip validation if empty
+        return !v || v.startsWith('data:image');
       },
-      message: 'Avatar must be a valid base64 encoded image'
+      message: 'Avatar must be a valid base64 encoded image or empty'
     }
   },
   status: {
