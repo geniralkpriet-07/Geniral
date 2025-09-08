@@ -16,6 +16,7 @@ interface AuthContextType {
   signup: (email: string, password: string, role?: string) => Promise<void>
   logout: () => void
   checkAuth: () => Promise<void>
+  resetPassword: (email: string, newPassword: string) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -79,6 +80,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }
 
+  const resetPassword = async (email: string, newPassword: string) => {
+    try {
+      const response = await fetch(`${API_URL}/reset-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, newPassword }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Password reset failed')
+      }
+
+      return data
+    } catch (error) {
+      throw error
+    }
+  }
+
   const logout = () => {
     localStorage.removeItem('token')
     setToken(null)
@@ -130,6 +153,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     signup,
     logout,
     checkAuth,
+    resetPassword
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
@@ -142,3 +166,5 @@ export const useAuth = (): AuthContextType => {
   }
   return context
 }
+
+export default AuthContext

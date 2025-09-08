@@ -4,11 +4,11 @@ import mongoose from "mongoose";
 
 export const createAdminUser = async () => {
   try {
-    const existingAdmin = await User.findOne({ email: "geniral.kpriet@gmail.com" });
+    const existingAdmin = await User.findOne({ email: process.env.ADMIN_EMAIL });
     if (!existingAdmin) {
       const adminUser = new User({
-        email: "geniral.kpriet@gmail.com",
-        password: "geniralkpreit2025",
+        email: process.env.ADMIN_EMAIL,
+        password: process.env.ADMIN_PASSWORD,
         role: "admin",
         isActive: true
       });
@@ -62,6 +62,31 @@ export const login = async (req, res) => {
     });
   } catch (error) {
     console.error("Login error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  try {
+    const { email, newPassword } = req.body;
+    
+    if (!email || !newPassword) {
+      return res.status(400).json({ error: "Email and new password are required" });
+    }
+    
+    // Find the user
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    
+    // Update password
+    user.password = newPassword;
+    await user.save();
+    
+    res.status(200).json({ message: "Password reset successful" });
+  } catch (error) {
+    console.error("Password reset error:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };

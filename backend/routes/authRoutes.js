@@ -6,6 +6,7 @@ import {
   verifyToken,
   getDashboard,
   resetUsers,
+  resetPassword,
   testDB
 } from "../controllers/authController.js";
 
@@ -17,6 +18,7 @@ router.get("/", (req, res) => {
 
 router.get("/test-db", testDB);
 router.post("/login", loginRateLimit, login);
+router.post("/reset-password", resetPassword);
 router.get("/verify", authenticateToken, verifyToken);
 router.get("/api/admin/dashboard", authenticateToken, requireAdmin, getDashboard);
 router.delete("/reset-users", resetUsers);
