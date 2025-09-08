@@ -364,6 +364,17 @@ const Association = () => {
 
   const sortedMembers = [...associationMembers].sort((a, b) => getRoleOrder(a.role) - getRoleOrder(b.role))
 
+  const [showClubsSection, setShowClubsSection] = useState(false);
+  const [showExecutiveSection, setShowExecutiveSection] = useState(false);
+
+  const toggleClubsSection = () => {
+    setShowClubsSection((prev) => !prev);
+  };
+
+  const toggleExecutiveSection = () => {
+    setShowExecutiveSection((prev) => !prev);
+  };
+
   return (
     <div className="min-h-screen text-white bg-[#0a0a18] [background:radial-gradient(circle_at_center,_#111133_0%,_#0a0a18_70%,_#050510_100%)] pt-16 sm:pt-24 pb-16">
       <div className="light-rays-container absolute inset-0 z-0 hidden sm:block">
@@ -619,186 +630,208 @@ const Association = () => {
           </div>
         </div>
 
-        <div className="mb-12 sm:mb-16">
-          <SectionHeading title="Clubs" />
+        {/* Add this after the Treasurer & Joint Treasurer section, before the Clubs section */}
+        <div className="flex justify-center items-center space-x-4 mb-12">
+          <button
+            onClick={toggleClubsSection}
+            className="px-6 py-3 bg-[#8080ff]/20 hover:bg-[#8080ff]/30 text-white rounded-full font-medium border border-[#8080ff]/30 shadow-[0_0_15px_rgba(128,128,255,0.2)] transition-all hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(128,128,255,0.3)]"
+          >
+            {showClubsSection ? 'Hide Clubs' : 'View Clubs'}
+          </button>
+          
+          <button
+            onClick={toggleExecutiveSection}
+            className="px-6 py-3 bg-[#8080ff]/20 hover:bg-[#8080ff]/30 text-white rounded-full font-medium border border-[#8080ff]/30 shadow-[0_0_15px_rgba(128,128,255,0.2)] transition-all hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(128,128,255,0.3)]"
+          >
+            {showExecutiveSection ? 'Hide Executive Members' : 'View Executive Members'}
+          </button>
+        </div>
 
+        <div className="mb-12 sm:mb-16" id="clubs-section" style={{ display: showClubsSection ? 'block' : 'none' }}>
+          <SectionHeading title="Clubs" />
           
           {clubsError && (
             <div className="bg-red-500/20 border border-red-500/30 rounded-md p-3 mt-4 max-w-lg mx-auto">
               <p className="text-sm text-white">{clubsError}</p>
             </div>
           )}
-          {clubsLoading && (
+          
+          {clubsLoading ? (
             <div className="flex justify-center items-center py-8">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#8080ff]"></div>
             </div>
-          )}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-10">
-            {Array.isArray(clubs) && clubs.map((club) => {
-              if (!club || typeof club !== 'object' || !club.id) return null;
-              return (
-                <div
-                  key={club.id}
-                  className="bg-[#111133]/30 backdrop-blur-sm rounded-xl overflow-hidden transition transform hover:scale-105 duration-300 border border-[#8080ff]/20 shadow-[0_4px_20px_rgba(128,128,255,0.15)]"
-                >
-                  <div className="p-4 sm:p-6">
-                    <h3 className="text-lg sm:text-xl font-bold mb-2 text-gradient">{club.name}</h3>
-                    <p className="text-white/70 mb-4 text-sm sm:text-base">{club.description}</p>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-10">
+              {Array.isArray(clubs) && clubs.map((club) => {
+                if (!club || typeof club !== 'object' || !club.id) return null;
+                return (
+                  <div
+                    key={club.id}
+                    className="bg-[#111133]/30 backdrop-blur-sm rounded-xl overflow-hidden transition transform hover:scale-105 duration-300 border border-[#8080ff]/20 shadow-[0_4px_20px_rgba(128,128,255,0.15)]"
+                  >
+                    <div className="p-4 sm:p-6">
+                      <h3 className="text-lg sm:text-xl font-bold mb-2 text-gradient">{club.name}</h3>
+                      <p className="text-white/70 mb-4 text-sm sm:text-base">{club.description}</p>
 
-                    <div className="mb-4 sm:mb-6">
-                      <h4 className="text-xs sm:text-sm text-white/80 mb-2 uppercase tracking-wider">
-                        Faculty Coordinators
-                      </h4>
-                      <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4">
-                        {Array.isArray(club.faculty) && club.faculty.length > 0 ? (
-                          club.faculty.map((faculty, idx) => {
-                            if (!faculty || typeof faculty !== 'object') return null;
-                            return (
-                              <div
-                                key={`club-faculty-${club.id}-${idx}`}
-                                data-member-id={`club-faculty-${club.id}-${idx}`}
-                                className="flex items-center bg-[#111133]/50 p-2 sm:p-3 rounded-lg border border-[#8080ff]/10 group relative"
-                                onMouseEnter={(e) => handleMemberMouseEnter(`club-faculty-${club.id}-${idx}`, e)}
-                                onMouseLeave={() => handleMemberMouseLeave(`club-faculty-${club.id}-${idx}`)}
-                              >
-                                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden mr-2 sm:mr-3 border border-[#8080ff]">
-                                  <img
-                                    src={faculty.image || "/placeholder.svg"}
-                                    alt={faculty.name || "Faculty"}
-                                    className="w-full h-full object-cover"
-                                    loading="lazy"
-                                    onError={(e) => {
-                                      e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(faculty.name || "Faculty")}&background=111133&color=fff`
-                                    }}
-                                  />
-                                </div>
-                                <div>
-                                  <p className="font-medium text-white text-xs sm:text-sm">{faculty.name || "Faculty"}</p>
-                                  <p className="text-xs text-white/60">{faculty.dept || ""}</p>
-                                </div>
-                              </div>
-                            );
-                          })
-                        ) : (
-                          <div className="text-sm text-white/60 p-2">No faculty coordinators available</div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="mb-4 sm:mb-6">
-                      <h4 className="text-xs sm:text-sm text-white/80 mb-2 uppercase tracking-wider">Student Head</h4>
-                      {club.head && club.head.length > 0 ? (
-                        <div
-                          data-member-id={`club-head-${club.id}`}
-                          className="flex items-center bg-[#111133]/50 p-2 sm:p-3 rounded-lg border border-[#8080ff]/10 group relative"
-                          onMouseEnter={(e) => handleMemberMouseEnter(`club-head-${club.id}`, e)}
-                          onMouseLeave={() => handleMemberMouseLeave(`club-head-${club.id}`)}
-                        >
-                          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden mr-2 sm:mr-3 border border-[#8080ff]">
-                            <img
-                              src={club.headImage || "/placeholder.svg"}
-                              alt={club.head || "Club Head"}
-                              className="w-full h-full object-cover"
-                              loading="lazy"
-                              onError={(e) => {
-                                e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(club.head || "Club Head")}&background=111133&color=fff`
-                              }}
-                            />
-                          </div>
-                          <div>
-                            <p className="font-medium text-white text-xs sm:text-sm">{club.head}</p>
-                            <p className="text-xs text-white/60">{club.headClass || ""}</p>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="text-sm text-white/60 p-2">No club head assigned</div>
-                      )}
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                      <div className="text-sm text-white/60">
-                        <span className="font-medium text-[#8080ff]">{club.members}</span> members
-                      </div>
-                      <button
-                        onClick={() => handleViewMembers(club.id)}
-                        className={`w-full sm:w-auto px-3 sm:px-4 py-2 rounded-md font-medium text-xs sm:text-sm transition-all ${
-                          activeClub === club.id
-                            ? "bg-[#8080ff]/40 text-white shadow-[0_0_15px_rgba(128,128,255,0.5)] border border-[#8080ff]/20"
-                            : "bg-[#8080ff]/20 text-[#b1caf8] hover:bg-[#8080ff]/30 hover:shadow-[0_0_10px_rgba(128,128,255,0.3)] border border-[#8080ff]/10"
-                        }`}
-                      >
-                        {activeClub === club.id ? "Hide Members" : "View Members"}
-                      </button>
-                    </div>
-                  </div>
-
-                  {activeClub === club.id && (
-                    <div className="bg-[#111133]/50 p-4 sm:p-6 border-t border-[#8080ff]/20">
-                      <h4 className="font-medium text-white mb-3 sm:mb-4 text-sm sm:text-base">Club Members</h4>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-                        {Array.isArray(club.memberList) && club.memberList.length > 0 ? (
-                          club.memberList.map((memberName, index) => {
-                            if (!memberName) return null;
-                            const memberId = `member-${club.id}-${index}`;
-                            const memberDisplayName = typeof memberName === 'string' ? memberName : 'Member';
-                            const avatarUrl = getAvatarUrl(memberDisplayName, index);
-
-                            const memberData = {
-                              id: memberId,
-                              name: memberDisplayName,
-                              role: "Member",
-                              avatarUrl: avatarUrl,
-                              class: `III CS-${String.fromCharCode(65 + (index % 3))}`,
-                              handle: memberDisplayName.toLowerCase().replace(/\s+/g, "_"),
-                              status: index % 3 === 0 ? "Online" : index % 3 === 1 ? "Away" : "Offline",
-                            }
-
-                            return (
-                              <div
-                                key={memberId}
-                                data-member-id={memberId}
-                                className="relative group"
-                                onMouseEnter={(e) => handleMemberMouseEnter(memberId, e)}
-                                onMouseLeave={() => handleMemberMouseLeave(memberId)}
-                              >
-                                <div className="flex items-center bg-[#111133]/30 p-2 sm:p-3 rounded-lg border border-[#8080ff]/10 shadow-[0_2px_10px_rgba(128,128,255,0.1)] transition-all duration-300 hover:bg-[#111133]/50">
-                                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden mr-2 sm:mr-3 border border-[#8080ff]/50">
+                      <div className="mb-4 sm:mb-6">
+                        <h4 className="text-xs sm:text-sm text-white/80 mb-2 uppercase tracking-wider">
+                          Faculty Coordinators
+                        </h4>
+                        <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4">
+                          {Array.isArray(club.faculty) && club.faculty.length > 0 ? (
+                            club.faculty.map((faculty, idx) => {
+                              if (!faculty || typeof faculty !== 'object') return null;
+                              return (
+                                <div
+                                  key={`club-faculty-${club.id}-${idx}`}
+                                  data-member-id={`club-faculty-${club.id}-${idx}`}
+                                  className="flex items-center bg-[#111133]/50 p-2 sm:p-3 rounded-lg border border-[#8080ff]/10 group relative"
+                                  onMouseEnter={(e) => handleMemberMouseEnter(`club-faculty-${club.id}-${idx}`, e)}
+                                  onMouseLeave={() => handleMemberMouseLeave(`club-faculty-${club.id}-${idx}`)}
+                                >
+                                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden mr-2 sm:mr-3 border border-[#8080ff]">
                                     <img
-                                      src={avatarUrl || "/placeholder.svg"}
-                                      alt={memberData.name}
+                                      src={faculty.image || "/placeholder.svg"}
+                                      alt={faculty.name || "Faculty"}
                                       className="w-full h-full object-cover"
                                       loading="lazy"
                                       onError={(e) => {
-                                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(memberData.name)}&background=111133&color=fff`
+                                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(faculty.name || "Faculty")}&background=111133&color=fff`
                                       }}
                                     />
                                   </div>
-                                  <div className="min-w-0 flex-1">
-                                    <p className="font-medium text-white text-xs sm:text-sm truncate">
-                                      {memberData.name}
-                                    </p>
-                                    <p className="text-xs text-white/60">{memberData.class}</p>
+                                  <div>
+                                    <p className="font-medium text-white text-xs sm:text-sm">{faculty.name || "Faculty"}</p>
+                                    <p className="text-xs text-white/60">{faculty.dept || ""}</p>
                                   </div>
                                 </div>
-                              </div>
-                            )
-                          })
-                        ) : (
-                          <div className="col-span-full text-center py-6">
-                            <p className="text-white/60 text-sm">No members in this club yet</p>
+                              );
+                            })
+                          ) : (
+                            <div className="text-sm text-white/60 p-2">No faculty coordinators available</div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="mb-4 sm:mb-6">
+                        <h4 className="text-xs sm:text-sm text-white/80 mb-2 uppercase tracking-wider">Student Head</h4>
+                        {club.head && club.head.length > 0 ? (
+                          <div
+                            className="flex items-center justify-between bg-[#111133]/50 p-2 sm:p-3 rounded-lg border border-[#8080ff]/10 group relative"
+                          >
+                            <div>
+                              <p className="font-medium text-white text-xs sm:text-sm">{club.head}</p>
+                              <p className="text-xs text-white/60">{club.headClass || ""}</p>
+                            </div>
+                            <div className="flex-shrink-0">
+                              <a 
+                                href="#" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-[#0077b5] hover:text-[#0a66c2] transition-colors"
+                              >
+                                <svg 
+                                  xmlns="http://www.w3.org/2000/svg" 
+                                  viewBox="0 0 24 24" 
+                                  fill="currentColor" 
+                                  className="w-5 h-5"
+                                >
+                                  <path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"></path>
+                                </svg>
+                              </a>
+                            </div>
                           </div>
+                        ) : (
+                          <div className="text-sm text-white/60 p-2">No club head assigned</div>
                         )}
                       </div>
-                    </div>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        </div>
 
-        <div className="mb-12 sm:mb-16">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                        <div className="text-sm text-white/60">
+                          <span className="font-medium text-[#8080ff]">{club.members}</span> members
+                        </div>
+                        <button
+                          onClick={() => handleViewMembers(club.id)}
+                          className={`w-full sm:w-auto px-3 sm:px-4 py-2 rounded-md font-medium text-xs sm:text-sm transition-all ${
+                            activeClub === club.id
+                              ? "bg-[#8080ff]/40 text-white shadow-[0_0_15px_rgba(128,128,255,0.5)] border border-[#8080ff]/20"
+                              : "bg-[#8080ff]/20 text-[#b1caf8] hover:bg-[#8080ff]/30 hover:shadow-[0_0_10px_rgba(128,128,255,0.3)] border border-[#8080ff]/10"
+                          }`}
+                        >
+                          {activeClub === club.id ? "Hide Members" : "View Members"}
+                        </button>
+                      </div>
+                    </div>
+
+                    {activeClub === club.id && (
+                      <div className="bg-[#111133]/50 p-4 sm:p-6 border-t border-[#8080ff]/20">
+                        <h4 className="font-medium text-white mb-3 sm:mb-4 text-sm sm:text-base">Club Members</h4>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                          {Array.isArray(club.memberList) && club.memberList.length > 0 ? (
+                            club.memberList.map((memberName, index) => {
+                              if (!memberName) return null;
+                              const memberId = `member-${club.id}-${index}`;
+                              const memberDisplayName = typeof memberName === 'string' ? memberName : 'Member';
+
+                              const memberData = {
+                                id: memberId,
+                                name: memberDisplayName,
+                                role: "Member",
+                                class: `III CS-${String.fromCharCode(65 + (index % 3))}`,
+                                handle: memberDisplayName.toLowerCase().replace(/\s+/g, "_"),
+                                status: index % 3 === 0 ? "Online" : index % 3 === 1 ? "Away" : "Offline",
+                              }
+
+                              return (
+                                <div
+                                  key={memberId}
+                                  className="relative group"
+                                >
+                                  <div className="flex items-center justify-between bg-[#111133]/30 p-2 sm:p-3 rounded-lg border border-[#8080ff]/10 shadow-[0_2px_10px_rgba(128,128,255,0.1)] transition-all duration-300 hover:bg-[#111133]/50">
+                                    <div className="min-w-0 flex-1">
+                                      <p className="font-medium text-white text-xs sm:text-sm">
+                                        {memberData.name}
+                                      </p>
+                                      <p className="text-xs text-white/60">{memberData.class}</p>
+                                    </div>
+                                    <div className="flex-shrink-0">
+                                      <a 
+                                        href="#" 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="text-[#0077b5] hover:text-[#0a66c2] transition-colors"
+                                      >
+                                        <svg 
+                                          xmlns="http://www.w3.org/2000/svg" 
+                                          viewBox="0 0 24 24" 
+                                          fill="currentColor" 
+                                          className="w-5 h-5"
+                                        >
+                                          <path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"></path>
+                                        </svg>
+                                      </a>
+                                    </div>
+                                  </div>
+                                </div>
+                              )
+                            })
+                          ) : (
+                            <div className="col-span-full text-center py-6">
+                              <p className="text-white/60 text-sm">No members in this club yet</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>  
+
+        <div className="mb-12 sm:mb-16" id="executive-section" style={{ display: showExecutiveSection ? 'block' : 'none' }}>
           <SectionHeading title="Executive Members" />
 
           {executiveMembersError && (
@@ -817,23 +850,16 @@ const Association = () => {
                 {executiveMembers.map((member, index) => (
                   <div
                     key={member.id || index}
-                    className="group relative p-3 rounded-lg hover:bg-[#1a1a4a]/30 transition-all duration-300"
+                    data-member-id={`exec-${index}`}
+                    className="group relative p-3 rounded-lg hover:bg-[#1a1a4a]/50 transition-all duration-300"
                   >
                     <div className="flex items-center space-x-3">
-                      <div className="flex-shrink-0">
-                        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#8080ff]/30">
-                          <img
-                            src={member.avatarUrl}
-                            alt={member.name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      </div>
+                      {/* Removed profile picture div */}
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-white truncate">
+                        <p className="text-sm font-medium text-white">
                           {member.name}
                         </p>
-                        <p className="text-xs text-gray-400 truncate">
+                        <p className="text-xs text-gray-400">
                           {member.role}
                         </p>
                       </div>
@@ -869,31 +895,24 @@ const Association = () => {
           {Object.entries(memberProfilesVisible).map(([memberId, isVisible]) => {
             if (!isVisible) return null;
 
-            let memberData = {
-              name: "",
-              avatarUrl: "",
-              linkedinUrl: "#",
-            };
+            // Only show cards for faculty members
+            if (memberId.startsWith("faculty-") || memberId.startsWith("club-faculty-")) {
+              let memberData = {
+                name: "",
+                avatarUrl: "",
+                linkedinUrl: "#",
+              };
 
-            const assocMember = associationMembers.find((m) => m.id === memberId)
-            if (assocMember) {
-              memberData = {
-                name: assocMember.name,
-                avatarUrl: assocMember.avatarUrl,
-                linkedinUrl: assocMember.linkedin || "#",
-              }
-            }
-
-            if (memberId.startsWith("faculty-")) {
-              const idx = Number.parseInt(memberId.split("-")[1])
-              if (facultyCoordinators[idx]) {
-                memberData = {
-                  name: facultyCoordinators[idx].name,
-                  avatarUrl: facultyCoordinators[idx].image,
-                  linkedinUrl: "#",
+              if (memberId.startsWith("faculty-")) {
+                const idx = Number.parseInt(memberId.split("-")[1])
+                if (facultyCoordinators[idx]) {
+                  memberData = {
+                    name: facultyCoordinators[idx].name,
+                    avatarUrl: facultyCoordinators[idx].image,
+                    linkedinUrl: "#",
+                  }
                 }
               }
-            }
 
               if (memberId.startsWith("club-faculty-")) {
                 const parts = memberId.split("-");
@@ -911,68 +930,28 @@ const Association = () => {
                   }
                 }
               }
-              
-              if (memberId.startsWith("club-head-")) {
-              const clubId = memberId.split("-")[2];
-              const club = clubs.find((c) => c.id === clubId);
-              if (club) {
-                memberData = {
-                  name: club.head || "Club Head",
-                  avatarUrl: club.headImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(club.head || "Club Head")}&background=111133&color=fff`,
-                  linkedinUrl: "#",
-                };
-              }
+
+              return (
+                <div
+                  key={`hover-${memberId}`}
+                  className="absolute pointer-events-auto w-64 sm:w-80"
+                  style={{
+                    top: `${hoverPosition.top}px`,
+                    left: `${hoverPosition.left}px`,
+                    transform: "translate(-50%, 0)",
+                    zIndex: 1100,
+                  }}
+                >
+                  <SimpleProfileCard
+                    name={memberData.name}
+                    avatarUrl={memberData.avatarUrl}
+                    linkedinUrl={memberData.linkedinUrl}
+                  />
+                </div>
+              );
             }
-
-            if (memberId.startsWith("exec-")) {
-              const idx = Number.parseInt(memberId.split("-")[1])
-              if (executiveMembers[idx]) {
-                memberData = {
-                  name: executiveMembers[idx].name,
-                  avatarUrl: executiveMembers[idx].image,
-                  linkedinUrl: "#",
-                }
-              }
-            }
-
-            if (memberId.startsWith("member-")) {
-              const parts = memberId.split("-");
-              if (parts.length >= 3) {
-                const clubId = parts[1];
-                const memberIdx = Number.parseInt(parts[2]);
-                const club = clubs.find((c) => c.id === clubId);
-                if (club && Array.isArray(club.memberList) && club.memberList[memberIdx]) {
-                  const memberName = club.memberList[memberIdx];
-                  const memberDisplayName = typeof memberName === 'string' ? memberName : 'Member';
-                  const avatarUrl = getAvatarUrl(memberDisplayName, memberIdx);
-
-                  memberData = {
-                    name: memberDisplayName,
-                    avatarUrl: avatarUrl,
-                    linkedinUrl: "#",
-                  };
-                }
-              }
-            }
-
-            return (
-              <div
-                key={`hover-${memberId}`}
-                className="absolute pointer-events-auto w-64 sm:w-80"
-                style={{
-                  top: `${hoverPosition.top}px`,
-                  left: `${hoverPosition.left}px`,
-                  transform: "translate(-50%, 0)",
-                  zIndex: 1100,
-                }}
-              >
-                <SimpleProfileCard
-                  name={memberData.name}
-                  avatarUrl={memberData.avatarUrl}
-                  linkedinUrl={memberData.linkedinUrl}
-                />
-              </div>
-            );
+            
+            return null; // Don't show cards for students
           })}
         </div>
       )}
@@ -1063,6 +1042,33 @@ const Association = () => {
           .hover\\:scale-105:hover {
             transform: scale(1.05);
           }
+        }
+        
+        /* Add smooth scrolling */
+        html {
+          scroll-behavior: smooth;
+        }
+        
+        /* Add transition for sections */
+        #clubs-section, #executive-section {
+          transition: opacity 0.3s ease-in-out;
+          opacity: 1;
+        }
+        
+        #clubs-section[style*="display: none"], 
+        #executive-section[style*="display: none"] {
+          opacity: 0;
+        }
+        
+        /* Button animation */
+        @keyframes pulse {
+          0% { box-shadow: 0 0 0 0 rgba(128, 128, 255, 0.5); }
+          70% { box-shadow: 0 0 0 10px rgba(128, 128, 255, 0); }
+          100% { box-shadow: 0 0 0 0 rgba(128, 128, 255, 0); }
+        }
+        
+        .view-section-btn {
+          animation: pulse 2s infinite;
         }
       `}</style>
     </div>
