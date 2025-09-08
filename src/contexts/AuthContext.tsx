@@ -16,7 +16,9 @@ interface AuthContextType {
   signup: (email: string, password: string, role?: string) => Promise<void>
   logout: () => void
   checkAuth: () => Promise<void>
-  resetPassword: (email: string, newPassword: string) => Promise<void>
+  requestPasswordReset: (email: string) => Promise<void>
+  verifyOTP: (email: string, otp: string) => Promise<void>
+  resetPassword: (email: string, otp: string, newPassword: string) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -80,20 +82,64 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }
 
-  const resetPassword = async (email: string, newPassword: string) => {
+  const resetPassword = async (email: string, otp: string, newPassword: string) => {
     try {
       const response = await fetch(`${API_URL}/reset-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, newPassword }),
+        body: JSON.stringify({ email, otp, newPassword }),
       })
 
       const data = await response.json()
 
       if (!response.ok) {
         throw new Error(data.error || 'Password reset failed')
+      }
+
+      return data
+    } catch (error) {
+      throw error
+    }
+  }
+
+  const requestPasswordReset = async (email: string) => {
+    try {
+      const response = await fetch(`${API_URL}/request-password-reset`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send password reset email')
+      }
+
+      return data
+    } catch (error) {
+      throw error
+    }
+  }
+
+  const verifyOTP = async (email: string, otp: string) => {
+    try {
+      const response = await fetch(`${API_URL}/verify-otp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, otp }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'OTP verification failed')
       }
 
       return data
@@ -153,7 +199,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     signup,
     logout,
     checkAuth,
-    resetPassword
+    resetPassword,
+    requestPasswordReset,
+    verifyOTP
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

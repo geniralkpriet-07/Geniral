@@ -7,6 +7,8 @@ import {
   getDashboard,
   resetUsers,
   resetPassword,
+  requestPasswordReset,
+  verifyOTP,
   testDB
 } from "../controllers/authController.js";
 
@@ -18,6 +20,8 @@ router.get("/", (req, res) => {
 
 router.get("/test-db", testDB);
 router.post("/login", loginRateLimit, login);
+router.post("/request-password-reset", requestPasswordReset);
+router.post("/verify-otp", verifyOTP);
 router.post("/reset-password", resetPassword);
 router.get("/verify", authenticateToken, verifyToken);
 router.get("/api/admin/dashboard", authenticateToken, requireAdmin, getDashboard);

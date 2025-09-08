@@ -1,6 +1,9 @@
 import User from "../models/User.js";
+import OTP from "../models/OTP.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
+import otpGenerator from "otp-generator";
+import { sendOTPEmail } from "../utils/emailService.js";
 
 export const createAdminUser = async () => {
   try {
@@ -68,10 +71,21 @@ export const login = async (req, res) => {
 
 export const resetPassword = async (req, res) => {
   try {
-    const { email, newPassword } = req.body;
+    const { email, newPassword, otp } = req.body;
     
-    if (!email || !newPassword) {
-      return res.status(400).json({ error: "Email and new password are required" });
+    if (!email || !newPassword || !otp) {
+      return res.status(400).json({ error: "Email, new password, and OTP are required" });
+    }
+    
+    // Verify OTP
+    const otpRecord = await OTP.findOne({ 
+      email: email.toLowerCase(),
+      otp,
+      purpose: 'password_reset'
+    });
+    
+    if (!otpRecord) {
+      return res.status(400).json({ error: "Invalid or expired OTP" });
     }
     
     // Find the user
@@ -84,9 +98,79 @@ export const resetPassword = async (req, res) => {
     user.password = newPassword;
     await user.save();
     
+    // Delete the used OTP
+    await OTP.deleteOne({ _id: otpRecord._id });
+    
     res.status(200).json({ message: "Password reset successful" });
   } catch (error) {
     console.error("Password reset error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const requestPasswordReset = async (req, res) => {
+  try {
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ error: "Email is required" });
+    }
+    
+    // Check if user exists
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) {
+      // For security reasons, don't reveal that the email doesn't exist
+      // Just say we sent the email even if we didn't
+      return res.status(200).json({ message: "If your email is registered, you will receive a password reset OTP" });
+    }
+    
+    // Generate a 6-digit OTP
+    const otp = otpGenerator.generate(6, { 
+      digits: true, 
+      alphabets: false, 
+      upperCase: false, 
+      specialChars: false 
+    });
+    
+    // Store OTP in database (overwriting any existing one)
+    await OTP.findOneAndUpdate(
+      { email: email.toLowerCase(), purpose: 'password_reset' },
+      { email: email.toLowerCase(), otp, purpose: 'password_reset' },
+      { upsert: true, new: true }
+    );
+    
+    // Send OTP via email
+    await sendOTPEmail(email, otp);
+    
+    res.status(200).json({ message: "Password reset OTP sent to your email" });
+  } catch (error) {
+    console.error("Request password reset error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const verifyOTP = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    
+    if (!email || !otp) {
+      return res.status(400).json({ error: "Email and OTP are required" });
+    }
+    
+    // Find the OTP record
+    const otpRecord = await OTP.findOne({ 
+      email: email.toLowerCase(),
+      otp,
+      purpose: 'password_reset'
+    });
+    
+    if (!otpRecord) {
+      return res.status(400).json({ error: "Invalid or expired OTP" });
+    }
+    
+    res.status(200).json({ message: "OTP verified successfully" });
+  } catch (error) {
+    console.error("OTP verification error:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
