@@ -1,22 +1,17 @@
 import express from "express";
-import { authenticateToken, requireAdmin } from "../middleware/auth.js";
-import { cacheMiddleware } from '../middleware/cache.js';
-import {
-  getAllEvents,
-  getEventById,
-  createEvent,
-  updateEvent,
-  deleteEvent,
-  getFeaturedEvents
-} from "../controllers/eventController.js";
+import { createEvent, getAllApprovedEvents, getSingleEvent, registerForEvent, getMyEvents, getEventCount, checkRegistration, getReferralCount } from "../controllers/eventController.js";
+import { authenticateToken, requireStudent } from "../middleware/auth.js";
+import upload from "../utils/cloudinary.js";
 
 const router = express.Router();
 
-router.get("/events", cacheMiddleware(3600), getAllEvents);
-router.get("/events/featured", cacheMiddleware(3600), getFeaturedEvents);
-router.get("/events/:id", cacheMiddleware(3600), getEventById);
-router.post("/events", authenticateToken, requireAdmin, createEvent);
-router.put("/events/:id", authenticateToken, requireAdmin, updateEvent);
-router.delete("/events/:id", authenticateToken, requireAdmin, deleteEvent);
+router.post("/", authenticateToken, requireStudent, upload.single('poster'), createEvent);
+router.get("/", getAllApprovedEvents);
+router.get("/my-events", authenticateToken, getMyEvents);
+router.get("/:id", getSingleEvent);
+router.post("/:id/register", authenticateToken, registerForEvent);
+router.get("/:id/count", getEventCount);
+router.get("/:id/check", authenticateToken, checkRegistration);
+router.get("/:id/referrals/:userId", getReferralCount);
 
 export default router;

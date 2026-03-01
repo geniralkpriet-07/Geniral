@@ -1,24 +1,23 @@
 import express from "express";
+import { approveEvent, rejectEvent, updateEvent, deleteEvent, getAllEventsAdmin, getAllUsers, deleteUser, getOverviewAnalytics, getAllRegistrations, getEventRegistrations, createStudent } from "../controllers/adminController.js";
 import { authenticateToken, requireAdmin } from "../middleware/auth.js";
-import { 
-  getAllEvents, 
-  createEvent, 
-  updateEvent, 
-  deleteEvent,
-  getAllUsers,
-  toggleUserStatus,
-  deleteUser
-} from "../controllers/adminController.js";
 
 const router = express.Router();
 
-router.get("/events", authenticateToken, requireAdmin, getAllEvents);
-router.post("/events", authenticateToken, requireAdmin, createEvent);
-router.put("/events/:id", authenticateToken, requireAdmin, updateEvent);
-router.delete("/events/:id", authenticateToken, requireAdmin, deleteEvent);
+router.use(authenticateToken, requireAdmin);
 
-router.get("/users", authenticateToken, requireAdmin, getAllUsers);
-router.patch("/users/:id/toggle-status", authenticateToken, requireAdmin, toggleUserStatus);
-router.delete("/users/:id", authenticateToken, requireAdmin, deleteUser);
+router.put("/events/:id/approve", approveEvent);
+router.put("/events/:id/reject", rejectEvent);
+router.put("/events/:id", updateEvent);
+router.delete("/events/:id", deleteEvent);
+router.get("/events", getAllEventsAdmin);
+router.get("/events/:id/registrations", getEventRegistrations);
+
+router.get("/users", getAllUsers);
+router.post("/users", createStudent);
+router.delete("/users/:id", deleteUser);
+
+router.get("/analytics/overview", getOverviewAnalytics);
+router.get("/registrations", getAllRegistrations);
 
 export default router;

@@ -1,62 +1,49 @@
 import Club from "../models/Club.js";
+import { upsertToVectorStore } from "../utils/vectorStore.js";
 
-export const getAllClubs = async (req, res) => {
+export const getClubs = async (req, res) => {
   try {
-    const clubs = await Club.find().sort({ name: 1 });
-    res.status(200).json({ clubs });
+    const clubs = await Club.find({ isApproved: true });
+    res.json(clubs);
   } catch (error) {
-    console.error('Error fetching clubs:', error);
-    res.status(500).json({ message: 'Failed to fetch clubs' });
+    res.status(500).json({ error: error.message });
   }
 };
 
-export const getClubById = async (req, res) => {
+export const updateJoinCount = async (req, res) => {
   try {
-    const club = await Club.findOne({ id: req.params.id });
-    if (!club) {
-      return res.status(404).json({ message: 'Club not found' });
-    }
-    res.status(200).json({ club });
+    const { clubId } = req.params;
+    await Club.findByIdAndUpdate(clubId, { $inc: { membersCount: 1 } });
+    res.json({ message: "Welcome to the community!" });
   } catch (error) {
-    console.error('Error fetching club:', error);
-    res.status(500).json({ message: 'Failed to fetch club' });
+    res.status(500).json({ error: error.message });
   }
 };
 
-export const getClubMembers = async (req, res) => {
+export const createClub = async (req, res) => {
   try {
-    const club = await Club.findOne({ id: req.params.id });
-    if (!club) {
-      return res.status(404).json({ message: 'Club not found' });
-    }
-    
-    const members = club.memberList || [];
-    res.status(200).json({ 
-      clubId: club.id,
-      clubName: club.name,
-      members
+    const club = new Club({
+      ...req.body,
+      leads: [req.user._id]
     });
+    await club.save();
+
+    const vectorText = `Club: ${club.name}. Category: ${club.category}. Description: ${club.description}. Community Link: ${club.joinLink}`;
+    await upsertToVectorStore(club._id, vectorText, { type: 'club', id: club._id });
+
+    res.status(201).json({ message: "Club registered for approval", club });
   } catch (error) {
-    console.error('Error fetching club members:', error);
-    res.status(500).json({ message: 'Failed to fetch club members' });
+    res.status(500).json({ error: error.message });
   }
 };
 
-export const getFacultyByClub = async (req, res) => {
+// Delete a club (admin only)
+export const deleteClub = async (req, res) => {
   try {
-    const club = await Club.findOne({ id: req.params.id });
-    if (!club) {
-      return res.status(404).json({ message: 'Club not found' });
-    }
-    
-    const faculty = club.faculty || [];
-    res.status(200).json({ 
-      clubId: club.id,
-      clubName: club.name,
-      faculty
-    });
+    const club = await Club.findByIdAndDelete(req.params.id);
+    if (!club) return res.status(404).json({ success: false, message: "Club not found" });
+    res.json({ success: true, message: "Club deleted" });
   } catch (error) {
-    console.error('Error fetching club faculty:', error);
-    res.status(500).json({ message: 'Failed to fetch club faculty' });
+    res.status(500).json({ success: false, message: error.message });
   }
 };

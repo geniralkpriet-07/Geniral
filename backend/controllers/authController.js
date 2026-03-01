@@ -1,216 +1,147 @@
 import User from "../models/User.js";
-import OTP from "../models/OTP.js";
 import jwt from "jsonwebtoken";
-import mongoose from "mongoose";
+import { notifyAdminOnEventCreation, sendOTPEmail, sendWelcomeOTPEmail } from "../utils/emailService.js";
 import otpGenerator from "otp-generator";
-import { sendOTPEmail } from "../utils/emailService.js";
 
-export const createAdminUser = async () => {
+// Success helper
+const sendResponse = (res, status, success, message, data = {}) => {
+  res.status(status).json({ success, message, data });
+};
+
+export const register = async (req, res) => {
   try {
-    const existingAdmin = await User.findOne({ email: process.env.ADMIN_EMAIL });
-    if (!existingAdmin) {
-      const adminUser = new User({
-        email: process.env.ADMIN_EMAIL,
-        password: process.env.ADMIN_PASSWORD,
-        role: "admin",
-        isActive: true
-      });
-      await adminUser.save();
-      console.log("Admin user created successfully");
-    } else {
-      console.log("Admin user already exists");
+    const { name, email, password, department, role } = req.body;
+
+    const existing = await User.findOne({ email: email.toLowerCase() });
+
+    if (existing) {
+      if (existing.isVerified) {
+        return sendResponse(res, 400, false, "Email already registered");
+      } else {
+        // If user exists but is not verified, update their OTP and resend
+        const otpCode = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
+        existing.otp = { code: otpCode, expiresAt: new Date(Date.now() + 10 * 60 * 1000) };
+        existing.name = name || existing.name;
+        existing.password = password || existing.password;
+        existing.department = department || existing.department;
+        existing.role = 'user';
+        await existing.save();
+        await sendWelcomeOTPEmail(existing.email, otpCode);
+        return sendResponse(res, 201, true, "New verification OTP sent to your email.");
+      }
     }
+
+    const otpCode = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
+
+    const user = new User({
+      name,
+      email: email.toLowerCase(),
+      password,
+      department,
+      role: 'user',
+      otp: { code: otpCode, expiresAt }
+    });
+
+    await user.save();
+    await sendWelcomeOTPEmail(user.email, otpCode);
+
+    sendResponse(res, 201, true, "Registration successful! OTP sent to email. Please verify to complete.");
   } catch (error) {
-    console.error("Error creating admin user:", error);
+    sendResponse(res, 500, false, error.message);
+  }
+};
+
+export const verifyOTP = async (req, res) => {
+  try {
+    const { email, code } = req.body;
+    const user = await User.findOne({ email: email.toLowerCase() });
+
+    if (!user) return sendResponse(res, 404, false, "User not found");
+    if (user.isVerified) return sendResponse(res, 400, false, "User already verified");
+    if (user.otp.code !== code || user.otp.expiresAt < new Date()) {
+      return sendResponse(res, 400, false, "Invalid or expired OTP");
+    }
+
+    user.isVerified = true;
+    user.otp = undefined;
+    await user.save();
+
+    sendResponse(res, 200, true, "OTP verified successfully. You can now login.");
+  } catch (error) {
+    sendResponse(res, 500, false, error.message);
   }
 };
 
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({ error: "Email and password are required" });
-    }
-
     const user = await User.findOne({ email: email.toLowerCase() });
-    if (!user) {
-      return res.status(401).json({ error: "Invalid credentials" });
+
+    if (!user || !(await user.comparePassword(password))) {
+      return sendResponse(res, 401, false, "Invalid email or password");
     }
 
-    if (!user.isActive) {
-      return res.status(401).json({ error: "Account is deactivated" });
-    }
-
-    const isPasswordValid = await user.comparePassword(password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ error: "Invalid credentials" });
+    if (!user.isVerified) {
+      return sendResponse(res, 403, false, "Please verify your email first");
     }
 
     const token = jwt.sign(
-      { userId: user._id, email: user.email, role: user.role },
+      { userId: user._id, role: user.role, email: user.email, name: user.name, department: user.department },
       process.env.JWT_SECRET,
-      { expiresIn: '24h' }
+      { expiresIn: "7d" }
     );
 
-    res.json({
-      message: "Login successful",
+    sendResponse(res, 200, true, "Login successful", {
       token,
-      user: {
-        id: user._id,
-        email: user.email,
-        role: user.role,
-        isActive: user.isActive
-      }
+      user: { id: user._id, name: user.name, role: user.role, email: user.email, department: user.department }
     });
   } catch (error) {
-    console.error("Login error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    sendResponse(res, 500, false, error.message);
+  }
+};
+
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) return sendResponse(res, 404, false, "User not found");
+
+    const otpCode = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
+    user.otp = { code: otpCode, expiresAt: new Date(Date.now() + 10 * 60 * 1000) };
+    await user.save();
+    await sendOTPEmail(user.email, otpCode);
+
+    sendResponse(res, 200, true, "Reset OTP sent to email");
+  } catch (error) {
+    sendResponse(res, 500, false, error.message);
   }
 };
 
 export const resetPassword = async (req, res) => {
   try {
-    const { email, newPassword, otp } = req.body;
-    
-    if (!email || !newPassword || !otp) {
-      return res.status(400).json({ error: "Email, new password, and OTP are required" });
-    }
-    
-    // Verify OTP
-    const otpRecord = await OTP.findOne({ 
-      email: email.toLowerCase(),
-      otp,
-      purpose: 'password_reset'
-    });
-    
-    if (!otpRecord) {
-      return res.status(400).json({ error: "Invalid or expired OTP" });
-    }
-    
-    // Find the user
+    const { email, code, newPassword } = req.body;
     const user = await User.findOne({ email: email.toLowerCase() });
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
+
+    if (!user || user.otp?.code !== code || user.otp?.expiresAt < new Date()) {
+      return sendResponse(res, 400, false, "Invalid or expired OTP");
     }
-    
-    // Update password
+
     user.password = newPassword;
+    user.otp = undefined;
     await user.save();
-    
-    // Delete the used OTP
-    await OTP.deleteOne({ _id: otpRecord._id });
-    
-    res.status(200).json({ message: "Password reset successful" });
+
+    sendResponse(res, 200, true, "Password reset successful");
   } catch (error) {
-    console.error("Password reset error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    sendResponse(res, 500, false, error.message);
   }
 };
 
-export const requestPasswordReset = async (req, res) => {
+export const getMe = async (req, res) => {
   try {
-    const { email } = req.body;
-    
-    if (!email) {
-      return res.status(400).json({ error: "Email is required" });
-    }
-    
-    // Check if user exists
-    const user = await User.findOne({ email: email.toLowerCase() });
-    if (!user) {
-      // For security reasons, don't reveal that the email doesn't exist
-      // Just say we sent the email even if we didn't
-      return res.status(200).json({ message: "If your email is registered, you will receive a password reset OTP" });
-    }
-    
-    // Generate a 6-digit OTP
-    const otp = otpGenerator.generate(6, { 
-      digits: true, 
-      alphabets: false, 
-      upperCase: false, 
-      specialChars: false 
-    });
-    
-    // Store OTP in database (overwriting any existing one)
-    await OTP.findOneAndUpdate(
-      { email: email.toLowerCase(), purpose: 'password_reset' },
-      { email: email.toLowerCase(), otp, purpose: 'password_reset' },
-      { upsert: true, new: true }
-    );
-    
-    // Send OTP via email
-    await sendOTPEmail(email, otp);
-    
-    res.status(200).json({ message: "Password reset OTP sent to your email" });
+    const user = await User.findById(req.user.userId).select("-password");
+    sendResponse(res, 200, true, "User fetched", user);
   } catch (error) {
-    console.error("Request password reset error:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-};
-
-export const verifyOTP = async (req, res) => {
-  try {
-    const { email, otp } = req.body;
-    
-    if (!email || !otp) {
-      return res.status(400).json({ error: "Email and OTP are required" });
-    }
-    
-    // Find the OTP record
-    const otpRecord = await OTP.findOne({ 
-      email: email.toLowerCase(),
-      otp,
-      purpose: 'password_reset'
-    });
-    
-    if (!otpRecord) {
-      return res.status(400).json({ error: "Invalid or expired OTP" });
-    }
-    
-    res.status(200).json({ message: "OTP verified successfully" });
-  } catch (error) {
-    console.error("OTP verification error:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-};
-
-export const verifyToken = (req, res) => {
-  res.json({
-    message: "Token is valid",
-    user: {
-      id: req.user._id,
-      email: req.user.email,
-      role: req.user.role,
-      isActive: req.user.isActive
-    }
-  });
-};
-
-export const getDashboard = (req, res) => {
-  res.json({
-    message: "Welcome to admin dashboard",
-    user: req.user
-  });
-};
-
-export const resetUsers = async (req, res) => {
-  try {
-    await User.deleteMany({});
-    res.json({ message: "All users deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-export const testDB = async (req, res) => {
-  try {
-    const dbName = mongoose.connection.db.databaseName;
-    res.json({ 
-      message: "Database connected successfully", 
-      database: dbName 
-    });
-  } catch (error) {
-    res.status(500).json({ error: "Database connection failed" });
+    sendResponse(res, 500, false, error.message);
   }
 };

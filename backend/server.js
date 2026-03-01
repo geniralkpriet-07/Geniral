@@ -1,54 +1,52 @@
 import express from "express";
+import cors from "cors";
 import dotenv from "dotenv";
-import helmet from "helmet";
-import rateLimit from "express-rate-limit";
 import connectDB from "./config/database.js";
-import { corsOptions, helmetOptions, rateLimitOptions } from "./config/security.js";
-import { createAdminUser } from "./controllers/authController.js";
+import { corsOptions } from "./config/security.js";
+import { seedUsers } from "./seed/seed.js";
+import { initVectorStore } from "./utils/vectorStore.js";
+
+// Routes
 import authRoutes from "./routes/authRoutes.js";
 import eventRoutes from "./routes/eventRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
-import associationHeadRoutes from "./routes/associationHeadRoutes.js"; 
-import associationHeadAdminRoutes from "./routes/associationHeadRoutesAdmin.js"; 
-import clubRoutes from "./routes/clubRoutes.js"; 
-import clubRoutesAdmin from "./routes/clubRoutesAdmin.js"; 
-import executiveMemberRoutes from "./routes/executiveMemberRoutes.js";
-import executiveMemberRoutesAdmin from "./routes/executiveMemberRoutesAdmin.js"; 
-import cors from "cors";
-// Import Redis for caching
-import { redis } from "./config/redis.js";
+import aiRoutes from "./routes/aiRoutes.js";
+import studentRoutes from "./routes/studentRoutes.js";
+import communityRoutes from "./routes/communityRoutes.js";
+import clubRoutes from "./routes/clubRoutes.js";
+import registrationRoutes from "./routes/registrationRoutes.js";
 
 dotenv.config();
 
-const port = process.env.PORT || 7000;
 const app = express();
+const port = process.env.PORT || 7000;
 
-app.use(helmet(helmetOptions));
 app.use(cors(corsOptions));
-app.use(rateLimit(rateLimitOptions));
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-connectDB().then(() => {
-  createAdminUser();
+// Connect DB and Seed
+connectDB().then(async () => {
+  await seedUsers();
+  await initVectorStore();
 });
 
-app.use("/", authRoutes);
-app.use("/api", eventRoutes);
-app.use("/api/association-members", associationHeadRoutes);
-app.use("/api/clubs", clubRoutes); 
-app.use("/api/executive-members", executiveMemberRoutes); 
+// Route Definitions
+app.use("/api/auth", authRoutes);
+app.use("/api/events", eventRoutes);
+app.use("/api/clubs", clubRoutes);
+app.use("/api/registrations", registrationRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/ai", aiRoutes);
+app.use("/api/student", studentRoutes);
+app.use("/api/communities", communityRoutes);
 
-app.use("/admin", adminRoutes);
-app.use("/admin/association-heads", associationHeadAdminRoutes);
-app.use("/admin/clubs", clubRoutesAdmin); 
-app.use("/admin/executive-members", executiveMemberRoutesAdmin); 
-
+// Global Error Handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ error: "Something went wrong!" });
+  res.status(500).json({ success: false, message: "Something went wrong!" });
 });
 
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`🚀 Kai Campus Server running at http://localhost:${port}`);
 });

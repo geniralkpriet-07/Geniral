@@ -1,126 +1,41 @@
 import mongoose from "mongoose";
-const Schema = mongoose.Schema;
 
-const clubSchema = new Schema({
-  id: {
-    type: String,
-    required: true,
-    unique: true
-  },
+const clubSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: true,
+    unique: true,
+    trim: true
   },
   description: {
     type: String,
     required: true
   },
-  logoBase64: {
+  category: {
     type: String,
-    default: ''
+    enum: ['technical', 'cultural', 'sports', 'social', 'academic'],
+    default: 'technical'
   },
-  content: {
+  joinLink: {
+    type: String, 
+    required: true
+  },
+  logoUrl: {
     type: String,
-    default: '' // For rich text content about the club
+    default: ""
   },
-  members: {
+  membersCount: {
     type: Number,
     default: 0
   },
-  faculty: [{
-    name: {
-      type: String,
-      required: true
-    },
-    dept: {
-      type: String,
-      required: true
-    },
-    role: {
-      type: String,
-      default: 'Coordinator'
-    },
-    imageBase64: {
-      type: String,
-      default: ''
-    }
+  leads: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   }],
-  head: {
-    name: {
-      type: String,
-      required: true
-    },
-    class: {
-      type: String,
-      required: true
-    },
-    position: {
-      type: String,
-      default: 'Club Head'
-    },
-    email: {
-      type: String,
-      default: ''
-    },
-    imageBase64: {
-      type: String,
-      default: ''
-    },
-    linkedin: {
-      type: String,
-      default: ''
-    }
-  },
-  memberList: [{
-    name: {
-      type: String,
-      required: true
-    },
-    class: {
-      type: String,
-      required: true
-    },
-    role: {
-      type: String,
-      default: 'Member'
-    },
-    imageBase64: {
-      type: String,
-      default: ''
-    },
-    linkedin: {
-      type: String,
-      default: ''
-    }
-  }],
-  achievements: [{
-    title: {
-      type: String,
-      required: true
-    },
-    description: {
-      type: String,
-      required: true
-    },
-    date: {
-      type: Date,
-      default: Date.now
-    }
-  }],
-  events: [{
-    title: {
-      type: String,
-      required: true
-    },
-    date: {
-      type: Date,
-      required: true
-    },
-    description: {
-      type: String,
-      default: ''
-    }
-  }]
+  isApproved: {
+    type: Boolean,
+    default: true  // auto-approve; admin can revoke via dashboard
+  }
 }, {
   timestamps: true
 });

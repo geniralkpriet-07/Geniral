@@ -1,30 +1,21 @@
 import express from "express";
-import { authenticateToken, requireAdmin } from "../middleware/auth.js";
-import { loginRateLimit } from "../config/security.js";
-import {
-  login,
-  verifyToken,
-  getDashboard,
-  resetUsers,
-  resetPassword,
-  requestPasswordReset,
-  verifyOTP,
-  testDB
-} from "../controllers/authController.js";
+import { register, verifyOTP, login, forgotPassword, resetPassword, getMe } from "../controllers/authController.js";
+import { authenticateToken } from "../middleware/auth.js";
+import rateLimit from "express-rate-limit";
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { success: false, message: "Too many auth attempts, please try again in 15 mins" }
+});
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.send("Hello World!");
-});
-
-router.get("/test-db", testDB);
-router.post("/login", loginRateLimit, login);
-router.post("/request-password-reset", requestPasswordReset);
-router.post("/verify-otp", verifyOTP);
-router.post("/reset-password", resetPassword);
-router.get("/verify", authenticateToken, verifyToken);
-router.get("/api/admin/dashboard", authenticateToken, requireAdmin, getDashboard);
-router.delete("/reset-users", resetUsers);
+router.post("/register", authLimiter, register);
+router.post("/verify-otp", authLimiter, verifyOTP);
+router.post("/login", authLimiter, login);
+router.post("/forgot-password", authLimiter, forgotPassword);
+router.post("/reset-password", authLimiter, resetPassword);
+router.get("/me", authenticateToken, getMe);
 
 export default router;

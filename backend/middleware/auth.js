@@ -1,36 +1,30 @@
-import jwt from 'jsonwebtoken';
-import User from '../models/User.js';
+import jwt from "jsonwebtoken";
 
-export const authenticateToken = async (req, res, next) => {
+export const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) return res.status(401).json({ success: false, message: "Access denied. No token provided." });
+
   try {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
-
-    if (!token) {
-      return res.status(401).json({ error: 'Access token required' });
-    }
-
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.userId).select('-password');
-    
-    if (!user) {
-      return res.status(401).json({ error: 'User not found' });
-    }
-
-    if (!user.isActive) {
-      return res.status(403).json({ error: 'Account is deactivated' });
-    }
-
-    req.user = user;
+    req.user = decoded;
     next();
   } catch (error) {
-    return res.status(401).json({ error: 'Invalid token' });
+    res.status(403).json({ success: false, message: "Invalid or expired token." });
   }
 };
 
 export const requireAdmin = (req, res, next) => {
-  if (req.user.role !== 'admin') {
-    return res.status(403).json({ error: 'Admin access required' });
+  if (req.user.role !== 'campus_captain') {
+    return res.status(403).json({ success: false, message: "Require Campus Captain role." });
+  }
+  next();
+};
+
+export const requireStudent = (req, res, next) => {
+  if (req.user.role !== 'student' && req.user.role !== 'campus_captain') {
+    return res.status(403).json({ success: false, message: "Only Students can create events." });
   }
   next();
 };
