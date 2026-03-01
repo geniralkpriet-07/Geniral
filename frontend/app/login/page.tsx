@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Mail, Lock, Eye, EyeOff, ArrowRight, RefreshCw } from 'lucide-react';
 import { login, requestPasswordReset, verifyOTP, resetPassword } from '@/lib/api';
@@ -9,6 +9,8 @@ type Step = 'login' | 'forgot' | 'otp' | 'reset';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get('redirect');
   const [step, setStep] = useState<Step>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,7 +31,23 @@ export default function LoginPage() {
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       window.dispatchEvent(new Event('authChange'));
-      if (data.user?.role === 'campus_captain' || data.user?.role === 'admin') {
+
+      // If user came from a referral link, redirect back to that event page with ref preserved
+      const pendingRaw = localStorage.getItem('pendingReferral');
+      if (pendingRaw) {
+        try {
+          const { eventId, ref } = JSON.parse(pendingRaw);
+          localStorage.removeItem('pendingReferral');
+          router.push(`/events/${eventId}?ref=${encodeURIComponent(ref)}`);
+          return;
+        } catch {
+          localStorage.removeItem('pendingReferral');
+        }
+      }
+
+      if (redirect) {
+        router.push(decodeURIComponent(redirect));
+      } else if (data.user?.role === 'campus_captain' || data.user?.role === 'admin') {
         router.push('/dashboard');
       } else {
         router.push('/events');
@@ -148,7 +166,10 @@ export default function LoginPage() {
               </button>
               <p className="text-center text-gray-500 text-sm mt-3">
                 Don&apos;t have an account?{' '}
-                <Link href="/signup" className="text-black underline font-semibold">
+                <Link
+                  href={redirect ? `/signup?redirect=${encodeURIComponent(redirect)}` : "/signup"}
+                  className="text-black underline font-semibold"
+                >
                   Sign Up
                 </Link>
               </p>

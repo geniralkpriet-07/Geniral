@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { getRegistrationCount, checkMyRegistration, registerForEvent } from '@/lib/api';
 
 interface TeamConfig {
@@ -26,7 +27,7 @@ export default function RegisterButton({ eventId, teamConfig, registrationDeadli
   const router = useRouter();
   const searchParams = useSearchParams();
   const referralCode = searchParams.get('ref'); // Capture referral code from URL
-  
+
   const isTeam = teamConfig?.isTeamEvent ?? false;
   const maxMembers = teamConfig?.maxMembers ?? 1;
   const minMembers = teamConfig?.minMembers ?? 1;
@@ -82,7 +83,13 @@ export default function RegisterButton({ eventId, teamConfig, registrationDeadli
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
-    if (!token) { router.push('/login'); return; }
+    if (!token) {
+      if (referralCode) {
+        localStorage.setItem('pendingReferral', JSON.stringify({ eventId, ref: referralCode }));
+      }
+      router.push(`/login?redirect=${encodeURIComponent(`/events/${eventId}`)}`);
+      return;
+    }
 
     // Validate min members
     const totalTeam = 1 + members.length;
@@ -127,7 +134,14 @@ export default function RegisterButton({ eventId, teamConfig, registrationDeadli
   // Simple register (no team form needed)
   const handleSimpleRegister = async () => {
     const token = localStorage.getItem('token');
-    if (!token) { router.push('/login'); return; }
+    if (!token) {
+      if (referralCode) {
+        localStorage.setItem('pendingReferral', JSON.stringify({ eventId, ref: referralCode }));
+      }
+      const redirectUrl = encodeURIComponent(window.location.pathname + window.location.search);
+      router.push(`/login?redirect=${redirectUrl}`);
+      return;
+    }
     setLoading(true);
     setError('');
     try {
@@ -191,7 +205,11 @@ export default function RegisterButton({ eventId, teamConfig, registrationDeadli
         <button
           onClick={() => {
             const token = localStorage.getItem('token');
-            if (!token) { router.push('/login'); return; }
+            if (!token) {
+              const redirect = encodeURIComponent(window.location.pathname + window.location.search);
+              router.push(`/login?redirect=${redirect}`);
+              return;
+            }
             setShowForm(true);
           }}
           className="w-full py-2.5 bg-black text-white text-sm font-bold rounded-md hover:bg-gray-800 transition-colors"
@@ -299,8 +317,15 @@ export default function RegisterButton({ eventId, teamConfig, registrationDeadli
       )}
 
       <p className="text-gray-400 text-xs text-center mt-3">
-        {typeof window !== 'undefined' && localStorage.getItem('token')
-          ? 'Sign in to register for this event'
+        {typeof window !== 'undefined' && !localStorage.getItem('token')
+          ? (
+            <Link
+              href={`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+              className="text-black font-semibold hover:underline"
+            >
+              Sign in to register for this event
+            </Link>
+          )
           : 'Instant confirmation · No forms'}
       </p>
     </div>

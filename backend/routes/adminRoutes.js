@@ -1,5 +1,5 @@
 import express from "express";
-import { approveEvent, rejectEvent, updateEvent, deleteEvent, getAllEventsAdmin, getAllUsers, deleteUser, getOverviewAnalytics, getAllRegistrations, getEventRegistrations, createStudent } from "../controllers/adminController.js";
+import { approveEvent, rejectEvent, updateEvent, deleteEvent, getAllEventsAdmin, getAllUsers, deleteUser, getOverviewAnalytics, getAllRegistrations, getEventRegistrations, createStudent, getUserReferrals } from "../controllers/adminController.js";
 import { authenticateToken, requireAdmin } from "../middleware/auth.js";
 
 const router = express.Router();
@@ -16,6 +16,7 @@ router.get("/events/:id/registrations", getEventRegistrations);
 router.get("/users", getAllUsers);
 router.post("/users", createStudent);
 router.delete("/users/:id", deleteUser);
+router.get("/users/:userId/referrals", getUserReferrals);
 
 router.get("/analytics/overview", getOverviewAnalytics);
 router.get("/registrations", getAllRegistrations);

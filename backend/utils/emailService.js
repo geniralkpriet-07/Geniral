@@ -183,12 +183,47 @@ export const sendStudentCredentialsEmail = async (email, name, password) => {
   });
 };
 
+export const sendVipRewardEmail = async ({ name, email, rewardTitle, rewardDescription, icon, vipCardUrl }) => {
+  const html = `
+    <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:0;border-radius:12px;overflow:hidden;border:1px solid #222;">
+      <!-- Black header -->
+      <div style="background:#000000;padding:32px 28px 24px;text-align:center;">
+        <p style="margin:0 0 8px;font-size:13px;letter-spacing:4px;text-transform:uppercase;color:#aaa;">KaiCampus</p>
+        <h1 style="margin:0;font-size:28px;color:#ffffff;font-weight:900;">🎉 You've Unlocked a VIP Reward!</h1>
+        <p style="margin:10px 0 0;color:#ccc;font-size:14px;">Your referrals paid off, ${name}.</p>
+      </div>
+      <!-- Reward box -->
+      <div style="background:#111;padding:28px;text-align:center;">
+        <div style="font-size:56px;margin-bottom:12px;">${icon}</div>
+        <h2 style="margin:0 0 8px;color:#fff;font-size:22px;">${rewardTitle}</h2>
+        <p style="margin:0;color:#aaa;font-size:15px;line-height:1.6;">${rewardDescription}</p>
+      </div>
+      <!-- CTA -->
+      <div style="background:#000;padding:28px;text-align:center;border-top:1px solid #222;">
+        <p style="color:#ccc;font-size:14px;margin:0 0 20px;">Show your VIP card QR code to the event organizer to claim your reward.</p>
+        <a href="${vipCardUrl}" style="display:inline-block;padding:14px 32px;background:#ffffff;color:#000000;font-weight:900;text-decoration:none;border-radius:6px;font-size:15px;letter-spacing:1px;">View My VIP Card →</a>
+      </div>
+      <div style="background:#0a0a0a;padding:16px;text-align:center;border-top:1px solid #1a1a1a;">
+        <p style="margin:0;font-size:11px;color:#555;">© 2026 KaiCampus · KPRIET · You earned this 🏆</p>
+      </div>
+    </div>
+  `;
+
+  return sendEmail({
+    to: email,
+    subject: `🏅 You've unlocked a VIP reward on KaiCampus!`,
+    text: `Congrats ${name}! You've unlocked the VIP reward: ${rewardTitle}. Visit ${vipCardUrl} to view your card.`,
+    html,
+  });
+};
+
 export default {
   sendEmail,
   sendOTPEmail,
   sendWelcomeOTPEmail,
   notifyAdminOnEventCreation,
   sendRegistrationEmailToAdmin,
-  sendStudentCredentialsEmail
+  sendStudentCredentialsEmail,
+  sendVipRewardEmail
 };
 

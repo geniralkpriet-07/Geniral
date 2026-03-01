@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { User, Mail, Lock, BookOpen, Eye, EyeOff, ArrowRight, RefreshCw } from 'lucide-react';
 import { signup, verifyOTP, login } from '@/lib/api';
@@ -23,6 +23,8 @@ type Step = 'signup' | 'otp';
 
 export default function SignupPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get('redirect');
   const [step, setStep] = useState<Step>('signup');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -64,12 +66,30 @@ export default function SignupPage() {
 
       // Auto login after verification
       const loginData = await login(email, password);
-      localStorage.setItem('token', loginData.data?.token || loginData.token);
+      const autoToken = loginData.data?.token || loginData.token;
+      localStorage.setItem('token', autoToken);
       localStorage.setItem('user', JSON.stringify(loginData.data?.user || loginData.user));
       window.dispatchEvent(new Event('authChange'));
 
+      // If user came from a referral link, redirect back to that event page with ref preserved
+      const pendingRaw = localStorage.getItem('pendingReferral');
+      if (pendingRaw) {
+        try {
+          const { eventId, ref } = JSON.parse(pendingRaw);
+          localStorage.removeItem('pendingReferral');
+          setTimeout(() => router.push(`/events/${eventId}?ref=${encodeURIComponent(ref)}`), 1000);
+          return;
+        } catch {
+          localStorage.removeItem('pendingReferral');
+        }
+      }
+
       setTimeout(() => {
-        router.push('/events');
+        if (redirect) {
+          router.push(decodeURIComponent(redirect));
+        } else {
+          router.push('/events');
+        }
       }, 1000);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Verification failed.');
@@ -178,7 +198,10 @@ export default function SignupPage() {
 
               <p className="text-center text-gray-500 text-sm mt-6">
                 Already have an account?{' '}
-                <Link href="/login" className="text-black underline font-semibold">
+                <Link
+                  href={redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : "/login"}
+                  className="text-black underline font-semibold"
+                >
                   Sign In
                 </Link>
               </p>

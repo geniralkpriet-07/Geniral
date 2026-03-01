@@ -38,6 +38,7 @@ export interface Registration {
   student: { _id: string; name: string; email: string; department: string } | string;
   teamMembers?: { name: string; email: string; rollNumber: string }[];
   teamSize?: number;
+  referrer?: { _id: string; name: string; email: string } | string;
   registeredAt: string;
   // legacy compat
   user?: { _id: string; name: string; email: string; department: string } | string;
@@ -116,4 +117,15 @@ export interface DashboardStats {
   categoryBreakdown: { _id: string; count: number }[];
   registrationTrend: { _id: string; count: number }[];
   recentEvents: Event[];
+}
+
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  role: 'student' | 'campus_captain' | 'admin';
+  department?: string;
+  referralCount?: number;
+  isVerified: boolean;
+  createdAt: string;
 }

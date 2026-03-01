@@ -8,11 +8,12 @@ import {
 } from 'lucide-react';
 import {
   getDashboard, getAdminAllEvents, getAdminEventRegistrations,
-  approveEvent, rejectEvent, adminCreateStudent,
+  approveEvent, rejectEvent, adminCreateStudent, getAdminUsers, getAdminUserReferrals,
 } from '@/lib/api';
-import type { DashboardStats, Event, Registration } from '@/types';
+import type { DashboardStats, Event, Registration, User } from '@/types';
 import StatsWidget from '@/components/StatsWidget';
-import { UserPlus, User } from 'lucide-react';
+import VipCard from '@/components/VipCard';
+import { UserPlus, User as UserIcon } from 'lucide-react';
 
 const DEPARTMENTS = ['All', 'CSE', 'IT', 'ECE', 'EEE', 'MECH', 'CIVIL', 'AIDS', 'AIML', 'CSD', 'Other'];
 
@@ -52,6 +53,14 @@ export default function DashboardPage() {
   const [myRegistrations, setMyRegistrations] = useState<Registration[]>([]);
   const [myEvents, setMyEvents] = useState<Event[]>([]);
   const [nonAdminLoading, setNonAdminLoading] = useState(false);
+
+  // Students View State
+  const [showStudentsView, setShowStudentsView] = useState(false);
+  const [allStudents, setAllStudents] = useState<User[]>([]);
+  const [studentsLoading, setStudentsLoading] = useState(false);
+  const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
+  const [studentReferrals, setStudentReferrals] = useState<Registration[]>([]);
+  const [referralsLoading, setReferralsLoading] = useState(false);
 
   useEffect(() => {
     const t = localStorage.getItem('token');
@@ -95,6 +104,8 @@ export default function DashboardPage() {
   const loadEventDetail = useCallback(async (eventId: string) => {
     const t = localStorage.getItem('token');
     if (!t) return;
+    setShowStudentsView(false);
+    setShowCreateStudent(false);
     setDetailLoading(true);
     setSelectedEventId(eventId);
     setEventDetail(null);
@@ -107,6 +118,41 @@ export default function DashboardPage() {
       setDetailLoading(false);
     }
   }, []);
+
+  const loadStudents = useCallback(async () => {
+    const t = localStorage.getItem('token');
+    if (!t) return;
+    setStudentsLoading(true);
+    setShowStudentsView(true);
+    setSelectedEventId(null);
+    setEventDetail(null);
+    setShowCreateStudent(false);
+    setSelectedStudentId(null);
+    try {
+      const users = await getAdminUsers(t);
+      setAllStudents(users);
+    } catch {
+      setError('Failed to load students.');
+    } finally {
+      setStudentsLoading(false);
+    }
+  }, []);
+
+  const loadStudentReferrals = async (studentId: string) => {
+    const t = localStorage.getItem('token');
+    if (!t) return;
+    setReferralsLoading(true);
+    setSelectedStudentId(studentId);
+    setStudentReferrals([]);
+    try {
+      const refs = await getAdminUserReferrals(studentId, t);
+      setStudentReferrals(refs);
+    } catch {
+      setError('Failed to load referrals.');
+    } finally {
+      setReferralsLoading(false);
+    }
+  };
 
   const handleApprove = async (eventId: string) => {
     const t = localStorage.getItem('token');
@@ -203,61 +249,65 @@ export default function DashboardPage() {
             <div className="h-48 bg-gray-100 rounded-2xl animate-pulse" />
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Registrations Card */}
-            <div className="bg-white border border-gray-200 p-8 flex flex-col items-center text-center">
-              <ClipboardList className="w-12 h-12 text-black mb-4" />
-              <h2 className="text-xl font-black text-black">My Registrations</h2>
-              <p className="text-gray-500 text-sm mt-2 mb-6">
-                You have registered for <strong>{myRegistrations.length}</strong> events.
-              </p>
-              <button
-                onClick={() => router.push('/dashboard/my-events?tab=registrations')}
-                className="w-full py-3 bg-black text-white text-sm font-bold hover:bg-gray-800 transition-colors"
-              >
-                View Registrations
-              </button>
-            </div>
-
-            {/* Event Creation / Promo Card */}
-            {isStudent ? (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Registrations Card */}
               <div className="bg-white border border-gray-200 p-8 flex flex-col items-center text-center">
-                <Calendar className="w-12 h-12 text-black mb-4" />
-                <h2 className="text-xl font-black text-black">Event Management</h2>
+                <ClipboardList className="w-12 h-12 text-black mb-4" />
+                <h2 className="text-xl font-black text-black">My Registrations</h2>
                 <p className="text-gray-500 text-sm mt-2 mb-6">
-                  You have submitted <strong>{myEvents.length}</strong> events for review.
-                </p>
-                <div className="flex flex-col w-full gap-3">
-                  <button
-                    onClick={() => router.push('/events/create')}
-                    className="w-full py-3 bg-black text-white text-sm font-bold hover:bg-gray-800 transition-colors"
-                  >
-                    Create New Event
-                  </button>
-                  <button
-                    onClick={() => router.push('/events?submitted=1')}
-                    className="w-full py-3 border border-gray-200 text-black text-sm font-bold hover:bg-gray-50 transition-colors"
-                  >
-                    Track Submissions
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="bg-gray-50 border border-gray-200 p-8 flex flex-col items-center text-center">
-                <Users className="w-12 h-12 text-gray-400 mb-4" />
-                <h2 className="text-xl font-black text-gray-400">Event Creator</h2>
-                <p className="text-gray-500 text-sm mt-2 mb-6">
-                  Want to organize events? Contact an admin to upgrade your account to a Student Event Creator.
+                  You have registered for <strong>{myRegistrations.length}</strong> events.
                 </p>
                 <button
-                  onClick={() => router.push('/events')}
-                  className="w-full py-3 border border-gray-300 text-gray-500 text-sm font-bold cursor-not-allowed"
-                  disabled
+                  onClick={() => router.push('/dashboard/my-events?tab=registrations')}
+                  className="w-full py-3 bg-black text-white text-sm font-bold hover:bg-gray-800 transition-colors"
                 >
-                  Discovery Mode Only
+                  View Registrations
                 </button>
               </div>
-            )}
+
+              {/* Event Creation / Promo Card */}
+              {isStudent ? (
+                <div className="bg-white border border-gray-200 p-8 flex flex-col items-center text-center">
+                  <Calendar className="w-12 h-12 text-black mb-4" />
+                  <h2 className="text-xl font-black text-black">Event Management</h2>
+                  <p className="text-gray-500 text-sm mt-2 mb-6">
+                    You have submitted <strong>{myEvents.length}</strong> events for review.
+                  </p>
+                  <div className="flex flex-col w-full gap-3">
+                    <button
+                      onClick={() => router.push('/events/create')}
+                      className="w-full py-3 bg-black text-white text-sm font-bold hover:bg-gray-800 transition-colors"
+                    >
+                      Create New Event
+                    </button>
+                    <button
+                      onClick={() => router.push('/events?submitted=1')}
+                      className="w-full py-3 border border-gray-200 text-black text-sm font-bold hover:bg-gray-50 transition-colors"
+                    >
+                      Track Submissions
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-gray-50 border border-gray-200 p-8 flex flex-col items-center text-center">
+                  <Users className="w-12 h-12 text-gray-400 mb-4" />
+                  <h2 className="text-xl font-black text-gray-400">Event Creator</h2>
+                  <p className="text-gray-500 text-sm mt-2 mb-6">
+                    Want to organize events? Contact an admin to upgrade your account to a Student Event Creator.
+                  </p>
+                  <button
+                    onClick={() => router.push('/events')}
+                    className="w-full py-3 border border-gray-300 text-gray-500 text-sm font-bold cursor-not-allowed"
+                    disabled
+                  >
+                    Discovery Mode Only
+                  </button>
+                </div>
+              )}
+            </div>
+            {/* VIP Reward Card */}
+            <VipCard />
           </div>
         )}
       </div>
@@ -312,33 +362,32 @@ export default function DashboardPage() {
             {DEPARTMENTS.map((dept) => (
               <button
                 key={dept}
-                onClick={() => { setSelectedDept(dept); setSelectedEventId(null); setEventDetail(null); setShowCreateStudent(false); }}
-                className={`flex items-center justify-between px-3 py-2 text-sm font-semibold transition-colors w-full text-left ${selectedDept === dept && !showCreateStudent
+                onClick={() => { setSelectedDept(dept); setSelectedEventId(null); setEventDetail(null); setShowCreateStudent(false); setShowStudentsView(false); setSelectedStudentId(null); }}
+                className={`flex items-center justify-between px-3 py-2 text-sm font-semibold transition-colors w-full text-left ${selectedDept === dept && !showCreateStudent && !showStudentsView
                   ? 'bg-black text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                   }`}
               >
                 <span className="truncate">{dept}</span>
-                <span className={`ml-2 shrink-0 text-xs px-1.5 py-0.5 ${selectedDept === dept && !showCreateStudent ? 'bg-white/20 text-white' : 'bg-black/5 text-gray-500'}`}>
+                <span className={`ml-2 shrink-0 text-xs px-1.5 py-0.5 ${selectedDept === dept && !showCreateStudent && !showStudentsView ? 'bg-white/20 text-white' : 'bg-black/5 text-gray-500'}`}>
                   {deptCounts[dept] ?? 0}
                 </span>
               </button>
             ))}
 
-            <div className="pt-4 mt-4 border-t border-gray-200 lg:w-full">
+            <div className="pt-4 mt-4 border-t border-gray-200 lg:w-full space-y-2">
               <button
-                onClick={() => { setShowCreateStudent(true); setSelectedEventId(null); setEventDetail(null); }}
-                className={`flex items-center gap-2 px-3 py-2 text-sm font-bold transition-colors w-full text-left ${showCreateStudent ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
+                onClick={loadStudents}
+                className={`flex items-center gap-2 px-3 py-2 text-sm font-bold transition-colors w-full text-left ${showStudentsView ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
               >
-                <UserPlus className="w-4 h-4" />
-                <span>Create Student</span>
+                <Users className="w-4 h-4" />
+                <span>All Students</span>
               </button>
             </div>
           </div>
         </aside>
 
-        {!selectedEventId && !showCreateStudent && (
+        {!selectedEventId && !showCreateStudent && !showStudentsView && (
           <div className="flex-1 min-w-0">
             <h2 className="text-lg font-black text-black mb-4 flex items-center gap-2">
               <Calendar className="w-5 h-5 text-black" />
@@ -385,6 +434,106 @@ export default function DashboardPage() {
             )}
           </div>
         )}
+        {showStudentsView && (
+          <div className="flex-1 min-w-0">
+            <h2 className="text-lg font-black text-black mb-6 flex items-center gap-2">
+              <Users className="w-5 h-5 text-black" />
+              All Students Hub
+              <span className="text-gray-400 text-sm font-normal ml-1">({allStudents.length} members)</span>
+            </h2>
+
+            {studentsLoading ? (
+              <div className="space-y-3">
+                {Array.from({ length: 8 }).map((_, i) => <div key={i} className="h-16 bg-gray-100 rounded-xl animate-pulse" />)}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-4">
+                {allStudents.map((s) => (
+                  <div key={s._id} className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm transition-all">
+                    <div className="p-5 flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-black flex items-center justify-center text-white font-black rounded-2xl text-xl">
+                          {s.name?.charAt(0) || '?'}
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-black">{s.name}</h3>
+                          <p className="text-xs text-gray-500">{s.email}</p>
+                          <div className="flex gap-2 mt-1">
+                            <span className="text-[10px] bg-gray-100 px-2 py-0.5 rounded-full font-bold text-gray-500 uppercase tracking-tighter">
+                              {s.department || 'No Dept'}
+                            </span>
+                            <span className="text-[10px] bg-black text-white px-2 py-0.5 rounded-full font-bold">
+                              {s.referralCount || 0} Referrals
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => selectedStudentId === s._id ? setSelectedStudentId(null) : loadStudentReferrals(s._id)}
+                        className="px-4 py-2 border border-black/10 text-xs font-bold hover:bg-black hover:text-white transition-all rounded-lg"
+                      >
+                        {selectedStudentId === s._id ? 'Close Details' : 'View Referrals →'}
+                      </button>
+                    </div>
+
+                    {selectedStudentId === s._id && (
+                      <div className="bg-gray-50 border-t border-gray-100 p-6 animate-in slide-in-from-top duration-300">
+                        <h4 className="text-xs font-black text-black uppercase tracking-widest mb-4 flex items-center gap-2">
+                          <Users className="w-3.5 h-3.5" /> Who {s.name.split(' ')[0]} Referred
+                        </h4>
+
+                        {referralsLoading ? (
+                          <div className="space-y-2">
+                            <div className="h-10 bg-white/50 animate-pulse rounded-lg" />
+                            <div className="h-10 bg-white/50 animate-pulse rounded-lg" />
+                          </div>
+                        ) : studentReferrals.length === 0 ? (
+                          <div className="text-center py-6 text-gray-400 italic text-sm">
+                            No referrals tracked for this student.
+                          </div>
+                        ) : (
+                          <div className="overflow-hidden border border-black/5 bg-white shadow-sm">
+                            <table className="w-full text-left text-xs">
+                              <thead className="bg-gray-100 text-gray-500 font-bold uppercase tracking-wider">
+                                <tr>
+                                  <th className="px-4 py-2.5">Friend</th>
+                                  <th className="px-4 py-2.5">Event</th>
+                                  <th className="px-4 py-2.5">Date</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-gray-100">
+                                {studentReferrals.map((r, ri) => {
+                                  const friend = typeof r.student === 'object' ? r.student : null;
+                                  const ev = typeof r.event === 'object' ? r.event : null;
+                                  return (
+                                    <tr key={ri} className="hover:bg-gray-50">
+                                      <td className="px-4 py-3">
+                                        <div className="font-bold text-black">{friend?.name || 'Unknown'}</div>
+                                        <div className="text-gray-400">{friend?.email}</div>
+                                      </td>
+                                      <td className="px-4 py-3">
+                                        <div className="font-semibold text-gray-700">{ev?.title || 'Unknown Event'}</div>
+                                        <div className="text-[10px] text-gray-400 uppercase">{ev?.category?.replace(/_/g, ' ')}</div>
+                                      </td>
+                                      <td className="px-4 py-3 text-gray-400">
+                                        {r.registeredAt ? new Date(r.registeredAt).toLocaleDateString() : '—'}
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         {showCreateStudent && (
           <div className="flex-1 min-w-0">
             <h2 className="text-lg font-black text-black mb-6 flex items-center gap-2">
@@ -396,7 +545,7 @@ export default function DashboardPage() {
               <div>
                 <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Full Name</label>
                 <div className="relative">
-                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <UserIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
                     type="text"
                     required
@@ -575,6 +724,7 @@ export default function DashboardPage() {
                           <tr className="bg-gray-50 text-left text-xs font-bold text-gray-500 uppercase tracking-wide border-b border-gray-200">
                             <th className="px-4 py-3">#</th>
                             <th className="px-4 py-3">Student</th>
+                            <th className="px-4 py-3">Referrer</th>
                             <th className="px-4 py-3">Team Leader</th>
                             <th className="px-4 py-3">Team Members</th>
                             <th className="px-4 py-3">Size</th>
@@ -584,6 +734,7 @@ export default function DashboardPage() {
                         <tbody>
                           {eventDetail.registrations.map((reg, i) => {
                             const s = typeof reg.student === 'object' ? reg.student : null;
+                            const referrer = (reg as any).referrer;
                             const leader = (reg as unknown as { teamLeader?: { name: string; email: string; rollNumber: string; department: string } }).teamLeader;
                             return (
                               <tr key={reg._id} className={`border-t border-gray-100 ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50/40'}`}>
@@ -592,6 +743,14 @@ export default function DashboardPage() {
                                   <p className="font-semibold text-black text-xs">{s?.name ?? '—'}</p>
                                   <p className="text-gray-500 text-xs">{s?.email ?? '—'}</p>
                                   {s?.department && <p className="text-gray-400 text-xs">{s.department}</p>}
+                                </td>
+                                <td className="px-4 py-3">
+                                  {referrer ? (
+                                    <div>
+                                      <p className="font-semibold text-black text-xs">{referrer.name ?? '—'}</p>
+                                      <p className="text-gray-500 text-xs">{referrer.email ?? '—'}</p>
+                                    </div>
+                                  ) : <span className="text-gray-400 text-xs">Direct / None</span>}
                                 </td>
                                 <td className="px-4 py-3">
                                   {leader ? (

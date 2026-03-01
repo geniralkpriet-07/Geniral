@@ -2,16 +2,19 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { Menu, X, LogOut, LayoutDashboard } from 'lucide-react';
+import { Menu, X, LogOut, LayoutDashboard, MessageSquare, Gift, Shield, Users } from 'lucide-react';
+import ChatModal from './ChatModal';
 
 const links = [
   { href: '/events', label: 'Events' },
+  { href: '/clubs', label: 'Clubs' },
 ];
 
 export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
   const [user, setUser] = useState<{ name?: string; email: string; role?: string } | null>(null);
 
   const readUser = () => {
@@ -69,6 +72,16 @@ export default function Navbar() {
             </Link>
           ))}
 
+          {/* Chat Button */}
+          <button
+            onClick={() => setChatOpen(true)}
+            className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-black font-medium transition-colors"
+            title="Chat with Kai"
+          >
+            <MessageSquare className="w-4 h-4" />
+            Ask Kai
+          </button>
+
           {user ? (
             <>
               <Link
@@ -78,6 +91,33 @@ export default function Navbar() {
                 <LayoutDashboard className="w-4 h-4" />
                 {isAdmin ? 'Admin Panel' : 'Dashboard'}
               </Link>
+              {!isAdmin && (
+                <Link
+                  href="/dashboard/vip-card"
+                  className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-black font-medium transition-colors"
+                >
+                  <Gift className="w-4 h-4" />
+                  VIP Card
+                </Link>
+              )}
+              {isAdmin && (
+                <Link
+                  href="/dashboard/admin-vip"
+                  className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-black font-medium transition-colors"
+                >
+                  <Shield className="w-4 h-4" />
+                  VIP Panel
+                </Link>
+              )}
+              {isAdmin && (
+                <Link
+                  href="/dashboard/admin-clubs"
+                  className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-black font-medium transition-colors"
+                >
+                  <Users className="w-4 h-4" />
+                  Clubs Panel
+                </Link>
+              )}
               <button
                 onClick={handleLogout}
               className="flex items-center gap-1.5 ml-2 px-3 py-1.5 border border-gray-300 text-gray-600 hover:text-black hover:border-black text-sm font-medium transition-colors"
@@ -113,6 +153,13 @@ export default function Navbar() {
       {/* Mobile menu */}
       {open && (
         <div className="md:hidden border-t border-gray-200 bg-white px-4 py-4 flex flex-col gap-3">
+          <button
+            onClick={() => { setChatOpen(true); setOpen(false); }}
+            className="px-3 py-2 border border-gray-300 text-black font-medium text-center flex items-center justify-center gap-2"
+          >
+            <MessageSquare className="w-4 h-4" />
+            Ask Kai
+          </button>
           {links.map((l) => (
             <Link
               key={l.href}
@@ -132,6 +179,24 @@ export default function Navbar() {
               >
                 {isAdmin ? 'Admin Panel' : 'Dashboard'}
               </Link>
+              {!isAdmin && (
+                <Link href="/dashboard/vip-card" onClick={() => setOpen(false)}
+                  className="px-3 py-2 border border-gray-300 text-black font-medium text-center flex items-center justify-center gap-2">
+                  <Gift className="w-4 h-4" /> VIP Card
+                </Link>
+              )}
+              {isAdmin && (
+                <Link href="/dashboard/admin-vip" onClick={() => setOpen(false)}
+                  className="px-3 py-2 border border-gray-300 text-black font-medium text-center flex items-center justify-center gap-2">
+                  <Shield className="w-4 h-4" /> VIP Panel
+                </Link>
+              )}
+              {isAdmin && (
+                <Link href="/dashboard/admin-clubs" onClick={() => setOpen(false)}
+                  className="px-3 py-2 border border-gray-300 text-black font-medium text-center flex items-center justify-center gap-2">
+                  <Users className="w-4 h-4" /> Clubs Panel
+                </Link>
+              )}
               <button
                 onClick={() => { handleLogout(); setOpen(false); }}
                 className="px-3 py-2 bg-gray-100 text-gray-700 font-medium text-center"
@@ -159,6 +224,9 @@ export default function Navbar() {
           )}
         </div>
       )}
+
+      {/* Chat Modal */}
+      <ChatModal isOpen={chatOpen} onClose={() => setChatOpen(false)} />
     </nav>
   );
 }

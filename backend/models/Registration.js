@@ -29,7 +29,11 @@ const registrationSchema = new mongoose.Schema({
     default: 1
   },
   referredBy: {
-    type: String,
+    type: String, // The full code (EVENT-USERID)
+  },
+  referrer: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
   },
   registeredAt: {
     type: Date,

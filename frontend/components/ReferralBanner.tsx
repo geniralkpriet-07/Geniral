@@ -1,6 +1,7 @@
 'use client';
 import { Gift, Users, Copy, Check } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 interface Props {
   eventId: string;
@@ -44,7 +45,7 @@ export default function ReferralBanner({ eventId, referralCode, reward = 'VIP No
   const fetchReferralCount = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/events/${eventId}/referrals/${userId}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7000'}/api/events/${eventId}/referrals/${userId}`, {
         headers: token ? { 'Authorization': `Bearer ${token}` } : {}
       });
       if (res.ok) {
@@ -66,6 +67,7 @@ export default function ReferralBanner({ eventId, referralCode, reward = 'VIP No
   };
 
   const progress = Math.min((referralCount / 3) * 100, 100);
+  const unlocked = referralCount >= 3;
 
   // Don't show if user is not logged in
   if (!userId && !loading) {
@@ -74,6 +76,19 @@ export default function ReferralBanner({ eventId, referralCode, reward = 'VIP No
 
   return (
     <div className="rounded-2xl bg-white border-2 border-black p-6 shadow-lg">
+      {/* VIP Unlocked Banner */}
+      {unlocked && (
+        <div className="mb-4 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-xl p-4 flex items-center justify-between gap-3">
+          <div>
+            <p className="font-bold text-black text-sm">🎉 VIP Reward Unlocked!</p>
+            <p className="text-xs text-black/70">You've referred 3 friends. Check your reward card!</p>
+          </div>
+          <Link href="/dashboard/vip-card"
+            className="shrink-0 px-3 py-1.5 bg-black text-white text-xs font-bold rounded-lg hover:bg-gray-800">
+            View Card →
+          </Link>
+        </div>
+      )}
       <div className="flex items-start gap-4">
         <div className="w-11 h-11 rounded-xl bg-black flex items-center justify-center shrink-0">
           <Gift className="w-6 h-6 text-white" />

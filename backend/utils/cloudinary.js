@@ -21,4 +21,15 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage: storage });
 
+const clubStorage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'kai-campus-hub/clubs',
+        allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
+        transformation: [{ width: 800, height: 800, crop: 'limit' }]
+    },
+});
+
+export const uploadClub = multer({ storage: clubStorage });
+
 export default upload;

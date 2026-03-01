@@ -15,6 +15,8 @@ import studentRoutes from "./routes/studentRoutes.js";
 import communityRoutes from "./routes/communityRoutes.js";
 import clubRoutes from "./routes/clubRoutes.js";
 import registrationRoutes from "./routes/registrationRoutes.js";
+import chatRoutes from "./routes/chatRoutes.js";
+import vipRoutes from "./routes/vipRoutes.js";
 
 dotenv.config();
 
@@ -29,6 +31,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 connectDB().then(async () => {
   await seedUsers();
   await initVectorStore();
+  console.log('✅ AI Vector Store Initialized');
 });
 
 // Route Definitions
@@ -40,6 +43,8 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/student", studentRoutes);
 app.use("/api/communities", communityRoutes);
+app.use("/api/chat", chatRoutes);
+app.use("/api/vip", vipRoutes);
 
 // Global Error Handler
 app.use((err, req, res, next) => {

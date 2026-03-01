@@ -1,4 +1,4 @@
-import type { Club, Event, Registration, AssociationMember, ExecutiveMember, DashboardStats } from '@/types';
+import type { Club, Event, Registration, User, AssociationMember, ExecutiveMember, DashboardStats } from '@/types';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7000';
 
@@ -175,6 +175,14 @@ export async function rejectEvent(eventId: string, token: string) {
 // ── Admin Dashboard ───────────────────────────────────────────────────────────
 export async function getDashboard(token: string): Promise<DashboardStats> {
   return fetchJSON<{ success: boolean; data: DashboardStats }>('/api/admin/analytics/overview', token).then(r => r.data);
+}
+
+export async function getAdminUsers(token: string): Promise<User[]> {
+  return fetchJSON<{ success: boolean; data: User[] }>('/api/admin/users', token).then(r => r.data ?? []);
+}
+
+export async function getAdminUserReferrals(userId: string, token: string): Promise<Registration[]> {
+  return fetchJSON<{ success: boolean; data: Registration[] }>(`/api/admin/users/${userId}/referrals`, token).then(r => r.data ?? []);
 }
 
 export async function adminCreateStudent(token: string, studentData: Record<string, string>) {

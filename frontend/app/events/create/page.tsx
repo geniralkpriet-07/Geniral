@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createEvent } from '@/lib/api';
-import { ChevronLeft, ShieldAlert, UploadCloud, MapPin, CalendarDays, Users, Link2, Tag } from 'lucide-react';
+import { ChevronLeft, ShieldAlert, UploadCloud, MapPin, CalendarDays, Users, Link2, Tag, Sparkles, RefreshCw, X } from 'lucide-react';
 
 const CATEGORIES = [
   { value: 'hackathon', label: 'Hackathon' },
@@ -46,6 +46,9 @@ export default function CreateEventPage() {
   });
   const [poster, setPoster] = useState<File | null>(null);
   const [posterPreview, setPosterPreview] = useState<string | null>(null);
+  const [posterMode, setPosterMode] = useState<'upload' | 'ai'>('ai');
+  const [generatingPoster, setGeneratingPoster] = useState(false);
+  const [posterError, setPosterError] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [accessDenied, setAccessDenied] = useState(false);
@@ -67,6 +70,59 @@ export default function CreateEventPage() {
     if (!file) return;
     setPoster(file);
     setPosterPreview(URL.createObjectURL(file));
+    setPosterError('');
+  };
+
+  const handleRemovePoster = () => {
+    setPoster(null);
+    setPosterPreview(null);
+    setPosterError('');
+    if (fileRef.current) fileRef.current.value = '';
+  };
+
+  const handleModeChange = (mode: 'upload' | 'ai') => {
+    if (mode !== posterMode) {
+      handleRemovePoster();
+      setPosterMode(mode);
+    }
+  };
+
+  const handleGeneratePoster = async () => {
+    if (!form.title) {
+      setPosterError('Please enter an event title first.');
+      return;
+    }
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    setPosterError('');
+    setGeneratingPoster(true);
+    try {
+      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7000';
+      const res = await fetch(`${API}/api/ai/generate-poster`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          title: form.title,
+          eventDate: form.eventDate,
+          venue: form.venue,
+          description: form.description,
+        }),
+        signal: AbortSignal.timeout(70000),
+      });
+      const data = await res.json();
+      if (!data.success || !data.imageUrl) throw new Error(data.message || 'No image returned');
+
+      // Fetch the image as a blob so it can be sent as a File in FormData
+      const imgRes = await fetch(data.imageUrl);
+      const blob = await imgRes.blob();
+      const file = new File([blob], 'ai-poster.png', { type: blob.type || 'image/png' });
+      setPoster(file);
+      setPosterPreview(URL.createObjectURL(file));
+    } catch (err: unknown) {
+      setPosterError(err instanceof Error ? err.message : 'Poster generation failed.');
+    } finally {
+      setGeneratingPoster(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -129,26 +185,6 @@ export default function CreateEventPage() {
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Poster upload */}
-        <div>
-          <label className={labelClass}>Event Poster</label>
-          <div
-            onClick={() => fileRef.current?.click()}
-            className={`cursor-pointer flex flex-col items-center justify-center gap-2 border-2 border-dashed border-gray-300 bg-gray-50 hover:border-black transition-colors overflow-hidden ${posterPreview ? 'h-auto' : 'h-40'}`}
-          >
-            {posterPreview ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={posterPreview} alt="Poster preview" className="w-full max-h-72 object-cover rounded-2xl" />
-            ) : (
-              <>
-                <UploadCloud className="w-8 h-8 text-gray-400" />
-                <p className="text-sm text-gray-400">Click to upload poster image</p>
-              </>
-            )}
-          </div>
-          <input ref={fileRef} type="file" accept="image/*" title="Upload event poster" aria-label="Upload event poster" className="hidden" onChange={handlePoster} />
-        </div>
-
         {/* Title */}
         <div>
           <label className={labelClass}>Event Title <span className="text-gray-500">*</span></label>
@@ -353,6 +389,123 @@ export default function CreateEventPage() {
                 <p className="text-xs text-gray-400 mt-1">Maximum allowed per team</p>
               </div>
             </div>
+          )}
+        </div>
+
+        {/* Poster */}
+        <div>
+          <label className={labelClass}>Event Poster <span className="text-gray-400 font-normal text-xs">(optional)</span></label>
+
+          {/* Mode tabs — hidden once poster chosen */}
+          {!posterPreview && !generatingPoster && (
+            <div className="flex gap-2 mb-3">
+              <button
+                type="button"
+                onClick={() => handleModeChange('ai')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${
+                  posterMode === 'ai'
+                    ? 'bg-black border-black text-white'
+                    : 'bg-white border-gray-300 text-gray-500 hover:border-black hover:text-black'
+                }`}
+              >
+                <Sparkles className="w-4 h-4" />
+                Generate with EURI AI
+              </button>
+              <button
+                type="button"
+                onClick={() => handleModeChange('upload')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${
+                  posterMode === 'upload'
+                    ? 'bg-black border-black text-white'
+                    : 'bg-white border-gray-300 text-gray-500 hover:border-black hover:text-black'
+                }`}
+              >
+                <UploadCloud className="w-4 h-4" />
+                Upload Poster
+              </button>
+            </div>
+          )}
+
+          {/* UPLOAD mode */}
+          {posterMode === 'upload' && !posterPreview && !generatingPoster && (
+            <div
+              onClick={() => fileRef.current?.click()}
+              className="cursor-pointer flex flex-col items-center justify-center gap-2 h-40 border-2 border-dashed border-gray-300 bg-gray-50 hover:border-black transition-colors rounded-lg"
+            >
+              <UploadCloud className="w-8 h-8 text-gray-400" />
+              <p className="text-sm text-gray-400">Click to upload poster image</p>
+              <p className="text-xs text-gray-300">PNG, JPG, WEBP up to 5MB</p>
+            </div>
+          )}
+
+          {/* AI GENERATE mode */}
+          {posterMode === 'ai' && !posterPreview && !generatingPoster && (
+            <div className="flex flex-col items-center gap-3 py-6 border-2 border-dashed border-gray-300 bg-gray-50 rounded-lg">
+              <Sparkles className="w-8 h-8 text-gray-400" />
+              <div className="text-center">
+                <p className="text-sm font-medium text-gray-700">Generate poster using EURI AI</p>
+                <p className="text-xs text-gray-400 mt-0.5">Uses your event title, date, venue &amp; description. Takes ~30s.</p>
+              </div>
+              <button
+                type="button"
+                onClick={handleGeneratePoster}
+                disabled={generatingPoster}
+                className="flex items-center gap-2 px-5 py-2 bg-black hover:bg-gray-800 text-white text-sm font-medium rounded-lg transition-colors"
+              >
+                <Sparkles className="w-4 h-4" />
+                Generate Poster
+              </button>
+            </div>
+          )}
+
+          {/* Generating spinner */}
+          {generatingPoster && (
+            <div className="flex flex-col items-center justify-center gap-3 h-48 border-2 border-dashed border-gray-300 bg-gray-50 rounded-lg">
+              <div className="w-10 h-10 border-4 border-gray-200 border-t-black rounded-full animate-spin" />
+              <p className="text-sm text-gray-500">Generating poster with EURI AI…</p>
+              <p className="text-xs text-gray-400">This usually takes 20–40 seconds</p>
+            </div>
+          )}
+
+          {/* Preview */}
+          {posterPreview && !generatingPoster && (
+            <div className="relative group/poster">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={posterPreview} alt="Poster preview" className="w-full max-h-80 object-contain rounded-lg border border-gray-200" />
+              <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover/poster:opacity-100 transition-opacity">
+                {posterMode === 'ai' && (
+                  <button
+                    type="button"
+                    onClick={handleGeneratePoster}
+                    disabled={generatingPoster}
+                    className="flex items-center gap-1.5 bg-white/90 border border-gray-300 text-gray-700 text-xs font-medium rounded-lg px-3 py-1.5 hover:bg-gray-100 transition-colors"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" /> Regenerate
+                  </button>
+                )}
+                {posterMode === 'upload' && (
+                  <label className="flex items-center gap-1.5 bg-white/90 border border-gray-300 text-gray-700 text-xs font-medium rounded-lg px-3 py-1.5 hover:bg-gray-100 transition-colors cursor-pointer">
+                    <UploadCloud className="w-3.5 h-3.5" /> Replace
+                    <input type="file" accept="image/*" className="hidden" onChange={handlePoster} />
+                  </label>
+                )}
+                <button
+                  type="button"
+                  onClick={handleRemovePoster}
+                  className="flex items-center gap-1.5 bg-red-50 border border-red-200 text-red-600 text-xs font-medium rounded-lg px-3 py-1.5 hover:bg-red-100 transition-colors"
+                >
+                  <X className="w-3.5 h-3.5" /> Remove
+                </button>
+              </div>
+            </div>
+          )}
+
+          <input ref={fileRef} type="file" accept="image/*" title="Upload event poster" aria-label="Upload event poster" className="hidden" onChange={handlePoster} />
+
+          {posterError && (
+            <p className="mt-2 text-xs text-red-500 flex items-center gap-1">
+              <span>⚠</span> {posterError}
+            </p>
           )}
         </div>
 

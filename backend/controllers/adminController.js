@@ -80,8 +80,12 @@ export const getAllEventsAdmin = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
     try {
-        const users = await User.find({ role: 'student' });
-        res.status(200).json({ success: true, data: users });
+        const users = await User.find({ role: 'student' }).sort({ createdAt: -1 }).lean();
+        const enriched = await Promise.all(users.map(async (u) => {
+            const referralCount = await Registration.countDocuments({ referrer: u._id });
+            return { ...u, referralCount };
+        }));
+        res.status(200).json({ success: true, data: enriched });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
@@ -101,6 +105,7 @@ export const getAllRegistrations = async (req, res) => {
         const registrations = await Registration.find()
             .populate('student', 'name email department')
             .populate('event', 'title category eventDate')
+            .populate('referrer', 'name email')
             .sort({ registeredAt: -1 });
         res.status(200).json({ success: true, data: registrations });
     } catch (error) {
@@ -116,6 +121,7 @@ export const getEventRegistrations = async (req, res) => {
 
         const registrations = await Registration.find({ event: id })
             .populate('student', 'name email department')
+            .populate('referrer', 'name email')
             .sort({ registeredAt: -1 });
 
         const stats = {
@@ -161,6 +167,18 @@ export const getOverviewAnalytics = async (req, res) => {
             success: true,
             data: { totalEvents, totalUsers, totalRegistrations, pendingApprovals, categoryBreakdown, registrationTrend }
         });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+export const getUserReferrals = async (req, res) => {
+    try {
+        const referrals = await Registration.find({ referrer: req.params.userId })
+            .populate('student', 'name email department')
+            .populate('event', 'title category eventDate')
+            .sort({ registeredAt: -1 });
+        res.status(200).json({ success: true, data: referrals });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }

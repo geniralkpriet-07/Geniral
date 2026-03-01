@@ -1,6 +1,7 @@
 import Event from "../models/Event.js";
 import Registration from "../models/Registration.js";
 import { notifyAdminOnEventCreation, sendRegistrationEmailToAdmin } from "../utils/emailService.js";
+import { autoAssignVipReward } from "./vipController.js";
 
 const TEAM_CONFIG = {
   hackathon: { isTeamEvent: true, minMembers: 2, maxMembers: 6 },
@@ -128,6 +129,17 @@ export const registerForEvent = async (req, res) => {
     const parsedMembers = typeof teamMembers === 'string' ? JSON.parse(teamMembers) : (teamMembers || []);
     const parsedLeader = typeof teamLeader === 'string' ? JSON.parse(teamLeader) : (teamLeader || null);
 
+    // Industry-standard referral parsing: "CODE-REFERRERID"
+    let referrerId = null;
+    if (referredBy && referredBy.includes('-')) {
+      const parts = referredBy.split('-');
+      referrerId = parts[parts.length - 1]; // Take the last part (the UserId)
+      // Check if ID is valid MongoDB ID
+      if (!referrerId.match(/^[0-9a-fA-F]{24}$/)) {
+        referrerId = null;
+      }
+    }
+
     const registration = new Registration({
       event: req.params.id,
       student: req.user.userId,
@@ -135,6 +147,7 @@ export const registerForEvent = async (req, res) => {
       teamMembers: parsedMembers,
       teamSize: parsedMembers.length + 1,
       referredBy: referredBy || null,
+      referrer: referrerId,
     });
     await registration.save();
 
@@ -142,8 +155,16 @@ export const registerForEvent = async (req, res) => {
       $inc: { registrationCount: 1, filledSlots: 1 },
     });
 
-    if (referredBy) {
-      await Event.findOneAndUpdate({ referralCode: referredBy }, { $inc: { referralCount: 1 } });
+    if (referredBy && referrerId) {
+      // Extract the event's base code from the combined string (CODE-userId)
+      const baseCode = referredBy.substring(0, referredBy.lastIndexOf('-'));
+      await Event.findOneAndUpdate({ referralCode: baseCode }, { $inc: { referralCount: 1 } });
+      // Auto-assign VIP reward if referrer has reached 3 total referrals
+      try {
+        await autoAssignVipReward(referrerId);
+      } catch (e) {
+        console.error('VIP reward auto-assign error:', e.message);
+      }
     }
 
     try {
@@ -190,13 +211,13 @@ export const checkRegistration = async (req, res) => {
 export const getReferralCount = async (req, res) => {
   try {
     const { id: eventId, userId } = req.params;
-    
-    // Count registrations that were referred by this user for this event
-    const count = await Registration.countDocuments({ 
-      event: eventId, 
-      referredBy: { $regex: `-${userId}$` } // Matches referral codes ending with -userId
+
+    // Count registrations that were referred by this user for THIS specific event
+    const count = await Registration.countDocuments({
+      event: eventId,
+      referrer: userId
     });
-    
+
     res.json({ success: true, count });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

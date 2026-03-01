@@ -2,7 +2,7 @@
 import { useEffect, useState, useMemo, Suspense } from 'react';
 import type { ReactNode } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Search, SlidersHorizontal, Plus, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { Search, SlidersHorizontal, Plus, Clock, CheckCircle, XCircle, Building2 } from 'lucide-react';
 import EventCard from '@/components/EventCard';
 import { getEvents, getMyEvents } from '@/lib/api';
 import { Event, EventCategory } from '@/types';
@@ -23,6 +23,8 @@ const CATEGORIES: { value: EventCategory; label: string }[] = [
   { value: 'open_mic', label: 'Open Mic' },
 ];
 
+const DEPARTMENTS = ['CSE', 'ECE', 'EEE', 'MECH', 'CIVIL', 'IT', 'AIDS', 'AIML', 'CSD', 'Other'];
+
 const STATUS_BADGE: Record<string, { label: string; icon: ReactNode; cls: string }> = {
   pending: { label: 'Pending Approval', icon: <Clock className="w-3 h-3" />, cls: 'bg-gray-100 text-gray-600 border border-gray-300' },
   approved: { label: 'Approved – Live', icon: <CheckCircle className="w-3 h-3" />, cls: 'bg-gray-100 text-gray-600 border border-gray-300' },
@@ -41,6 +43,7 @@ function EventsContent() {
   const [myLoading, setMyLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState<EventCategory>('all');
+  const [department, setDepartment] = useState<string>('CSE');
   const [activeTab, setActiveTab] = useState<'all' | 'mine'>('all');
 
   useEffect(() => {
@@ -75,29 +78,54 @@ function EventsContent() {
 
   const isEventCreator = user?.role === 'student' || user?.role === 'campus_captain';
 
+  // Get available departments based on selected category
+  const availableDepartments = useMemo(() => {
+    const deptSet = new Set<string>();
+    const eventsToCheck = activeTab === 'all' ? events : myEvents;
+    
+    eventsToCheck.forEach((e) => {
+      const matchCat = category === 'all' || e.category === category;
+      if (matchCat && e.department) {
+        deptSet.add(e.department.toUpperCase());
+      }
+    });
+    
+    // Add 'All' option and sort
+    const depts = ['All', ...Array.from(deptSet).sort()];
+    
+    // If current selected department is not in available list and not 'All', reset to 'All'
+    if (department !== 'All' && !deptSet.has(department)) {
+      setDepartment('All');
+    }
+    
+    return depts;
+  }, [events, myEvents, category, activeTab, department]);
+
   const filtered = useMemo(() => {
     return events.filter((e) => {
       const matchCat = category === 'all' || e.category === category;
+      const matchDept = department === 'All' || (e.department?.toUpperCase() === department);
       const s = search.toLowerCase();
       const matchSearch =
         e.title.toLowerCase().includes(s) ||
         (e.venue || e.location || '').toLowerCase().includes(s) ||
         (e.description || '').toLowerCase().includes(s);
-      return matchCat && matchSearch;
+      return matchCat && matchDept && matchSearch;
     });
-  }, [events, search, category]);
+  }, [events, search, category, department]);
 
   const filteredMine = useMemo(() => {
     return myEvents.filter((e) => {
       const matchCat = category === 'all' || e.category === category;
+      const matchDept = department === 'All' || (e.department?.toUpperCase() === department);
       const s = search.toLowerCase();
       const matchSearch =
         e.title.toLowerCase().includes(s) ||
         (e.venue || e.location || '').toLowerCase().includes(s) ||
         (e.description || '').toLowerCase().includes(s);
-      return matchCat && matchSearch;
+      return matchCat && matchDept && matchSearch;
     });
-  }, [myEvents, search, category]);
+  }, [myEvents, search, category, department]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -178,83 +206,125 @@ function EventsContent() {
         </div>
       </div>
 
-      {/* ── MY SUBMISSIONS TAB ── */}
-      {activeTab === 'mine' && isEventCreator && (
-        <>
-          {myLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="h-72 bg-gray-100 rounded-2xl animate-pulse" />
-              ))}
+      {/* Main Content with Sidebar Layout */}
+      <div className="flex gap-6">
+        {/* Department Sidebar */}
+        <div className="w-64 shrink-0">
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 sticky top-20">
+            <div className="flex items-center gap-2 mb-4">
+              <Building2 className="w-4 h-4 text-gray-600" />
+              <h3 className="font-bold text-black text-sm">Departments</h3>
             </div>
-          ) : filteredMine.length === 0 ? (
-            <div className="text-center py-24 text-gray-500">
-              <p className="text-5xl mb-4">📭</p>
-              <p className="text-lg font-semibold">No submissions yet</p>
-              <p className="text-sm mb-6">Create your first event and it will appear here.</p>
-              <button
-                onClick={() => router.push('/events/create')}
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-black hover:bg-gray-800 text-white text-sm font-semibold transition-colors"
-              >
-                <Plus className="w-4 h-4" /> Create Event
-              </button>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-4">
-              <p className="text-gray-500 text-sm">{filteredMine.length} submission{filteredMine.length !== 1 ? 's' : ''}</p>
-              {filteredMine.map((e) => {
-                const badge = STATUS_BADGE[e.status || 'pending'];
+            <div className="space-y-1">
+              {availableDepartments.map((dept) => {
+                const eventsInDept = (activeTab === 'all' ? events : myEvents).filter((e) => {
+                  const matchCat = category === 'all' || e.category === category;
+                  const matchDept = dept === 'All' || (e.department?.toUpperCase() === dept);
+                  return matchCat && matchDept;
+                }).length;
+
                 return (
-                  <div key={e._id} className="flex items-center justify-between bg-white border border-gray-200 p-5 gap-4">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-black text-base truncate">{e.title}</h3>
-                      <p className="text-gray-500 text-sm mt-0.5">
-                        {e.venue} · {e.eventDate ? new Date(e.eventDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}
-                      </p>
-                      <p className="text-gray-400 text-xs mt-1 capitalize">{e.category?.replace(/_/g, ' ')}</p>
-                    </div>
-                    <span className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full shrink-0 ${badge.cls}`}>
-                      {badge.icon} {badge.label}
+                  <button
+                    key={dept}
+                    onClick={() => setDepartment(dept)}
+                    className={`w-full text-left px-3 py-2 rounded text-sm font-medium transition-colors flex items-center justify-between ${
+                      department === dept
+                        ? 'bg-black text-white'
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    <span>{dept}</span>
+                    <span className={`text-xs ${department === dept ? 'text-gray-300' : 'text-gray-500'}`}>
+                      {eventsInDept}
                     </span>
-                  </div>
+                  </button>
                 );
               })}
             </div>
-          )}
-        </>
-      )}
+          </div>
+        </div>
 
-      {/* ── ALL EVENTS TAB ── */}
-      {activeTab === 'all' && (
-        <>
-          {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="h-72 bg-gray-100 rounded-2xl animate-pulse" />
-              ))}
-            </div>
-          ) : filtered.length === 0 ? (
-            <div className="text-center py-24 text-gray-500">
-              <p className="text-5xl mb-4">🔍</p>
-              <p className="text-lg font-semibold">No events found</p>
-              <p className="text-sm">
-                {events.length === 0
-                  ? 'No approved events yet. Check back soon or create one!'
-                  : 'Try adjusting your search or category filter.'}
-              </p>
-            </div>
-          ) : (
+        {/* Events Content */}
+        <div className="flex-1 min-w-0">
+          {/* ── MY SUBMISSIONS TAB ── */}
+          {activeTab === 'mine' && isEventCreator && (
             <>
-              <p className="text-gray-500 text-sm mb-6">{filtered.length} event{filtered.length !== 1 ? 's' : ''} found</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filtered.map((e) => (
-                  <EventCard key={e._id} event={e} />
-                ))}
-              </div>
+              {myLoading ? (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="h-72 bg-gray-100 rounded-2xl animate-pulse" />
+                  ))}
+                </div>
+              ) : filteredMine.length === 0 ? (
+                <div className="text-center py-24 text-gray-500">
+                  <p className="text-5xl mb-4">📭</p>
+                  <p className="text-lg font-semibold">No submissions yet</p>
+                  <p className="text-sm mb-6">Create your first event and it will appear here.</p>
+                  <button
+                    onClick={() => router.push('/events/create')}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-black hover:bg-gray-800 text-white text-sm font-semibold transition-colors"
+                  >
+                    <Plus className="w-4 h-4" /> Create Event
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-4">
+                  <p className="text-gray-500 text-sm">{filteredMine.length} submission{filteredMine.length !== 1 ? 's' : ''}</p>
+                  {filteredMine.map((e) => {
+                    const badge = STATUS_BADGE[e.status || 'pending'];
+                    return (
+                      <div key={e._id} className="flex items-center justify-between bg-white border border-gray-200 p-5 gap-4">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-bold text-black text-base truncate">{e.title}</h3>
+                          <p className="text-gray-500 text-sm mt-0.5">
+                            {e.venue} · {e.eventDate ? new Date(e.eventDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}
+                          </p>
+                          <p className="text-gray-400 text-xs mt-1 capitalize">{e.category?.replace(/_/g, ' ')}</p>
+                        </div>
+                        <span className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full shrink-0 ${badge.cls}`}>
+                          {badge.icon} {badge.label}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </>
           )}
-        </>
-      )}
+
+          {/* ── ALL EVENTS TAB ── */}
+          {activeTab === 'all' && (
+            <>
+              {loading ? (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className="h-72 bg-gray-100 rounded-2xl animate-pulse" />
+                  ))}
+                </div>
+              ) : filtered.length === 0 ? (
+                <div className="text-center py-24 text-gray-500">
+                  <p className="text-5xl mb-4">🔍</p>
+                  <p className="text-lg font-semibold">No events found</p>
+                  <p className="text-sm">
+                    {events.length === 0
+                      ? 'No approved events yet. Check back soon or create one!'
+                      : 'Try adjusting your search, category, or department filter.'}
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <p className="text-gray-500 text-sm mb-6">{filtered.length} event{filtered.length !== 1 ? 's' : ''} found</p>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {filtered.map((e) => (
+                      <EventCard key={e._id} event={e} />
+                    ))}
+                  </div>
+                </>
+              )}
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

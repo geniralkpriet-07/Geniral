@@ -1,17 +1,23 @@
 import express from "express";
-import { authenticateToken } from "../middleware/auth.js";
+import { authenticateToken, requireAdmin } from "../middleware/auth.js";
+import { uploadClub } from "../utils/cloudinary.js";
 import {
   getClubs,
+  getClub,
   createClub,
-  updateJoinCount,
-  deleteClub
+  updateClub,
+  deleteClub,
 } from "../controllers/clubController.js";
 
 const router = express.Router();
 
+// Public
 router.get("/", getClubs);
-router.post("/", authenticateToken, createClub);
-router.post("/:clubId/join", updateJoinCount);
-router.delete("/:id", authenticateToken, deleteClub);
+router.get("/:id", getClub);
+
+// Admin only
+router.post("/", authenticateToken, requireAdmin, uploadClub.single('poster'), createClub);
+router.put("/:id", authenticateToken, requireAdmin, uploadClub.single('poster'), updateClub);
+router.delete("/:id", authenticateToken, requireAdmin, deleteClub);
 
 export default router;
